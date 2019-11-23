@@ -42,11 +42,11 @@ const Affiliation = dynamo.define('Affiliation', {
 });
 
 const Post = dynamo.define('Post', {
-    hashKey: 'username',
+    hashKey: 'wall',
     rangeKey: 'postId',
     timestamps: true,
     schema:  {
-        username: Joi.string(),
+        wall: Joi.string(),
         postId: dynamo.types.uuid(),
         content: Joi.string(),
         creator: Joi.string(),

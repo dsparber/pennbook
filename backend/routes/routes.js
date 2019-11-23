@@ -25,7 +25,20 @@ const signup = function(req, res) {
 }
 
 
+const post = function(req, res) {
+    var post = req.body;
+
+    db.post(post, function(error, success) {
+        res.json({
+            success: success,
+            error: error,
+        });
+    });
+}
+
+
 module.exports = {
     login: login,
     signup: signup,
+    post: post,
 }

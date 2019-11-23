@@ -8,6 +8,7 @@ app.use(bodyParser.json())
 
 app.post('/api/login', routes.login);
 app.post('/api/signup', routes.signup);
+app.post('/api/post', routes.post);
 
 
 app.listen(port);

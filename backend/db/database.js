@@ -28,7 +28,7 @@ function signup(user, callback) {
         user.password = hash;
         db.User.create(user, {overwrite : false}, function (error, createdUser) { 
             if (error) {
-                callback("User already exists", false)
+                callback("User already exists", false);
             } else {
                 callback(null, true);
             }
@@ -36,7 +36,18 @@ function signup(user, callback) {
     });
 }
 
+function post(post, callback) {
+    db.Post.create(post, function (error, createdPost) {
+        if (error) {
+            callback(error, false);
+        } else {
+            callback(null, true);
+        }
+    });
+}
+
 module.exports = {
     login: login,
     signup: signup,
+    post: post,
 }
