@@ -8,6 +8,13 @@ const User = dynamo.define('User', {
     schema: {
         username: Joi.string(),
         password: Joi.string(),
+    }
+});
+
+const Profile = dynamo.define('Profile',  {
+    hashKey: 'username',
+    schema: {
+        username: Joi.string(),
         firstName: Joi.string(),
         lastName: Joi.string(),
         email: Joi.string().email(),
@@ -62,13 +69,14 @@ const Post = dynamo.define('Post', {
     ]
 });
 
-const Like = dynamo.define('Like', {
+const Reaction = dynamo.define('Reaction', {
     hashKey: 'postId',
     rangeKey: 'username',
     timestamps: true,
     schema: {
         postId: dynamo.types.uuid(),
         username: Joi.string(),
+        type: Joi.string(),
     }
 });
 
@@ -164,10 +172,11 @@ module.exports = {
     ChatMessages: ChatMessages,
     Friend: Friend,
     User: User,
+    Profile: Profile,
     UserChat: UserChat,
     Post: Post,
     SubPost: SubPost,
-    Like: Like,
+    Reaction: Reaction,
     Picture: Picture,
     PostPicture: PostPicture,
 };

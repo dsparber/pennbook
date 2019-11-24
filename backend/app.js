@@ -9,6 +9,8 @@ app.use(bodyParser.json())
 app.post('/api/login', routes.login);
 app.post('/api/signup', routes.signup);
 app.post('/api/post', routes.post);
+app.post('/api/reaction', routes.reaction);
+app.get('/api/wall/:username', routes.userWall);
 
 
 app.listen(port);

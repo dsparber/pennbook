@@ -27,7 +27,6 @@ const signup = function(req, res) {
 
 const post = function(req, res) {
     var post = req.body;
-
     db.post(post, function(error, success) {
         res.json({
             success: success,
@@ -37,8 +36,31 @@ const post = function(req, res) {
 }
 
 
+const reaction = function(req, res) {
+    var reaction = req.body;
+    db.reaction(reaction, function(error, success) {
+        res.json({
+            success: success,
+            error: error,
+        });
+    });
+}
+
+const userWall = function(req, res) {
+    var username = req.params.username;
+    db.userWall(username, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
+
 module.exports = {
     login: login,
     signup: signup,
     post: post,
+    reaction: reaction,
+    userWall: userWall
 }
