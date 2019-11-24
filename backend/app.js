@@ -2,7 +2,6 @@ require('dotenv').config()
 const express = require('express');
 var bodyParser = require('body-parser');
 const jwt = require('express-jwt');
-const secret = require('./secret.js')
 const routes = require('./routes/routes.js');
 
 const port = process.env.PORT;
