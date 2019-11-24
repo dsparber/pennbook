@@ -1,6 +1,10 @@
 const dynamo = require('dynamodb');
 const Joi = require('joi');
-dynamo.AWS.config.loadFromPath('./config.json');
+dynamo.AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID, 
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, 
+    region: process.env.AWS_REGION
+});
 
 const User = dynamo.define('User', {
     hashKey: 'username',
@@ -155,15 +159,16 @@ const ChatMessages = dynamo.define('ChatMessages', {
 });
 
 // Creates all models
-/*
-dynamo.createTables(function(err) {
-    if (err) {
-        console.log('Error creating tables: ', err);
-    } else {
-        console.log('Tables has been created');
-    }
-});
-*/
+if (process.env.TOKEN_SECRET) {
+    dynamo.createTables(function(err) {
+        if (err) {
+            console.log('Error creating tables: ', err);
+        } else {
+            console.log('Tables has been created');
+        }
+    });
+}
+
 
 module.exports = {
     dynamo: dynamo,

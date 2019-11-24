@@ -74,6 +74,28 @@ function profile(username, callback) {
     });
 }
 
+function addFriend(username, friend, callback) {
+    db.Friend.create({
+        username: username,
+        friend: friend
+    }, function(err, result) {
+        if (err) {
+            callback(err, false);
+            return;
+        }
+        db.Friend.create({
+            username: friend,
+            friend: username
+        }, function(err, result) {
+            if (err) {
+                callback(err, false);
+                return;
+            }
+            callback(null, true);
+        });
+    });
+}
+
 function userWall(username, callback) {
     db.Post.query(username).loadAll().exec(function(err, posts) {
         if (err) {
@@ -93,10 +115,33 @@ function userWall(username, callback) {
     });
 }
 
+function wall(username, callback) {
+    db.Friend.query(username).loadAll().exec(function(err, friends) {
+        if (err) {
+            callback(err, null);
+            return;
+        }
+        let usernames = [];
+        if (friends.Items.length === 0) {
+            usernames = friends.Items.map(v => v.get('friend'))
+        }
+        usernames.push(username);
+        db.Post.scan().where('wall').in(usernames).exec(function(err, posts) {
+            if (err) {
+                callback(err, null);
+                return
+            }
+            callback(null, posts.Items);
+        });
+    });
+}
+
 module.exports = {
     login: login,
     signup: signup,
     post: post,
     reaction: reaction,
     userWall: userWall,
+    wall: wall,
+    addFriend: addFriend
 }
