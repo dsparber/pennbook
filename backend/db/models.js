@@ -61,15 +61,16 @@ const Post = dynamo.define('Post', {
         postId: dynamo.types.uuid(),
         content: Joi.string(),
         creator: Joi.string(),
-        parent: Joi.string(),
+        parent: dynamo.types.uuid(),
         type: Joi.string(),
     },
     indexes: [
         {
             hashKey: 'postId',
+            rangeKey: 'createdAt',
             name: 'PostIdIndex',
             type: 'global',
-        }
+        },
     ]
 });
 
@@ -159,7 +160,7 @@ const ChatMessages = dynamo.define('ChatMessages', {
 });
 
 // Creates all models
-if (process.env.TOKEN_SECRET) {
+if (process.env.CREATE_TABLES === "true") {
     dynamo.createTables(function(err) {
         if (err) {
             console.log('Error creating tables: ', err);
