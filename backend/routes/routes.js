@@ -3,6 +3,19 @@ const storage = require('../db/storage.js');
 const jwt = require('jsonwebtoken');
 const secret = process.env.TOKEN_SECRET;
 
+const checkPermission = function(user, accessedUser, res, callback) {
+    db.isFriend(user, accessedUser, function(err, isFriend) {
+        if (err || !isFriend) {
+            res.json({
+                success: false,
+                error: err || "Not authorized",
+            });
+            return;
+        }
+        callback();
+    });
+}
+
 const login = function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
@@ -40,10 +53,14 @@ const signup = function(req, res) {
 
 const post = function(req, res) {
     var post = req.body;
-    db.post(post, function(error, success) {
-        res.json({
-            success: success,
-            error: error,
+    var username = req.auth.username;
+    var wall = post.wall;
+    checkPermission(username, wall, res, function() {
+        db.post(post, function(error, success) {
+            res.json({
+                success: success,
+                error: error,
+            });
         });
     });
 }
@@ -60,11 +77,14 @@ const reaction = function(req, res) {
 }
 
 const userWall = function(req, res) {
-    var username = req.params.username;
-    db.userWall(username, function(error, result) {
-        res.json({
-            error: error,
-            result: result,
+    var username = req.auth.username;
+    var wall = req.params.username;
+    checkPermission(username, wall, res, function() {
+        db.userWall(wall, function(error, result) {
+            res.json({
+                error: error,
+                result: result,
+            });
         });
     });
 }

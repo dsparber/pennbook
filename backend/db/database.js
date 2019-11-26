@@ -2,6 +2,23 @@ const db = require('./models');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+function streamToPromise(stream) {
+    return new Promise((resolve, reject) => {
+        let data = null;
+        stream.on("data", chunk => data = chunk);
+        stream.on("end", () => resolve(data));
+        stream.on("error", error => reject(error));
+    });
+}
+
+async function getItems(stream) {
+    return (await streamToPromise(stream)).Items.map(p => p.attrs);
+}
+
+async function getItem(stream) {
+    return (await getItems(stream))[0];
+}
+
 function login(username, password, callback) {
     db.User.get(username, function(err, user) {
         if (user === null) {
@@ -46,6 +63,21 @@ function signup(user, callback) {
             }
         });
     });
+}
+
+function isFriend(user1, user2, callback) {
+    if (user1 === user2) {
+        callback(null, true);
+        return;
+    }
+
+    db.Friend.query(user1).where('friend').eq(user2).exec(function(err, result) {
+        if (err) {
+            callback(err, false);
+        } else {
+            callback(null, result.Count > 0);
+        }
+    }); 
 }
 
 function post(post, callback) {
@@ -122,23 +154,6 @@ function addFriend(username, friend, callback) {
             callback(null, true);
         });
     });
-}
-
-function streamToPromise(stream) {
-    return new Promise((resolve, reject) => {
-        let data = null;
-        stream.on("data", chunk => data = chunk);
-        stream.on("end", () => resolve(data));
-        stream.on("error", error => reject(error));
-    });
-}
-
-async function getItems(stream) {
-    return (await streamToPromise(stream)).Items.map(p => p.attrs);
-}
-
-async function getItem(stream) {
-    return (await getItems(stream))[0];
 }
 
 async function mapPost(post) {
@@ -218,5 +233,6 @@ module.exports = {
     userWall: userWall,
     wall: wall,
     addFriend: addFriend,
-    addPicture: addPicture
+    addPicture: addPicture,
+    isFriend: isFriend,
 }
