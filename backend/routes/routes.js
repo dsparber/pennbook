@@ -1,4 +1,5 @@
 const db = require('../db/database.js');
+const storage = require('../db/storage.js');
 const jwt = require('jsonwebtoken');
 const secret = process.env.TOKEN_SECRET;
 
@@ -26,7 +27,7 @@ const signup = function(req, res) {
     db.signup(user, function(error, success) {
         let token = null;
         if (success) {
-            token = jwt.sign({ username: username }, secret);
+            token = jwt.sign({ username: user.username }, secret);
         }
         res.json({
             error: error,
@@ -79,6 +80,17 @@ const addFriend = function(req, res) {
     });
 }
 
+const uploadPicture = function(req, res) {
+    var username = req.auth.username;
+    var file = req.file;
+    storage.uploadFile(username, file, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
 const wall = function(req, res) {
     var username = req.auth.username;
     db.wall(username, function(error, result) {
@@ -98,4 +110,5 @@ module.exports = {
     userWall: userWall,
     addFriend: addFriend,
     wall: wall,
+    uploadPicture: uploadPicture,
 }

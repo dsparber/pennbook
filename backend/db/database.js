@@ -49,25 +49,30 @@ function signup(user, callback) {
 }
 
 function post(post, callback) {
-    db.Post.create(post, function (error, createdPost) {
+    let pictureId = post.pictureId;
+    delete post.pictureId;
+    db.Post.create(post, async function (error, createdPost) {
         if (error) {
             callback(error, false);
             return;
         } 
-        if (post.parent === undefined) {
-            callback(null, true);
-            return;
-        } 
-        db.SubPost.create({
-            postId: post.parent,
-            childPostId: createdPost.get('postId'),
-        }, function(error, _) {
-            if (error) {
-                callback(error, false);
-                return;
+        try {
+            if (post.parent !== undefined) {
+                await db.SubPost.create({
+                    postId: post.parent,
+                    childPostId: createdPost.get('postId'),
+                });
+            }
+            if (pictureId !== undefined) {
+                await db.PostPicture.create({
+                    postId: createdPost.get('postId'),
+                    pictureId: pictureId,
+                });
             }
             callback(null, true);
-        });
+        } catch(err) {
+            callback(err, false);
+        }
     });
 }
 
@@ -78,6 +83,16 @@ function reaction(reaction, callback) {
         } else {
             callback(null, true);
         }
+    });
+}
+
+function addPicture(username, identifier, callback) {
+    db.Picture.create({
+        username: username,
+        identifier: identifier,
+    }, function (err, created) {
+        var data = err ? null : created.attrs;
+        callback(err, data);
     });
 }
 
@@ -123,11 +138,17 @@ async function getItems(stream) {
 }
 
 async function getItem(stream) {
-    return (await streamToPromise(stream)).attrs;
+    return (await getItems(stream))[0];
 }
 
 async function mapPost(post) {
     post.reactions = await getItems(db.Reaction.query(post.postId).exec());
+    let postPicture = await getItem(db.PostPicture.query(post.postId).exec());
+    if (postPicture !== undefined) {
+        let pictureId = postPicture.pictureId;
+        let picture = await getItem(db.Picture.query(pictureId).usingIndex('PictureIdIndex').exec());
+        post.picture = `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${picture.identifier}`;
+    }
     let subPosts = await getItems(db.SubPost.query(post.postId).exec());
     if (subPosts.length !== 0) {
         let subPostIds = subPosts.map(s => s.childPostId);
@@ -196,5 +217,6 @@ module.exports = {
     reaction: reaction,
     userWall: userWall,
     wall: wall,
-    addFriend: addFriend
+    addFriend: addFriend,
+    addPicture: addPicture
 }
