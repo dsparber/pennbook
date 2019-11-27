@@ -11,6 +11,22 @@ function streamToPromise(stream) {
     });
 }
 
+// Create a toJson function for errors, enables easier debugging
+if (!('toJSON' in Error.prototype))
+Object.defineProperty(Error.prototype, 'toJSON', {
+    value: function () {
+        var alt = {};
+
+        Object.getOwnPropertyNames(this).forEach(function (key) {
+            alt[key] = this[key];
+        }, this);
+
+        return alt;
+    },
+    configurable: true,
+    writable: true
+});
+
 async function getItems(stream) {
     return (await streamToPromise(stream)).Items.map(p => p.attrs);
 }
@@ -32,6 +48,37 @@ function login(username, password, callback) {
             } else {
                 callback("Invalide user / password combination", false);
             }
+        });
+    });
+}
+
+function changePassword(username, oldPassword, newPassword, callback) {
+    db.User.get(username, function(err, user) {
+        if (err) {
+            callback(err, false);
+            return;
+        }
+        let hash = user.get("password");
+        bcrypt.compare(oldPassword, hash, function(err, equal) {
+            if (!equal) {
+                callback("Old password is invalid");
+                return;
+            }
+            bcrypt.hash(newPassword, saltRounds, function(err, hash) {
+                if (err) {
+                    callback(err, false);
+                    return;
+                }
+                db.User.update({
+                    username: username,
+                    password: hash
+                }, function (error, createdUser) { 
+                    if (error) {
+                        callback("Setting new password failed", false);
+                    } 
+                    callback(null, true);
+                });
+            });
         });
     });
 }
@@ -118,6 +165,61 @@ function reaction(reaction, callback) {
     });
 }
 
+
+function addInterest(user, interest, callback) {
+    interest.username = user;
+    db.Interest.create(interest, function(err) {
+        if (err) {
+            callback(err, false);
+            return;
+        }
+        callback(null, true);
+    });
+}
+
+function removeInterest(user, interestName, callback) {
+    db.Interest.destroy({username: user, name: interestName}, function(err) {
+        if (err) {
+            callback(err, false);
+            return;
+        }
+        callback(null, true);
+    });
+}
+
+function addAffiliation(user, affiliation, callback) {
+    affiliation.username = user;
+    db.Affiliation.create(affiliation, function(err, created) {
+        if (err) {
+            callback(err, false);
+            return;
+        }
+        callback(null, true);
+    });
+}
+
+
+function removeAffiliation(user, affiliationName, callback) {
+    db.Affiliation.destroy({username: user, name: affiliationName}, function(err) {
+        if (err) {
+            callback(err, false);
+            return;
+        }
+        callback(null, true);
+    });
+}
+
+function updateProfile(user, profile, callback) {
+    profile.username = user;
+    db.Profile.update(profile, function(err) {
+        if (err) {
+            callback(err, false);
+            return;
+        }
+        callback(null, true);
+    })
+}
+
 function addPicture(username, identifier, callback) {
     db.Picture.create({
         username: username,
@@ -128,10 +230,24 @@ function addPicture(username, identifier, callback) {
     });
 }
 
-function profile(username, callback) {
-    db.Profile.get(username, function(err, user) {
-        callback(err, user);
-    });
+async function getInterests(username) {
+    return await getItems(db.Interest.query(username).usingIndex('UsernameIndex').loadAll().exec());
+}
+
+async function getAffiliations(username) {
+    return await getItems(db.Affiliation.query(username).usingIndex('UsernameIndex').loadAll().exec());
+}
+
+async function profile(username, callback) {
+    try {
+        let profile = await getItem(db.Profile.query(username).exec());
+        profile.profilePicture = await getProfilePicture(username);
+        profile.interests = await getInterests(username);
+        profile.affiliations = await getAffiliations(username);
+        callback(null, profile);
+    } catch (err) {
+        callback(err, null);
+    }
 }
 
 function addFriend(username, friend, callback) {
@@ -156,14 +272,31 @@ function addFriend(username, friend, callback) {
     });
 }
 
-async function mapPost(post) {
-    post.reactions = await getItems(db.Reaction.query(post.postId).exec());
+async function getPictureUrl(pictureId) {
+    let picture = await getItem(db.Picture.query(pictureId).usingIndex('PictureIdIndex').exec());
+    return `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${picture.identifier}`;
+}
+
+async function getPictureUrlFromPost(post) {
     let postPicture = await getItem(db.PostPicture.query(post.postId).exec());
     if (postPicture !== undefined) {
-        let pictureId = postPicture.pictureId;
-        let picture = await getItem(db.Picture.query(pictureId).usingIndex('PictureIdIndex').exec());
-        post.picture = `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${picture.identifier}`;
+        return await getPictureUrl(postPicture.pictureId);
     }
+    return null;
+}
+
+async function getProfilePicture(username) {
+    let profilePicturePosts = await getItems(db.Post.query(username).filter('type').equals('profilePicture').loadAll().exec());
+    if (profilePicturePosts.length === 0) {
+        return null;
+    }
+    return await getPictureUrlFromPost(profilePicturePosts.reverse()[0]);
+}
+
+async function mapPost(post) {
+    post.reactions = await getItems(db.Reaction.query(post.postId).exec());
+    post.picture = await getPictureUrlFromPost(post);
+    
     let subPosts = await getItems(db.SubPost.query(post.postId).exec());
     if (subPosts.length !== 0) {
         let subPostIds = subPosts.map(s => s.childPostId);
@@ -235,4 +368,10 @@ module.exports = {
     addFriend: addFriend,
     addPicture: addPicture,
     isFriend: isFriend,
+    addAffiliation: addAffiliation,
+    addInterest: addInterest,
+    removeAffiliation: removeAffiliation,
+    removeInterest: removeInterest,
+    updateProfile: updateProfile,
+    changePassword: changePassword,
 }

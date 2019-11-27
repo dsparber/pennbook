@@ -33,6 +33,19 @@ const login = function(req, res) {
     });
 }
 
+const changePassword = function(req, res) {
+    var username = req.auth.username;
+    var oldPassword = req.body.old;
+    var newPassword = req.body.new;
+
+    db.changePassword(username, oldPassword, newPassword, function(error, success) {
+        res.json({
+            error: error,
+            success: success,
+        });
+    });
+}
+
 
 const signup = function(req, res) {
     var user = req.body;
@@ -100,6 +113,61 @@ const addFriend = function(req, res) {
     });
 }
 
+const addAffiliation = function(req, res) {
+    var username = req.auth.username;
+    var data = req.body;
+    db.addAffiliation(username, data, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
+const addInterest = function(req, res) {
+    var username = req.auth.username;
+    var data = req.body;
+    db.addInterest(username, data, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
+const removeAffiliation  = function(req, res) {
+    var username = req.auth.username;
+    var name = req.body.name;
+    db.removeAffiliation(username, name, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
+const removeInterest = function(req, res) {
+    var username = req.auth.username;
+    var name = req.body.name;
+    db.removeInterest(username, name, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
+const updateProfile = function(req, res) {
+    var username = req.auth.username;
+    var data = req.body;
+    db.updateProfile(username, data, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
 const uploadPicture = function(req, res) {
     var username = req.auth.username;
     var file = req.file;
@@ -131,4 +199,10 @@ module.exports = {
     addFriend: addFriend,
     wall: wall,
     uploadPicture: uploadPicture,
+    addAffiliation: addAffiliation,
+    addInterest: addInterest,
+    removeAffiliation: removeAffiliation,
+    removeInterest: removeInterest,
+    updateProfile: updateProfile,
+    changePassword: changePassword,
 }

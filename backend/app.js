@@ -17,7 +17,14 @@ app.post(`${path}/signup`, routes.signup);
 app.post(`${path}/post`, routes.post);
 app.post(`${path}/reaction`, routes.reaction);
 app.post(`${path}/friends/add`, routes.addFriend);
+app.post(`${path}/interest/add`, routes.addInterest);
+app.post(`${path}/interest/remove`, routes.removeInterest);
+app.post(`${path}/affiliation/add`, routes.addAffiliation);
+app.post(`${path}/affiliation/remove`, routes.removeAffiliation);
+app.post(`${path}/profile/update`, routes.updateProfile);
+app.post(`${path}/password/change`, routes.changePassword);
 app.post(`${path}/picture/upload`, storage.upload, routes.uploadPicture);
+
 app.get(`${path}/wall`, routes.wall);
 app.get(`${path}/wall/:username`, routes.userWall);
 

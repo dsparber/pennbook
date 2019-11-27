@@ -23,6 +23,7 @@ const Profile = dynamo.define('Profile',  {
         lastName: Joi.string(),
         email: Joi.string().email(),
         birthday: Joi.date(),
+        about: Joi.string(),
     }
 });
 
@@ -42,6 +43,25 @@ const Affiliation = dynamo.define('Affiliation', {
     schema: {
         name: Joi.string(),
         username: Joi.string(),
+        type: Joi.string(),
+    },
+    indexes: [
+        {
+            hashKey: 'username',
+            name: 'UsernameIndex',
+            type: 'global',
+        }
+    ]
+});
+
+
+const Interest = dynamo.define('Interest', {
+    hashKey: 'name',
+    rangeKey: 'username',
+    schema: {
+        name: Joi.string(),
+        username: Joi.string(),
+        type: Joi.string(),
     },
     indexes: [
         {
@@ -185,4 +205,5 @@ module.exports = {
     Reaction: Reaction,
     Picture: Picture,
     PostPicture: PostPicture,
+    Interest: Interest
 };
