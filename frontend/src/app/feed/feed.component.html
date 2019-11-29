@@ -22,20 +22,43 @@
       <h2 style='padding-top:15px; color: black; margin-left:25px; text-align:center'> My Feed </h2>
       <hr>
       <div  style= "width: 50%; margin-left: 300px">
-        <div class = 'row' style="padding-top: 10px;">
-            <div  style= "background-color:#F6F4F4; border-radius:20px; padding-top:20px; padding-bottom:10px; margin-top:30px;">
+        <div class = 'row' style="padding-top: 10px; padding-bottom:10px;">
+            <div  *ngFor="let post of posts" style= "background-color:#F6F4F4; border-radius:20px; padding-top:20px; padding-bottom:10px; margin-top:30px; margin-bottom:20px">
               <div  style=' padding-left: 15px; width:10%; float:left;'>
                 <img src='assets/profile.jpg' width =50 height=50 >
               </div>
-              <div  style=' width:90%; padding-left: 20px; float: left;'>
-                <p style="padding-left:0;">Stefan Papazov</p>
-                <p style='font-style:italic; font-size: small'> Today, 18:36 </p>
-                <div style=" padding-top: 10px">
-                  <p> Hello this is a test post. Hello this is a test post.Hello this is a test post.Hello this is a test post.Hello this is a test post.Hello this is a test post.Hello this is a test post. </p>
+              <div  style=' width:50%; margin-left: 70px; min-width:700px; max-width:700px;'>
+                <p style="padding-left:0;">{{post.creator}}</p>
+                <p style='font-style:italic; font-size: small'> {{post.createdAt}}</p>
+                <div style=" padding-top: 10px; margin-left: 22px;">
+                  <p style=" max-width:525px;min-width:525px"> {{post.content}}</p>
                </div>
+               <div style = 'width = 100%; float:right; padding-right: 10px; margin-top: 0px'>
+                 <div class="container" style="margin-bottom:20px;">
+                     <div style="width= 50%;float:left">
+                       <button class="btn btn-sm btn-outline-primary" (click)="postLike(post)">👍{{post.likes}}</button>
+                     </div>
+                     <div  style="width= 50%;float:right; padding-left: 10px;">
+                       <button class="btn btn-sm btn-outline-primary" (click)="open(content)">Comment</button>
+                     </div>
+                  </div>
+               </div>
+
+               <div   class = 'row' style= "background-color:#F6F4F4; border-radius:20px; margin-top:40px; margin-bottom:0px; width:75%">
+                 <div  style=' padding-left: 15px; width:10%; float:left;'>
+                   <img src='assets/profile.jpg' width =50 height=50 >
+                 </div>
+                 <div  style=' width:90%; padding-left: 30px; float: left;'>
+                   <p style="padding-left:0;">comment.creator</p>
+                   <p style='font-style:italic; font-size: small'> comment.createdAt </p>
+                   <div style=" padding-top: 10px; padding-left:10px;">
+                     <p style=" max-width:325px;min-width:325px"> asd;lkfads;lfjads;fadds;lfkad;sf;alksdfj;asdlkasd;lkfa;sdlkf;aldskfj;alsdkjf;asd jf;akjds;fka;fa</p>
+                  </div>
+               </div>
+             </div>
             </div>
           </div>
-          <div  style= "background-color:#F6F4F4; border-radius:20px; padding-top:20px; padding-bottom:10px; margin-top:30px;">
+          <div  style= "background-color:#F6F4F4; border-radius:20px; padding-top:20px; padding-bottom:10px; margin-top:30px; margin-bottom:20px">
             <div  style=' padding-left: 15px; width:10%; float:left;'>
               <img src='assets/profile.jpg' width =50 height=50 >
             </div>
@@ -47,20 +70,36 @@
              </div>
           </div>
         </div>
-        <div  style= "background-color:#F6F4F4; border-radius:20px; padding-top:20px; padding-bottom:10px; margin-top:30px;">
-          <div  style=' padding-left: 15px; width:10%; float:left;'>
-            <img src='assets/profile.jpg' width =50 height=50 >
-          </div>
-          <div  style=' width:90%; padding-left: 20px; float: left;'>
-            <p style="padding-left:0;">Stefan Papazov</p>
-            <p style='font-style:italic; font-size: small'> Today, 18:36 </p>
-            <div style=" padding-top: 10px">
-              <p> Hello this is a test post. Hello this is a test post.Hello this is a test post.Hello this is a test post.Hello this is a test post.Hello this is a test post.Hello this is a test post. </p>
-           </div>
+
         </div>
       </div>
-        </div>
-      </div>
+      <!-- Button trigger modal -->
+
     </div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Write a Comment!</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form (ngSubmit)="postComment(comment)" #comment="ngForm">
+      <div class="form-group">
+        <div class="form-group">
+          <textarea class="form-control" name="email" [(ngModel)]="model.email" #email="ngModel" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-dark" >Post</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+
+
+
 
 </body>
