@@ -293,20 +293,20 @@
           <img src='assets/profile.jpg' width =120 height=120 >
         </div>
         <div  style='padding-top:20px; width:100%; padding-left: 130px;'>
-          <h5  style="padding-left:0;">Stefan Papazov</h5>
-          <p> Studies at: University of Pennsylvania</p>
-          <p> Lives in: Philadelphia, Pennsylvania </p>
-          <p> Works at: NETS 1212</p>
+          <h5  style="padding-left:0;">{{profile.firstName}} {{profile.lastName}}</h5>
+          <p> Studies at: {{profile.university}}</p>
+          <p> Lives in: {{profile.location}} </p>
+          <p> Works at: {{profile.job}}</p>
           <div style="width:50%; float: left; ">
             <button *ngIf= "!myPage"  style= "margin-top: 10px;" class="btn btn-sm btn-outline-primary">Add Friend</button>
           </div>
           <div style="width:50%; float: right; ">
-            <button style= "margin-top: 10px;" class="btn btn-sm btn-outline-primary">Edit Profile</button>
+            <button style= "margin-top: 10px;" class="btn btn-sm btn-outline-primary" (click)="open(content)">Edit Profile</button>
           </div>
         </div>
         <p style="padding-top: 40px; font-weight:bold"> About Me:</p>
         <p style="padding-top: 5px"> Hi i am Stefan and this is a test bio. I want to see if the page actually works. This is a test, this is a test, this is a test</p>
-        <p style="padding-top: 40px; font-weight:bold"> Groups and Interests:</p>
+        <p style="padding-top: 40px; font-weight:bold"> Interests:</p>
         <p style="padding-top: 5px; padding-bottom: 30px"> Biking, Skiing, Swimming, Running, NETS 212</p>
       </div>
 
@@ -366,5 +366,52 @@
         </div>
       </div>
     </div>
+
+    <ng-template #content let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Update Profile</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="mid-width:600px; ">
+        <form (ngSubmit)="editProfile(profile)" #profile="ngForm" style="mid-width:600px;">
+          <div class="form-group">
+            <div class="container">
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Location</label>
+                    <input type="email" class="form-control" name="location" [(ngModel)]="model.location" #location="ngModel" placeholder="Location" required>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Education</label>
+                    <input type="email" class="form-control" name="education" [(ngModel)]="model.education" #education="ngModel"  placeholder="Education" required>
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Work/Employment</label>
+                    <input type="email" class="form-control" name="work" [(ngModel)]="model.work" #work="ngModel"  placeholder="Employment" required>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Interests</label>
+                    <tag-input  name="interests" theme='minimal' placeholder="add interest" [(ngModel)]="profile.interests" [editable]='true' #interests="ngModel" aria-describedby="emailHelp" placeholder="Interests" required></tag-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-outline-dark" >Post</button>
+          </div>
+        </form>
+      </div>
+    </ng-template>
 
 </body>

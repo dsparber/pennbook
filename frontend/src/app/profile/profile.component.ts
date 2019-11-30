@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { TagInputModule } from 'ngx-chips';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent implements OnInit {
   posts:any = [{
@@ -18,9 +20,29 @@ export class ProfileComponent implements OnInit {
          ];
   model : any = {};
   myPage = false;
-  constructor() { }
+  profile:any = {
+    firstName: 'Stefan',
+    lastName: 'Papazov',
+    university: 'Penn',
+    job: "Facebook",
+    location: "Philadelphia",
+    interests: ["swimming", "running"],
+
+  };
+
+  constructor(private modalService: NgbModal) { }
 
   ngOnInit() {
+  }
+
+  open(content) {
+    this.modalService.open(content).result.then((result) => {;
+    }, (reason) => {
+    });
+  }
+
+  editProfile(profile) {
+    console.log(profile);
   }
 
 }

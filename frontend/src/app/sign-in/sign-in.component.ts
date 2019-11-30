@@ -19,8 +19,19 @@ export class SignInComponent implements OnInit {
 
   registerUser(form) {
     let user = form.value;
-    console.log(user);
-    this.signInService.signup(user).subscribe(res => {
+    let data = {
+      username: user.email,
+      password: user.password,
+      profile: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        birthday: user.birthday
+      }
+    }
+
+    console.log(data);
+    this.signInService.signup(data).subscribe(res => {
       if (!res.success) {
         alert("Something went wrong: " + res.error)
       } else {
@@ -37,6 +48,7 @@ export class SignInComponent implements OnInit {
 
   login(form) {
     let user = form.value;
+    console.log(form);
 
     this.signInService.login(user).subscribe(res => {
       if (!res.success) {

@@ -37,7 +37,7 @@ async function getItem(stream) {
 
 function login(username, password, callback) {
     db.User.get(username, function(err, user) {
-        if (user === null) {
+        if (!user) {
             callback("Invalide user / password combination", false);
             return;
         }
@@ -72,10 +72,10 @@ function changePassword(username, oldPassword, newPassword, callback) {
                 db.User.update({
                     username: username,
                     password: hash
-                }, function (error, createdUser) { 
+                }, function (error, createdUser) {
                     if (error) {
                         callback("Setting new password failed", false);
-                    } 
+                    }
                     callback(null, true);
                 });
             });
@@ -94,13 +94,14 @@ function signup(user, callback) {
             password: hash
         }, {
             overwrite : false
-        }, function (error, createdUser) { 
+        }, function (error, createdUser) {
             if (error) {
+              console.log(error);
                 callback("User already exists", false);
             } else {
                 let profile = user.profile;
                 profile.username = user.username;
-                db.Profile.create(profile, function (error, createdProfile) { 
+                db.Profile.create(profile, function (error, createdProfile) {
                     if (error) {
                         callback(error, false);
                     } else {
@@ -124,7 +125,7 @@ function isFriend(user1, user2, callback) {
         } else {
             callback(null, result.Count > 0);
         }
-    }); 
+    });
 }
 
 function post(post, callback) {
@@ -134,7 +135,7 @@ function post(post, callback) {
         if (error) {
             callback(error, false);
             return;
-        } 
+        }
         try {
             if (post.parent !== undefined) {
                 await db.SubPost.create({
@@ -296,7 +297,7 @@ async function getProfilePicture(username) {
 async function mapPost(post) {
     post.reactions = await getItems(db.Reaction.query(post.postId).exec());
     post.picture = await getPictureUrlFromPost(post);
-    
+
     let subPosts = await getItems(db.SubPost.query(post.postId).exec());
     if (subPosts.length !== 0) {
         let subPostIds = subPosts.map(s => s.childPostId);
@@ -338,7 +339,7 @@ function userWall(username, callback) {
         if (err) {
             callback(err, null);
         } else {
-            
+
         }
     });
 }
