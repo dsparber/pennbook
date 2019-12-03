@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express');
 var bodyParser = require('body-parser');
-var socket = require('socket-io');
+var socket = require('socket.io');
 const jwt = require('express-jwt');
 const routes = require('./routes/routes.js');
 const storage = require('./db/storage.js');
