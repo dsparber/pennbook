@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express');
 var bodyParser = require('body-parser');
+var socket = require('socket-io');
 const jwt = require('express-jwt');
 const routes = require('./routes/routes.js');
 const storage = require('./db/storage.js');
@@ -31,5 +32,13 @@ app.get(`${path}/wall`, routes.wall);
 app.get(`${path}/wall/:username`, routes.userWall);
 
 
-app.listen(port);
-console.log(`Server running. URL: http://localhost:${port}${path}`);
+var server = app.listen(port, function(){
+  console.log(`Server running. URL: http://localhost:${port}${path}`);
+});
+
+//Socket Setup
+var io = socket(server);
+
+io.on('connection', function(){
+  console.log('Socket connection on server made');
+});
