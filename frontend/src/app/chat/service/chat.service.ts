@@ -6,7 +6,8 @@ import { Observable } from 'rxjs';
 
 export class ChatService{
 
-    private socket = io('http://localhost:4200');
+    //TODO: how to access port number here
+    private socket = io('http://localhost:8080/api');
 
     joinChat(data)
     {
