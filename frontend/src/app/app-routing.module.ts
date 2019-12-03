@@ -8,6 +8,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { FeedComponent } from './feed/feed.component';
 import { FriendsComponent } from './friends/friends.component';
+import { ChatComponent } from './chat/chat.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/signin', pathMatch: 'full' },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'signin', component: SignInComponent},
   { path: 'feed', component: FeedComponent},
   { path: 'friends', component: FriendsComponent},
+  { path: 'chat', component: ChatComponent}
 ];
 
 
