@@ -9,7 +9,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { FeedComponent } from './feed/feed.component';
 import { FriendsComponent } from './friends/friends.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { ChatComponent } from './chat/chat.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {AuthGuard} from './guard/guard.service'
 
@@ -22,7 +23,8 @@ import {AuthGuard} from './guard/guard.service'
     ProfileComponent,
     SignInComponent,
     FeedComponent,
-    FriendsComponent
+    FriendsComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
