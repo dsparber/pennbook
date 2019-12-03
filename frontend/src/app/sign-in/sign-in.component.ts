@@ -10,7 +10,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class SignInComponent implements OnInit {
 
   model : any = {};
-
+  sign : any = {};
   constructor(public signInService: SignInService, public router: Router) { }
 
   ngOnInit() {
@@ -24,7 +24,7 @@ export class SignInComponent implements OnInit {
       password: user.password,
       profile: {
         firstName: user.firstName,
-        lastName: user.lastName,
+        lastName: user.firstName,
         email: user.email,
         birthday: user.birthday
       }
