@@ -84,11 +84,13 @@ function changePassword(username, oldPassword, newPassword, callback) {
 }
 
 function signup(user, callback) {
+    console.log(user);
     bcrypt.hash(user.password, saltRounds, function(err, hash) {
         if (err) {
             callback(err, false);
             return;
         }
+        console.log(user);
         db.User.create({
             username: user.username,
             password: hash
@@ -97,7 +99,7 @@ function signup(user, callback) {
         }, function (error, createdUser) {
             if (error) {
               console.log(error);
-                callback("User already exists", false);
+              callback("User already exists", false);
             } else {
                 let profile = user.profile;
                 profile.username = user.username;

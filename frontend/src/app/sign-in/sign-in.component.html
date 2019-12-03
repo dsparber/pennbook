@@ -300,8 +300,8 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <form class="form-inline" style="text-align:center; padding-left:550px;" (ngSubmit)="login(user)" #user="ngForm" >
-    <input class="form-control mr-sm-2"  name="username" [(ngModel)]="model.username" #username="ngModel" placeholder="Email" aria-label="Search">
-    <input class="form-control mr-sm-2"  name="password" [(ngModel)]="model.password" #password="ngModel" placeholder="Password" aria-label="Search">
+    <input class="form-control mr-sm-2"  name="username" [(ngModel)]="sign.username" #username="ngModel" placeholder="Email" aria-label="Search">
+    <input class="form-control mr-sm-2"  name="password" [(ngModel)]="sign.password" #password="ngModel" placeholder="Password" aria-label="Search">
     <button class="btn btn-primary-success btn-light" type="submit">Login</button>
   </form>
 </nav>
