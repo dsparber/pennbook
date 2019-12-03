@@ -11,10 +11,10 @@ import { FriendsComponent } from './friends/friends.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/signin', pathMatch: 'full' },
-  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
+  { path: 'profile', component: ProfileComponent, },
   { path: 'signin', component: SignInComponent},
-  { path: 'feed', component: FeedComponent, canActivate: [AuthGuard]},
-  { path: 'friends', component: FriendsComponent, canActivate: [AuthGuard]},
+  { path: 'feed', component: FeedComponent,},
+  { path: 'friends', component: FriendsComponent,},
 ];
 
 
