@@ -33,7 +33,7 @@ export class SignInComponent implements OnInit {
     console.log(data);
     this.signInService.signup(data).subscribe(res => {
       if (!res.success) {
-        alert("Something went wrong: " + res.error)
+        alert("Something went wrong: " + JSON.stringify(res.error))
       } else {
         localStorage.setItem('token', res.token);
         this.router.navigateByUrl('/feed');
@@ -49,13 +49,22 @@ export class SignInComponent implements OnInit {
   login(form) {
     let user = form.value;
     console.log(form);
+    let data = {
+      username: user.username,
+      password: user.password
+    }
 
     this.signInService.login(user).subscribe(res => {
       if (!res.success) {
-        alert("Something went wrong: " + res.error)
+        alert("Something went wrong: " + JSON.stringify(res.error));
       } else {
-        localStorage.setItem('token', res.token);
-        this.router.navigateByUrl('/feed');
+        if (res.token) {
+          localStorage.setItem('token', res.token);
+          this.router.navigateByUrl('/feed');
+        } else {
+          console.log(res.token);
+          alert("Invalid username or password " + JSON.stringify(res.error));
+        }
       }
     },
     err => {
