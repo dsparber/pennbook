@@ -12,7 +12,8 @@ import { FriendsComponent } from './friends/friends.component';
 import { ChatComponent } from './chat/chat.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {AuthGuard} from './guard/guard.service'
+import {AuthGuard} from './guard/guard.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 
@@ -34,6 +35,7 @@ import {AuthGuard} from './guard/guard.service'
     HttpClientModule,
     NgbModule,
     TagInputModule,
+    BrowserAnimationsModule
   ],
   providers: [AuthGuard],
   bootstrap: [AppComponent]

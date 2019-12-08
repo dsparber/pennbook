@@ -36,6 +36,7 @@ export class SignInComponent implements OnInit {
         alert("Something went wrong: " + JSON.stringify(res.error))
       } else {
         localStorage.setItem('token', res.token);
+        localStorage.setItem('username', data.username);
         this.router.navigateByUrl('/feed');
       }
     },
@@ -60,6 +61,7 @@ export class SignInComponent implements OnInit {
       } else {
         if (res.token) {
           localStorage.setItem('token', res.token);
+          localStorage.setItem('username', data.username);
           this.router.navigateByUrl('/feed');
         } else {
           console.log(res.token);
