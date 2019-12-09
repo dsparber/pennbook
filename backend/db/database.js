@@ -145,7 +145,7 @@ function post(post, callback) {
                     childPostId: createdPost.get('postId'),
                 });
             }
-            if (pictureId !== undefined) {
+            if (pictureId) {
                 await db.PostPicture.create({
                     postId: createdPost.get('postId'),
                     pictureId: pictureId,
