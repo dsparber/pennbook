@@ -11,23 +11,18 @@ export class FeedComponent implements OnInit {
 
   posts:any = [];
   model : any = {};
+  currPost: any = {};
 
 
 
   constructor(private feedService: FeedService, private modalService: NgbModal) { }
 
   ngOnInit() {
-    // this.feedService.getFeed().subscribe(res => {
-    //   this.posts = res;
-    // },
-    // err => {
-    //   alert("Something went wrong: check connection and try again");
-    // });
-
     this.getFeed();
   }
 
-  open(content) {
+  open(content, post) {
+    this.currPost = post;
     this.modalService.open(content).result.then((result) => {;
     }, (reason) => {
     });
@@ -35,10 +30,45 @@ export class FeedComponent implements OnInit {
 
   postComment(comment) {
     console.log(comment);
+    let parent = this.currPost;
+    let data = {
+      wall : parent.wall,
+      content: comment.form.value.content,
+      creator: localStorage.getItem('username'),
+      parent: parent.postId,
+      pictureId: "null",
+      type: 'post',
+    }
+
+    this.feedService.post(data).subscribe(
+      res => {
+        if (res.success) {
+          parent.children.push(data);
+        }
+      },
+      err => {
+        alert("Connection timout");
+      }
+    )
   }
 
   postLike(post) {
-    post.likes = post.likes + 1;
+    let data = {
+      postId: post.postId,
+      username: localStorage.getItem('username'),
+      type: 'like',
+    }
+    this.feedService.like(data).subscribe(
+      res => {
+        if (res.success) {
+          post.reactions.push(data);
+        }
+      },
+      err => {
+        alert("connection timout");
+      }
+    )
+
   }
 
   getFeed() {

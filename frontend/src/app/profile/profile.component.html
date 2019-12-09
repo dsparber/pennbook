@@ -289,25 +289,27 @@
 <body>
   <div class="container">
       <div class ='col-sm-5 ' style="background-color:#F6F4F4; margin-top:30px; border-radius:20px; width: 80%; float:left">
-        <div  style='padding-top:30px; width:10%; float:left;'>
+        <div  style='padding-top:30px; margin-bottom: 20px; width:10%; float:left;'>
           <img src='assets/profile.jpg' width =120 height=120 >
         </div>
-        <div  style='padding-top:20px; width:100%; padding-left: 130px;'>
-          <h5  style="padding-left:0;">{{profile.firstName}} {{profile.lastName}}</h5>
-          <p> Studies at: {{profile.university}}</p>
-          <p> Lives in: {{profile.location}} </p>
-          <p> Works at: {{profile.job}}</p>
-          <div style="width:50%; float: left; ">
-            <button *ngIf= "!myPage"  style= "margin-top: 10px;" class="btn btn-sm btn-outline-primary">Add Friend</button>
-          </div>
-          <div style="width:50%; float: right; ">
-            <button style= "margin-top: 10px;" class="btn btn-sm btn-outline-primary" (click)="open(content)">Edit Profile</button>
-          </div>
+        <div  style='padding-top:30px; width:100%; padding-left: 130px;'>
+          <h5  style="padding-left:0;">{{profile.firstName}} {{profile.lastName}}
+            <button *ngIf= "!myPage && friends"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary">Add Friend</button>
+            <button *ngIf= "myPage"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary" (click)="open(content, 'profile', post)">Edit Profile</button>
+            <button *ngIf= "!myPage && !friends"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary">Add Friend</button>
+          </h5>
+          <p>Lives in:
+          </p>
+          <p>Works at:</p>
+          <p>Studies at:
+          </p>
         </div>
-        <p style="padding-top: 40px; font-weight:bold"> About Me:</p>
-        <p style="padding-top: 5px"> Hi i am Stefan and this is a test bio. I want to see if the page actually works. This is a test, this is a test, this is a test</p>
-        <p style="padding-top: 40px; font-weight:bold"> Interests:</p>
-        <p style="padding-top: 5px; padding-bottom: 30px"> Biking, Skiing, Swimming, Running, NETS 212</p>
+        <p style="margin-top: 50px; font-weight:bold"> About Me: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'bio', post)">edit</button></p>
+        <p style="margin-top: 10px"> {{profile.about}}</p>
+        <p style="padding-top: 40px; font-weight:bold"> Interests: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'interests', post)">edit</button></p>
+        <p style="padding-top: 5px; padding-bottom: 30px"> {{interestString}}</p>
+        <p style="padding-top: 5px; font-weight:bold"> Affiliations: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'affil', post)">edit</button></p>
+        <p style="padding-top: 5px; padding-bottom: 30px"> {{afilString}}</p>
       </div>
 
       <div class ='col-6' style= "width: 50%; float:right; margin-right: 40px">
@@ -318,7 +320,7 @@
                 <div  style=' padding-left: 15px; width:10%; float:left;'>
                   <img src='assets/profile.jpg' width =50 height=50 >
                 </div>
-                <div  style=' width:50%; margin-left: 70px; min-width:500px; max-width:500px;'>
+                <div  style=' width:50%; margin-left: 75px; min-width:500px; max-width:500px;'>
                   <p style="padding-left:0;">{{post.creator}}</p>
                   <p style='font-style:italic; font-size: small'> {{post.createdAt}}</p>
                   <div style=" padding-top: 10px; margin-left: 22px;">
@@ -326,41 +328,32 @@
                  </div>
                  <div style = 'width = 100%; float:right; padding-right: 10px; margin-top: 0px'>
                    <div class="container" style="margin-bottom:20px;">
-                       <div style="width= 50%;float:left">
-                         <button class="btn btn-sm btn-outline-primary" (click)="postLike(post)">👍{{post.likes}}</button>
-                       </div>
+                     <div *ngIf = '!post.likedByUser' style="width= 50%;float:left">
+                       <button class="btn btn-sm btn-outline-primary" (click)="postLike(post)">👍{{post.reactions.length}}</button>
+                     </div>
+                     <div *ngIf = 'post.likedByUser' style="width= 50%;float:left">
+                       <button class="btn btn-sm btn-primary">👍{{post.reactions.length}}</button>
+                     </div>
                        <div  style="width= 50%;float:right; padding-left: 10px;">
-                         <button class="btn btn-sm btn-outline-primary" (click)="open(content)">Comment</button>
+                         <button class="btn btn-sm btn-outline-primary" (click)="open(content, 'comment', post)">Comment</button>
                        </div>
                     </div>
                  </div>
 
-                 <div   class = 'row' style= "background-color:#F6F4F4; border-radius:20px; margin-top:40px; margin-bottom:0px; width:75%">
+                 <div *ngFor='let comment of post.children' class = 'row' style= "background-color:#F6F4F4; border-radius:20px; margin-top:10px; margin-bottom:0px; width:75%">
                    <div  style=' padding-left: 15px; width:10%; float:left;'>
                      <img src='assets/profile.jpg' width =50 height=50 >
                    </div>
                    <div  style=' width:90%; padding-left: 40px; float: left;'>
-                     <p style="padding-left:0;">comment.creator</p>
-                     <p style='font-style:italic; font-size: small'> comment.createdAt </p>
+                     <p style="padding-left:0;">{{comment.creator}}</p>
+                     <p style='font-style:italic; font-size: small'> {{comment.createdAt}}</p>
                      <div style=" padding-top: 10px; padding-left:10px;">
-                       <p style=" max-width:325px;min-width:325px"> asd;lk fads;lf jads;f dds;lfk ad;sf;a lksdfj;asdlkasd;lkf a;sdlkf;a ldskfj;alsd kjf;asd jf;akjds;fka;fa</p>
+                       <p style=" max-width:325px;min-width:325px"> {{comment.content}} </p>
                     </div>
                  </div>
                </div>
               </div>
             </div>
-            <div  style= "background-color:#F6F4F4; border-radius:20px; padding-top:20px; padding-bottom:10px; margin-top:30px; margin-bottom:20px">
-              <div  style=' padding-left: 15px; width:10%; float:left;'>
-                <img src='assets/profile.jpg' width =50 height=50 >
-              </div>
-              <div  style=' width:90%; padding-left: 20px; float: left;'>
-                <p style="padding-left:0;">Stefan Papazov</p>
-                <p style='font-style:italic; font-size: small'> Today, 18:36 </p>
-                <div style=" padding-top: 10px">
-                  <p> Hello this is a test post. Hello this is a test post.Hello this is a test post.Hello this is a test post.Hello this is a test post.Hello this is a test post.Hello this is a test post. </p>
-               </div>
-            </div>
-          </div>
 
           </div>
         </div>
@@ -368,6 +361,7 @@
     </div>
 
     <ng-template #content let-modal>
+      <div *ngIf = 'editProfile'>
       <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">Update Profile</h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
@@ -379,12 +373,6 @@
           <div class="form-group">
             <div class="container">
               <div class="row">
-                <div class="col">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Location</label>
-                    <input type="email" class="form-control" name="location" [(ngModel)]="model.location" #location="ngModel" placeholder="Location" required>
-                  </div>
-                </div>
                 <div class="col">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Education</label>
@@ -400,8 +388,8 @@
                 </div>
                 <div class="col">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Interests</label>
-                    <tag-input  name="interests" theme='minimal' placeholder="add interest" [(ngModel)]="profile.interests" [editable]='true' #interests="ngModel" aria-describedby="emailHelp" placeholder="Interests" required></tag-input>
+                    <label for="exampleInputEmail1">Location</label>
+                    <input type="email" class="form-control" name="location" [(ngModel)]="model.location" #location="ngModel" placeholder="Location" required>
                   </div>
                 </div>
               </div>
@@ -412,6 +400,91 @@
           </div>
         </form>
       </div>
+      </div>
+      <div *ngIf = 'comment'>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Write a Comment!</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div  class="modal-body">
+          <form (ngSubmit)="postComment(comment)" #comment="ngForm">
+            <div class="form-group">
+              <div class="form-group">
+                <textarea class="form-control" name="content" [(ngModel)]="model.email" #email="ngModel" id="exampleFormControlTextarea1" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-outline-dark">Post</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div *ngIf = 'editBio'>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Edit Bio</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div  class="modal-body">
+          <form (ngSubmit)="updateBio(bio)" #bio="ngForm">
+            <div class="form-group">
+              <div class="form-group">
+                <textarea class="form-control" name="content" [(ngModel)]="model.email" #email="ngModel" id="exampleFormControlTextarea1" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-outline-dark">Post</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div *ngIf = 'editInterests'>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Edit Interests</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div  class="modal-body">
+          <form (ngSubmit)="updateInterests(interests)" #interests="ngForm">
+            <div class="form-group">
+              <div class="form-group">
+                <tag-input  name="interests" theme='minimal' placeholder="add interest" [(ngModel)]="interest" [editable]='true' #interests="ngModel" aria-describedby="emailHelp" placeholder="Interests" required></tag-input>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-outline-dark">Post</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div *ngIf = 'editAffil'>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Edit Affiliations</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div  class="modal-body">
+          <form (ngSubmit)="updateAffiliations(affil)" #affil="ngForm">
+            <div class="form-group">
+              <div class="form-group">
+                <tag-input  name="affiliations" theme='minimal' placeholder="add affiliation" [(ngModel)]="afil" [editable]='true' #afill="ngModel" aria-describedby="emailHelp" placeholder="Affiliations" required></tag-input>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-outline-dark">Post</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
     </ng-template>
 
 </body>
