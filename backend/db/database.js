@@ -139,7 +139,7 @@ function post(post, callback) {
             return;
         }
         try {
-            if (post.parent !== undefined) {
+            if (post.parent) {
                 await db.SubPost.create({
                     postId: post.parent,
                     childPostId: createdPost.get('postId'),
