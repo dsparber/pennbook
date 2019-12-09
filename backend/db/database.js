@@ -151,9 +151,10 @@ function post(post, callback) {
                     pictureId: pictureId,
                 });
             }
-            callback(null, true);
+            let result = await mapPost(createdPost.attrs);
+            callback(null, result);
         } catch(err) {
-            callback(err, false);
+            callback(err, null);
         }
     });
 }

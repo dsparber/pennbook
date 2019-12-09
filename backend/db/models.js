@@ -19,8 +19,7 @@ const Profile = dynamo.define('Profile',  {
     hashKey: 'username',
     schema: {
         username: Joi.string(),
-        firstName: Joi.string(),
-        lastName: Joi.string(),
+        fullName: Joi.string(),
         email: Joi.string().email(),
         birthday: Joi.date(),
         about: Joi.string(),

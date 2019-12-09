@@ -69,9 +69,9 @@ const post = function(req, res) {
     var username = req.auth.username;
     var wall = post.wall;
     checkPermission(username, wall, res, function() {
-        db.post(post, function(error, success) {
+        db.post(post, function(error, result) {
             res.json({
-                success: success,
+                result: result,
                 error: error,
             });
         });
