@@ -311,7 +311,7 @@ async function mapPost(post) {
 
 async function posts(walls, callback) {
     try {
-        let posts = await getItems(db.Post.scan().where('wall').in(walls).exec());
+        let posts = await getItems(db.Post.scan().where('wall').in(walls).where('parent').null().exec());
         posts = await Promise.all(posts.reverse().map(async post => await mapPost(post)));
         callback(null, posts);
     } catch(err) {
