@@ -28,6 +28,7 @@ app.post(`${path}/profile/update`, routes.updateProfile);
 app.post(`${path}/password/change`, routes.changePassword);
 app.post(`${path}/picture/upload`, storage.upload, routes.uploadPicture);
 
+app.get(`${path}/friends`, routes.getFriends);
 app.get(`${path}/wall`, routes.wall);
 app.get(`${path}/wall/:username`, routes.userWall);
 

@@ -189,6 +189,16 @@ const wall = function(req, res) {
     });
 }
 
+const getFriends = function(req, res) {
+    var username = req.auth.username;
+    db.getFriends(username, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
 
 module.exports = {
     login: login,
@@ -205,4 +215,5 @@ module.exports = {
     removeInterest: removeInterest,
     updateProfile: updateProfile,
     changePassword: changePassword,
+    getFriends: getFriends,
 }

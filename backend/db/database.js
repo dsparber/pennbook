@@ -241,13 +241,23 @@ async function getAffiliations(username) {
     return await getItems(db.Affiliation.query(username).usingIndex('UsernameIndex').loadAll().exec());
 }
 
-async function profile(username, callback) {
-    try {
-        let profile = await getItem(db.Profile.query(username).exec());
-        profile.profilePicture = await getProfilePicture(username);
+async function profileAsync(username, includeAll) {
+    let profile = await getItem(db.Profile.query(username).exec());
+    if (!profile) {
+        return username;
+    }
+    profile.profilePicture = await getProfilePicture(username);
+    if (includeAll) {
         profile.interests = await getInterests(username);
         profile.affiliations = await getAffiliations(username);
-        callback(null, profile);
+    }
+    return profile;
+}
+
+async function profile(username, callback) {
+    try {
+        let p = await profileAsync(username, true);
+        callback(null, p);
     } catch (err) {
         callback(err, null);
     }
@@ -299,6 +309,8 @@ async function getProfilePicture(username) {
 async function mapPost(post) {
     post.reactions = await getItems(db.Reaction.query(post.postId).exec());
     post.picture = await getPictureUrlFromPost(post);
+    post.creator = await profileAsync(post.creator);
+    post.wall = await profileAsync(post.wall);
 
     let subPosts = await getItems(db.SubPost.query(post.postId).exec());
     if (subPosts.length !== 0) {
@@ -354,11 +366,24 @@ function wall(username, callback) {
         }
         let usernames = [];
         if (friends.Items.length === 0) {
-            usernames = friends.Items.map(v => v.get('friend'))
+            usernames = friends.Items.map(v => v.get('friend'));
         }
         usernames.push(username);
         posts(usernames, callback);
     });
+}
+
+async function getFriends(username, callback) {
+    try {
+        let friends = await getItems(db.Friend.query(username).loadAll().exec());
+        friends = await Promise.all(friends.map(async friend => {
+            friend.friend = await profileAsync(friend.friend);
+            return friend;
+        }));
+        callback(null, friends);
+    } catch (err) {
+        callback(err, null);
+    }
 }
 
 module.exports = {
@@ -377,4 +402,5 @@ module.exports = {
     removeInterest: removeInterest,
     updateProfile: updateProfile,
     changePassword: changePassword,
+    getFriends: getFriends,
 }
