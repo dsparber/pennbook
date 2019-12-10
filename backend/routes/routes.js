@@ -223,6 +223,16 @@ const chat = function(req, res) {
     });
 }
 
+const chats = function(req, res) {
+    let user = req.auth.username;
+    db.chats(user, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
 
 module.exports = {
     db: db,
@@ -243,4 +253,5 @@ module.exports = {
     getFriends: getFriends,
     getGraph: getGraph,
     chat: chat,
+    chats: chats,
 }

@@ -175,8 +175,8 @@ const ChatMessages = dynamo.define('ChatMessages', {
     schema: {
         chatId: dynamo.types.uuid(),
         messageId: dynamo.types.uuid(),
-        content: dynamo.types.string(),
-        creator: dynamo.types.string(),
+        content: Joi.string(),
+        creator: Joi.string(),
     }
 });
 

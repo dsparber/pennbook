@@ -13,19 +13,19 @@ function streamToPromise(stream) {
 
 // Create a toJson function for errors, enables easier debugging
 if (!('toJSON' in Error.prototype))
-Object.defineProperty(Error.prototype, 'toJSON', {
-    value: function () {
-        var alt = {};
+    Object.defineProperty(Error.prototype, 'toJSON', {
+        value: function () {
+            var alt = {};
 
-        Object.getOwnPropertyNames(this).forEach(function (key) {
-            alt[key] = this[key];
-        }, this);
+            Object.getOwnPropertyNames(this).forEach(function (key) {
+                alt[key] = this[key];
+            }, this);
 
-        return alt;
-    },
-    configurable: true,
-    writable: true
-});
+            return alt;
+        },
+        configurable: true,
+        writable: true
+    });
 
 async function getItems(stream) {
     return (await streamToPromise(stream)).Items.map(p => p.attrs);
@@ -36,13 +36,13 @@ async function getItem(stream) {
 }
 
 function login(username, password, callback) {
-    db.User.get(username, function(err, user) {
+    db.User.get(username, function (err, user) {
         if (!user) {
             callback("Invalide user / password combination", false);
             return;
         }
         let hash = user.get("password");
-        bcrypt.compare(password, hash, function(err, res) {
+        bcrypt.compare(password, hash, function (err, res) {
             if (res === true) {
                 callback(null, true);
             } else {
@@ -53,18 +53,18 @@ function login(username, password, callback) {
 }
 
 function changePassword(username, oldPassword, newPassword, callback) {
-    db.User.get(username, function(err, user) {
+    db.User.get(username, function (err, user) {
         if (err) {
             callback(err, false);
             return;
         }
         let hash = user.get("password");
-        bcrypt.compare(oldPassword, hash, function(err, equal) {
+        bcrypt.compare(oldPassword, hash, function (err, equal) {
             if (!equal) {
                 callback("Old password is invalid");
                 return;
             }
-            bcrypt.hash(newPassword, saltRounds, function(err, hash) {
+            bcrypt.hash(newPassword, saltRounds, function (err, hash) {
                 if (err) {
                     callback(err, false);
                     return;
@@ -85,7 +85,7 @@ function changePassword(username, oldPassword, newPassword, callback) {
 
 function signup(user, callback) {
     console.log(user);
-    bcrypt.hash(user.password, saltRounds, function(err, hash) {
+    bcrypt.hash(user.password, saltRounds, function (err, hash) {
         if (err) {
             callback(err, false);
             return;
@@ -95,11 +95,11 @@ function signup(user, callback) {
             username: user.username,
             password: hash
         }, {
-            overwrite : false
+            overwrite: false
         }, function (error, createdUser) {
             if (error) {
-              console.log(error);
-              callback("User already exists", false);
+                console.log(error);
+                callback("User already exists", false);
             } else {
                 let profile = user.profile;
                 profile.username = user.username;
@@ -121,7 +121,7 @@ function isFriend(user1, user2, callback) {
         return;
     }
 
-    db.Friend.query(user1).where('friend').eq(user2).exec(function(err, result) {
+    db.Friend.query(user1).where('friend').eq(user2).exec(function (err, result) {
         if (err) {
             callback(err, false);
         } else {
@@ -153,7 +153,7 @@ function post(post, callback) {
             }
             let result = await mapPost(createdPost.attrs);
             callback(null, result);
-        } catch(err) {
+        } catch (err) {
             callback(err, null);
         }
     });
@@ -172,7 +172,7 @@ function reaction(reaction, callback) {
 
 function addInterest(user, interest, callback) {
     interest.username = user;
-    db.Interest.create(interest, function(err) {
+    db.Interest.create(interest, function (err) {
         if (err) {
             callback(err, false);
             return;
@@ -182,7 +182,7 @@ function addInterest(user, interest, callback) {
 }
 
 function removeInterest(user, interestName, callback) {
-    db.Interest.destroy({username: user, name: interestName}, function(err) {
+    db.Interest.destroy({ username: user, name: interestName }, function (err) {
         if (err) {
             callback(err, false);
             return;
@@ -193,7 +193,7 @@ function removeInterest(user, interestName, callback) {
 
 function addAffiliation(user, affiliation, callback) {
     affiliation.username = user;
-    db.Affiliation.create(affiliation, function(err, created) {
+    db.Affiliation.create(affiliation, function (err, created) {
         if (err) {
             callback(err, false);
             return;
@@ -204,7 +204,7 @@ function addAffiliation(user, affiliation, callback) {
 
 
 function removeAffiliation(user, affiliationName, callback) {
-    db.Affiliation.destroy({username: user, name: affiliationName}, function(err) {
+    db.Affiliation.destroy({ username: user, name: affiliationName }, function (err) {
         if (err) {
             callback(err, false);
             return;
@@ -215,7 +215,7 @@ function removeAffiliation(user, affiliationName, callback) {
 
 function updateProfile(user, profile, callback) {
     profile.username = user;
-    db.Profile.update(profile, function(err) {
+    db.Profile.update(profile, function (err) {
         if (err) {
             callback(err, false);
             return;
@@ -268,7 +268,7 @@ function addFriend(username, friend, callback) {
     db.Friend.create({
         username: username,
         friend: friend
-    }, function(err, result) {
+    }, function (err, result) {
         if (err) {
             callback(err, false);
             return;
@@ -276,7 +276,7 @@ function addFriend(username, friend, callback) {
         db.Friend.create({
             username: friend,
             friend: username
-        }, function(err, result) {
+        }, function (err, result) {
             if (err) {
                 callback(err, false);
                 return;
@@ -327,18 +327,18 @@ async function posts(walls, callback) {
         let posts = await getItems(db.Post.scan().where('wall').in(walls).where('parent').null().exec());
         posts = await Promise.all(posts.reverse().map(async post => await mapPost(post)));
         callback(null, posts);
-    } catch(err) {
+    } catch (err) {
         callback(err, null);
     }
 }
 
 function userWall(username, callback) {
-    profile(username, function(err, profile) {
+    profile(username, function (err, profile) {
         if (err) {
             callback(err, null);
             return;
         }
-        posts([username], function(err, posts) {
+        posts([username], function (err, posts) {
             if (err) {
                 callback(err, null);
                 return;
@@ -350,7 +350,7 @@ function userWall(username, callback) {
         });
     });
 
-    db.Post.query(username).loadAll().exec(function(err, posts) {
+    db.Post.query(username).loadAll().exec(function (err, posts) {
         if (err) {
             callback(err, null);
         } else {
@@ -360,7 +360,7 @@ function userWall(username, callback) {
 }
 
 function wall(username, callback) {
-    db.Friend.query(username).loadAll().exec(function(err, friends) {
+    db.Friend.query(username).loadAll().exec(function (err, friends) {
         if (err) {
             callback(err, null);
             return;
@@ -392,7 +392,28 @@ async function messages(chatId) {
 }
 
 async function appendMessage(message) {
-    return await getItem(db.ChatMessages.create(message));
+    return (await db.ChatMessages.create(message)).attrs;
+}
+async function chatParticipants(chatId) {
+    return (await getItems(db.UserChat.query(chatId).usingIndex('ChatIdIndex').exec())).map(uc => uc.username);
+}
+
+async function chats(user, callback) {
+    try {
+        let userChats = await getItems(db.UserChat.query(user).exec());
+        let chatIds = userChats.map(c => c.chatId);
+        let chats = [];
+        if (chatIds.length > 0) {
+            chats = await getItems(db.Chat.scan().where('chatId').in(chatIds).exec());
+            chats = await Promise.all(chats.map(async chat => {
+                chat.participants = await chatParticipants(chat.chatId);
+                return chat;
+            }));
+        }
+        callback(null, chats);
+    } catch (err) {
+        callback(err, null);
+    }
 }
 
 async function chat(user, friend, chatId, callback) {
@@ -407,19 +428,20 @@ async function chat(user, friend, chatId, callback) {
             let chatsWithFriend = await getItems(db.UserChat.scan().where('username').eq(friend).where('chatId').in(existingIds).exec());
             for (let i = 0; i < chatsWithFriend.length; i++) {
                 let id = chatsWithFriend[i].chatId;
-                let participants = (await getItems(db.UserChat.query(id).usingIndex('ChatIdIndex').exec())).length;
+                let participants = (await chatParticipants(id)).length;
                 if (participants == 2) {
                     chat = await getItem(db.Chat.query(id).exec());
                     break;
                 }
             }
-            
+
             if (chat == null) {
-                chat = (await db.Chat.create({name: "Unnamed"})).attrs;
-                await db.UserChat.create({chatId: chat.chatId, username: user});
-                await db.UserChat.create({chatId: chat.chatId, username: friend});
+                chat = (await db.Chat.create({ name: "Unnamed" })).attrs;
+                await db.UserChat.create({ chatId: chat.chatId, username: user });
+                await db.UserChat.create({ chatId: chat.chatId, username: friend });
             }
         }
+        chat.user = user;
         chat.messages = await messages(chat.chatId);
 
         callback(null, chat);
@@ -437,11 +459,11 @@ async function getGraph(user, selected, callback) {
         let userAffiliations = await getAffiliations(user);
         let visibleAffiliations = userAffiliations.map(a => a.name);
         let userWithCommonAffiliations = await getItems(db.Affiliation.scan().where('name').in(visibleAffiliations).exec());
-        
+
         let visibleUsers = [user];
-        visibleUsers = visibleUsers.concat(userFriends.map(f => f.friend));    
+        visibleUsers = visibleUsers.concat(userFriends.map(f => f.friend));
         visibleUsers = visibleUsers.concat([...new Set(userWithCommonAffiliations.map(a => a.username))]);
-        
+
         let selectedUser = user;
         let selectedAffiliation = null;
         let affiliations = null;
@@ -456,7 +478,7 @@ async function getGraph(user, selected, callback) {
                 selectedAffiliation = [split[1]];
                 visibleAffiliations = [split[1]];
                 selectedUser = null;
-            }   
+            }
         }
 
         let friends = [];
@@ -478,24 +500,24 @@ async function getGraph(user, selected, callback) {
             .filter(e => visibleUsers.includes(e.friend))
             .map(e => ({
                 id: e.username < e.friend ? `friends-${e.username}-${e.friend}` : `friends-${e.friend}-${e.username}`,
-                source: `user-${e.username}`, 
+                source: `user-${e.username}`,
                 target: `user-${e.friend}`
-        })));
+            })));
         links = links.concat(affiliations
             .filter(a => visibleAffiliations.includes(a.name))
             .map(a => ({
-                id:`userAffiliation-${a.username}-${a.name}`,
-                source: `user-${a.username}`, 
+                id: `userAffiliation-${a.username}-${a.name}`,
+                source: `user-${a.username}`,
                 target: `affiliation-${a.name}`
-        })));
+            })));
 
         nodes = nodes.concat(friendNames.map(e => ({
-            id: `user-${e}`, 
+            id: `user-${e}`,
             color: e == selectedUser ? 'red' : '#1a71b3',
             label: e
         })));
         nodes = nodes.concat(visibleAffiliations.map(a => ({
-            id: `affiliation-${a}`, 
+            id: `affiliation-${a}`,
             color: a == selectedAffiliation ? 'red' : '#009933',
             label: a
         })));
@@ -529,5 +551,6 @@ module.exports = {
     getFriends: getFriends,
     getGraph: getGraph,
     chat: chat,
+    chats: chats,
     appendMessage: appendMessage,
 }

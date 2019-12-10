@@ -1,40 +1,59 @@
 <html>
-  <head>
-  </head>
-  <app-header></app-header>
-  <body>
-      <div class="chat_window">
-      <div class="top_menu">
-          <div class="title">Chat</div>
-      </div>
 
-      <div *ngFor="let item of messageArray">
-            <span><strong>{{item.user}} : </strong> {{item.message}}</span>
-      </div>
+<head>
+</head>
+<app-header></app-header>
 
-
-      <div class="bottom_wrapper clearfix">
-
-        <div class="message_input_wrapper">
-            <input id="user" class="message_input" [(ngModel)] = "user" placeholder="Enter username" />
+<body>
+    <div class="threads">
+        <h3 class="title">Chats</h3>
+        <div class="items">
+            <div [routerLink]="['/chat']" [queryParams]="{ new: true}" routerLinkActive="active">
+                <span>
+                    <div class="name">Start a new chat</div>
+                    <div>Select friend</div>
+                </span>
+            </div>
+            <div *ngFor="let item of chats"  [routerLink]="['/chat']" [queryParams]="{ id: item.chatId}" routerLinkActive="active">
+                <span>
+                    <div class="name">{{item.name}}</div>
+                    <div *ngFor="let user of item.participants"> - {{user}}</div>
+                </span>
+            </div>
         </div>
-        <div class="message_input_wrapper">
-            <input id="room" class="message_input" [(ngModel)] = "room" placeholder="chatID" />
-        </div>
-        <button class="send_message" (click)= "join()"> Join </button>
-        <button class="send_message" (click)= "leave()"> Leave </button>
-          <div class="message_input_wrapper">
-              <input id="message" class="message_input" [(ngModel)] = "message" placeholder="Type your message here..." />
-          </div>
-          <button class="send_message" (click)= "sendMessage()"> Send </button>
+    </div>
+    <div class="chat">
+        <div *ngIf="chat != null; then chatBlock else noChatBlock"></div>
+        <ng-template #chatBlock>
+            <h3 class="title">{{chat.name}}</h3>
 
-      </div>
-  </div>
+            <div class="messages" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+                <div *ngFor="let item of chat.messages">
+                    <span>
+                        <div class="user">{{item.creator}}</div>
+                        <div class="content">{{item.content}}</div>
+                    </span>
+                </div>
+            </div>
 
-      <script src="/js/socket.js"></script>
-      <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/gh/rexeze/formatTimeStamp/src/index-cdn.js"></script>
-      <script src="/js/chat.js"></script>
+            <div class="bottom">
+                <div class="messageInput"><input id="message" type="text" class="form-control" [(ngModel)]="message"
+                        placeholder="Type your message here..." /></div>
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="sendMessage()"> Send </button>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #noChatBlock>
+                <h3 class="title">Start new chat</h3>
+        </ng-template>
 
-  </body>
+
+        <script src="/js/socket.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/rexeze/formatTimeStamp/src/index-cdn.js"></script>
+        <script src="/js/chat.js"></script>
+    </div>
+</body>
+
 </html>

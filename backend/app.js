@@ -29,6 +29,7 @@ app.post(`${path}/password/change`, routes.changePassword);
 app.post(`${path}/picture/upload`, storage.upload, routes.uploadPicture);
 app.post(`${path}/chat`, routes.chat);
 
+app.get(`${path}/chat/all`, routes.chats);
 app.get(`${path}/friends`, routes.getFriends);
 app.get(`${path}/wall`, routes.wall);
 app.get(`${path}/wall/:username`, routes.userWall);
@@ -42,6 +43,7 @@ var server = app.listen(port, function(){
 
 //Socket Setup
 var io = socket(server);
+io.origins('*:*')
 
 io.on('connection',function(socket) {
 
