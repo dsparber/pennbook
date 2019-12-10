@@ -44,21 +44,31 @@ var io = socket(server);
 
 io.on('connection',function(socket) {
 
-    console.log('Socket connection on server made');
+    console.log('Socket connection on server made with socket ID', socket.id);
+    //socket.on is an event listener
 
-    //event listener
-    socket.on('join', function(data){
+    /*
+     * "broadcast" sends the message to everyone connected to in the chat except the user who joined
+     * "to" specifies that it is only for a particular chatroom and not all chatrooms
+     * "emit" passes the data
+     */
+    socket.on('join', function(data) {
       socket.join(data.room); //data.room = chatID
-      console.log(data.user + 'joined the room : ' + data.room);
-      //broadcast sends the message to everyone connected to in the chat except the user who joined
-      //to specifies that it is only for a particular chatroom and not all chatrooms
-      //emit passes the data
+      console.log(data.user + ' joined the room : ' + data.room);
       socket.broadcast.to(data.room).emit('new user joined', {user:data.user, message:'has joined this room.'});
     });
 
+    socket.on('leave', function(data){
+      console.log(data.user + ' left the room : ' + data.room);
+      socket.broadcast.to(data.room).emit('left room', {user:data.user, message:'has left this room.'});
+      socket.leave(data.room);
+    });
+
+    /*
+     * uses "in" instead of "to" as in the previous "join" and "leave" function
+     * sends specified data to everyone in the room, including the user whot typed it in
+     */
     socket.on('message',function(data){
-      //uses in instead of to in the previous function
-      //sends specified data to everyone in the room, including the user whot typed it in
       io.in(data.room).emit('new message', {user:data.user, message:data.message});
     })
 });

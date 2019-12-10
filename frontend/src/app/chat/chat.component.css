@@ -28,15 +28,6 @@ body {
   padding: 20px 0 15px;
   box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
 }
-.top_menu .buttons {
-  margin: 3px 0 0 20px;
-  position: absolute;
-}
-.top_menu .closeButton {
-  display: inline-block;
-  margin-right: 10px;
-  position: relative;
-}
 
 .top_menu .title {
   text-align: center;

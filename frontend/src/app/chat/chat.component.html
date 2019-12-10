@@ -5,10 +5,11 @@
   <body>
       <div class="chat_window">
       <div class="top_menu">
-          <div class="buttons">
-              <button class="closeButton">x</button>
-          </div>
           <div class="title">Chat</div>
+      </div>
+
+      <div *ngFor="let item of messageArray">
+            <span><strong>{{item.user}} : </strong> {{item.message}}</span>
       </div>
 
 
@@ -21,6 +22,7 @@
             <input id="room" class="message_input" [(ngModel)] = "room" placeholder="chatID" />
         </div>
         <button class="send_message" (click)= "join()"> Join </button>
+        <button class="send_message" (click)= "leave()"> Leave </button>
           <div class="message_input_wrapper">
               <input id="message" class="message_input" [(ngModel)] = "message" placeholder="Type your message here..." />
           </div>
