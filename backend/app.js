@@ -8,11 +8,11 @@ const storage = require('./db/storage.js');
 
 const port = process.env.PORT;
 const path = process.env.API_PATH;
-const cros = require('cors');
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json())
-app.use(cros({origin: '*'}));
+app.use(cors({origin: '*'}));
 app.use(jwt({secret: process.env.TOKEN_SECRET, requestProperty: 'auth'}).unless({path: [`${path}/login`, `${path}/signup`]}));
 
 app.post(`${path}/login`, routes.login);
@@ -31,6 +31,8 @@ app.post(`${path}/picture/upload`, storage.upload, routes.uploadPicture);
 app.get(`${path}/friends`, routes.getFriends);
 app.get(`${path}/wall`, routes.wall);
 app.get(`${path}/wall/:username`, routes.userWall);
+app.get(`${path}/graph`, routes.getGraph);
+app.get(`${path}/graph/:selected`, routes.getGraph);
 
 
 var server = app.listen(port, function(){

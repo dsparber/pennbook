@@ -387,6 +387,87 @@ async function getFriends(username, callback) {
     }
 }
 
+async function getGraph(user, selected, callback) {
+    try {
+        let links = [];
+        let nodes = [];
+
+        let userFriends = await getItems(db.Friend.query(user).loadAll().exec());
+        let userAffiliations = await getAffiliations(user);
+        let visibleAffiliations = userAffiliations.map(a => a.name);
+        let userWithCommonAffiliations = await getItems(db.Affiliation.scan().where('name').in(visibleAffiliations).exec());
+        
+        let visibleUsers = [user];
+        visibleUsers = visibleUsers.concat(userFriends.map(f => f.friend));    
+        visibleUsers = visibleUsers.concat([...new Set(userWithCommonAffiliations.map(a => a.username))]);
+        
+        let selectedUser = user;
+        let selectedAffiliation = null;
+        let affiliations = null;
+
+        if (selected) {
+            let split = selected.split(/-(.+)/);
+            let type = split[0];
+            if (type === "user") {
+                selectedUser = split[1];
+            } else if (type === "affiliation") {
+                affiliations = await getItems(db.Affiliation.query(split[1]).exec());
+                selectedAffiliation = [split[1]];
+                visibleAffiliations = [split[1]];
+                selectedUser = null;
+            }   
+        }
+
+        let friends = [];
+        let friendNames = [];
+
+        if (affiliations == null) {
+            affiliations = await getAffiliations(selectedUser);
+            visibleAffiliations = affiliations.map(a => a.name).filter(a => visibleAffiliations.includes(a));
+            friends = await getItems(db.Friend.query(selectedUser).loadAll().exec());
+            friendNames.push(selectedUser);
+            friendNames = [...new Set(friendNames.concat(friends.map(a => a.friend)))];
+        } else {
+            friends = [];
+        }
+        friendNames = [...new Set(friendNames.concat(affiliations.map(a => a.username)))];
+
+        links = links.concat(friends
+            .filter(e => visibleUsers.includes(e.friend))
+            .map(e => ({
+                id: e.username < e.friend ? `friends-${e.username}-${e.friend}` : `friends-${e.friend}-${e.username}`,
+                source: `user-${e.username}`, 
+                target: `user-${e.friend}`
+        })));
+        links = links.concat(affiliations
+            .filter(a => visibleAffiliations.includes(a.name))
+            .map(a => ({
+                id:`userAffiliation-${a.username}-${a.name}`,
+                source: `user-${a.username}`, 
+                target: `affiliation-${a.name}`
+        })));
+
+        nodes = nodes.concat(friendNames.map(e => ({
+            id: `user-${e}`, 
+            color: e == selectedUser ? 'red' : '#1a71b3',
+            label: e
+        })));
+        nodes = nodes.concat(visibleAffiliations.map(a => ({
+            id: `affiliation-${a}`, 
+            color: a == selectedAffiliation ? 'red' : '#009933',
+            label: a
+        })));
+
+        return callback(null, {
+            nodes: nodes,
+            links: links,
+        });
+
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
 module.exports = {
     login: login,
     signup: signup,
@@ -404,4 +485,5 @@ module.exports = {
     updateProfile: updateProfile,
     changePassword: changePassword,
     getFriends: getFriends,
+    getGraph: getGraph,
 }

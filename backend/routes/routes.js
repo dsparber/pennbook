@@ -199,6 +199,17 @@ const getFriends = function(req, res) {
     });
 }
 
+const getGraph = function(req, res) {
+    let user = req.auth.username;
+    let selected = req.params.selected;
+    db.getGraph(user, selected, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
 
 module.exports = {
     login: login,
@@ -216,4 +227,5 @@ module.exports = {
     updateProfile: updateProfile,
     changePassword: changePassword,
     getFriends: getFriends,
+    getGraph: getGraph,
 }
