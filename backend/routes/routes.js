@@ -211,7 +211,21 @@ const getGraph = function(req, res) {
 }
 
 
+const chat = function(req, res) {
+    let user = req.auth.username;
+    let friend = req.body.friend;
+    let chatId = req.body.chatId;
+    db.chat(user, friend, chatId, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
+
 module.exports = {
+    db: db,
     login: login,
     signup: signup,
     post: post,
@@ -228,4 +242,5 @@ module.exports = {
     changePassword: changePassword,
     getFriends: getFriends,
     getGraph: getGraph,
+    chat: chat,
 }

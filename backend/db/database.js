@@ -387,6 +387,47 @@ async function getFriends(username, callback) {
     }
 }
 
+async function messages(chatId) {
+    return await getItems(db.ChatMessages.query(chatId).exec());
+}
+
+async function appendMessage(message) {
+    return await getItem(db.ChatMessages.create(message));
+}
+
+async function chat(user, friend, chatId, callback) {
+    try {
+        let chat = null;
+        if (chatId) {
+            chat = await getItem(db.Chat.query(chatId).exec());
+        } else {
+            // check if exists
+            let existingChats = await getItems(db.UserChat.query(user).exec());
+            let existingIds = existingChats.map(c => c.chatId);
+            let chatsWithFriend = await getItems(db.UserChat.scan().where('username').eq(friend).where('chatId').in(existingIds).exec());
+            for (let i = 0; i < chatsWithFriend.length; i++) {
+                let id = chatsWithFriend[i].chatId;
+                let participants = (await getItems(db.UserChat.query(id).usingIndex('ChatIdIndex').exec())).length;
+                if (participants == 2) {
+                    chat = await getItem(db.Chat.query(id).exec());
+                    break;
+                }
+            }
+            
+            if (chat == null) {
+                chat = (await db.Chat.create({name: "Unnamed"})).attrs;
+                await db.UserChat.create({chatId: chat.chatId, username: user});
+                await db.UserChat.create({chatId: chat.chatId, username: friend});
+            }
+        }
+        chat.messages = await messages(chat.chatId);
+
+        callback(null, chat);
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
 async function getGraph(user, selected, callback) {
     try {
         let links = [];
@@ -426,11 +467,12 @@ async function getGraph(user, selected, callback) {
             visibleAffiliations = affiliations.map(a => a.name).filter(a => visibleAffiliations.includes(a));
             friends = await getItems(db.Friend.query(selectedUser).loadAll().exec());
             friendNames.push(selectedUser);
-            friendNames = [...new Set(friendNames.concat(friends.map(a => a.friend)))];
+            friendNames = friendNames.concat(friends.map(a => a.friend));
         } else {
             friends = [];
         }
-        friendNames = [...new Set(friendNames.concat(affiliations.map(a => a.username)))];
+        friendNames = friendNames.concat(affiliations.map(a => a.username));
+        friendNames = [...new Set(friendNames.filter(f => visibleUsers.includes(f)))];
 
         links = links.concat(friends
             .filter(e => visibleUsers.includes(e.friend))
@@ -486,4 +528,6 @@ module.exports = {
     changePassword: changePassword,
     getFriends: getFriends,
     getGraph: getGraph,
+    chat: chat,
+    appendMessage: appendMessage,
 }

@@ -27,6 +27,7 @@ app.post(`${path}/affiliation/remove`, routes.removeAffiliation);
 app.post(`${path}/profile/update`, routes.updateProfile);
 app.post(`${path}/password/change`, routes.changePassword);
 app.post(`${path}/picture/upload`, storage.upload, routes.uploadPicture);
+app.post(`${path}/chat`, routes.chat);
 
 app.get(`${path}/friends`, routes.getFriends);
 app.get(`${path}/wall`, routes.wall);
@@ -64,11 +65,13 @@ io.on('connection',function(socket) {
       socket.leave(data.room);
     });
 
-    /*
-     * uses "in" instead of "to" as in the previous "join" and "leave" function
-     * sends specified data to everyone in the room, including the user whot typed it in
-     */
-    socket.on('message',function(data){
-      io.in(data.room).emit('new message', {user:data.user, message:data.message});
+    socket.on('message', async function(data) {     
+      let message = {
+        chatId: data.room,
+        content: data.message,
+        creator: data.user,
+      };
+      message = await routes.db.appendMessage(message);
+      io.in(data.room).emit('new message', message);
     })
 });
