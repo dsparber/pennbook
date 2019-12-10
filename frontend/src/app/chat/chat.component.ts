@@ -9,9 +9,9 @@ import { ChatService } from './service/chat.service';
 })
 
 export class ChatComponent implements OnInit {
-    user:String;
-    room:String;
-    message:String;
+    user:String = null;
+    room:String = null;
+    message:String = null;
     messageArray:Array<{user:String,message:String}> = [];
 
     constructor(private _chatService: ChatService){}

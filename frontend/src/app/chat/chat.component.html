@@ -1,25 +1,7 @@
 <html>
-  <style>
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      margin: 8px 0;
-    }
-
-    p {
-      margin: 0;
-    }
-
-    .spacer {
-      flex: 1;
-    }
-  </style>
-  <app-header></app-header>
   <head>
   </head>
+  <app-header></app-header>
   <body>
       <div class="chat_window">
       <div class="top_menu">
@@ -28,15 +10,10 @@
           </div>
           <div class="title">Chat</div>
       </div>
-      <ul id ="messages" class="messages">
-        <div ng-repeat="item in messageArray">
-            <span><strong>{{item.user}} : </strong> {{item.message}}</span>
-          </div>
-      </ul>
+
 
       <div class="bottom_wrapper clearfix">
 
-      <form id="form">
         <div class="message_input_wrapper">
             <input id="user" class="message_input" [(ngModel)] = "user" placeholder="Enter username" />
         </div>
@@ -49,8 +26,6 @@
           </div>
           <button class="send_message" (click)= "sendMessage()"> Send </button>
 
-
-        </form>
       </div>
   </div>
 
