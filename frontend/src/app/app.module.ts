@@ -13,8 +13,8 @@ import { ChatComponent } from './chat/chat.component';
 import { VisualizerComponent } from './visualizer/visualizer.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {AuthGuard} from './guard/guard.service';
-import {NgxGraphModule} from '@swimlane/ngx-graph';
+import { AuthGuard } from './guard/guard.service';
+import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 

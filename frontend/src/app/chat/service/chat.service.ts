@@ -4,45 +4,15 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 
-export class ChatService{
+export class ChatService {
 
-    //TODO: how to access port number here
     private socket = io('http://localhost:8080/api');
 
-    joinChat(data)
-    {
-        this.socket.emit('join',data);
+    joinChat(data) {
+        this.socket.emit('join', data);
     }
 
-    newUserAdded()
-    {
-        let observable = new Observable<{user:String, message:String}>(observer=>{
-            this.socket.on('new user added', (data)=>{
-                observer.next(data);
-            });
-            return () => {this.socket.disconnect();}
-        });
-
-        return observable;
-    }
-
-    leftGroup(data){
-        this.socket.emit('leftGroup',data);
-    }
-
-    userLeft(){
-        let observable = new Observable<{user:String, message:String}>(observer=>{
-            this.socket.on('left group', (data)=>{
-                observer.next(data);
-            });
-            return () => {this.socket.disconnect();}
-        });
-
-        return observable;
-    }
-
-    sendMessage(data)
-    {
+    public sendMessage(message) {
         this.socket.emit('message',data);
     }
 

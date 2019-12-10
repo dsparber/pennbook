@@ -29,16 +29,27 @@
           <div class="title">Chat</div>
       </div>
       <ul id ="messages" class="messages">
-
+        <div ng-repeat="item in messageArray">
+            <span><strong>{{item.user}} : </strong> {{item.message}}</span>
+          </div>
       </ul>
 
       <div class="bottom_wrapper clearfix">
-     <i id="typing"></i>
+
       <form id="form">
+        <div class="message_input_wrapper">
+            <input id="user" class="message_input" [(ngModel)] = "user" placeholder="Enter username" />
+        </div>
+        <div class="message_input_wrapper">
+            <input id="room" class="message_input" [(ngModel)] = "room" placeholder="chatID" />
+        </div>
+        <button class="send_message" (click)= "join()"> Join </button>
           <div class="message_input_wrapper">
-              <input id="message" class="message_input" placeholder="Type your message here..." />
+              <input id="message" class="message_input" [(ngModel)] = "message" placeholder="Type your message here..." />
           </div>
-          <button class="send_message"> Send </button>
+          <button class="send_message" (click)= "sendMessage()"> Send </button>
+
+
         </form>
       </div>
   </div>

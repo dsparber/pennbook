@@ -42,6 +42,23 @@ var server = app.listen(port, function(){
 //Socket Setup
 var io = socket(server);
 
-io.on('connection', function(){
-  console.log('Socket connection on server made');
+io.on('connection',function(socket) {
+
+    console.log('Socket connection on server made');
+
+    //event listener
+    socket.on('join', function(data){
+      socket.join(data.room); //data.room = chatID
+      console.log(data.user + 'joined the room : ' + data.room);
+      //broadcast sends the message to everyone connected to in the chat except the user who joined
+      //to specifies that it is only for a particular chatroom and not all chatrooms
+      //emit passes the data
+      socket.broadcast.to(data.room).emit('new user joined', {user:data.user, message:'has joined this room.'});
+    });
+
+    socket.on('message',function(data){
+      //uses in instead of to in the previous function
+      //sends specified data to everyone in the room, including the user whot typed it in
+      io.in(data.room).emit('new message', {user:data.user, message:data.message});
+    })
 });
