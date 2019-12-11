@@ -15,6 +15,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthGuard } from './guard/guard.service';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
+import { SocketService } from './sockets/socket.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
@@ -41,7 +42,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     NgxGraphModule
   ],
-  providers: [AuthGuard],
+  providers: [AuthGuard, SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

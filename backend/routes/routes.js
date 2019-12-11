@@ -233,6 +233,33 @@ const chats = function(req, res) {
     });
 }
 
+const searchUser = function(req, res) {
+    let user = req.auth.username;
+    let query = req.body.query;
+    db.searchUser(user, query, function(error, result) {
+        res.json({
+            error: error,
+            result: result,
+        });
+    });
+}
+
+const activeUsers = function(active) {
+    return function(req, res) {
+        let user = req.auth.username;
+        db.getFriends(user, function(err, friends) {
+            let result = null;
+            if (!err) {
+                let online = Object.values(active);
+                result = friends.filter(e => online.includes(e.username));
+            }
+            res.json({
+                error: err,
+                result: result,
+            });
+        });
+    }
+}
 
 module.exports = {
     db: db,
@@ -254,4 +281,6 @@ module.exports = {
     getGraph: getGraph,
     chat: chat,
     chats: chats,
+    activeUsers: activeUsers,
+    searchUser: searchUser,
 }

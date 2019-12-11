@@ -245,7 +245,7 @@ async function getAffiliations(username) {
 async function profileAsync(username, includeAll) {
     let profile = await getItem(db.Profile.query(username).exec());
     if (!profile) {
-        return username;
+        return {username: username};
     }
     profile.profilePicture = await getProfilePicture(username);
     if (includeAll) {
@@ -378,7 +378,7 @@ async function getFriends(username, callback) {
     try {
         let friends = await getItems(db.Friend.query(username).loadAll().exec());
         friends = await Promise.all(friends.map(async friend => {
-            friend.friend = await profileAsync(friend.friend);
+            friend = await profileAsync(friend.friend);
             return friend;
         }));
         callback(null, friends);
@@ -448,6 +448,38 @@ async function chat(user, friend, chatId, callback) {
     } catch (err) {
         callback(err, null);
     }
+}
+
+async function searchUser(user, query, callback) {
+    try {
+        let users = await getItems(db.Profile.scan().loadAll().exec());
+        let result = [];
+        query = query.toLowerCase();
+        for (let i = 0; i < users.length; i++) {
+            let user = users[i];
+            let tokens = user.fullName.split(' ');
+            tokens.push(user.username);
+            tokens.push(user.email);
+            tokens = tokens.map(t => t.toLowerCase());
+
+            let match = false;
+            for (let j = 0; j < tokens.length; j++) {
+                let token = tokens[j];
+                if (token.startsWith(query)) {
+                    match = true;
+                    break;
+                }
+            }
+
+            if (match) {
+                result.push(user);
+            }
+        }
+        callback(null, result);
+    } catch (err) {
+        callback(err, null);
+    }
+
 }
 
 async function getGraph(user, selected, callback) {
@@ -553,4 +585,5 @@ module.exports = {
     chat: chat,
     chats: chats,
     appendMessage: appendMessage,
+    searchUser: searchUser,
 }

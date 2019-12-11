@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SignInService } from './service/sign-in.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { SocketService } from '../sockets/socket.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
@@ -11,7 +12,7 @@ export class SignInComponent implements OnInit {
 
   model : any = {};
   sign : any = {};
-  constructor(public signInService: SignInService, public router: Router) { }
+  constructor(public signInService: SignInService, public router: Router, private socketService: SocketService) { }
 
   ngOnInit() {
 
@@ -37,6 +38,7 @@ export class SignInComponent implements OnInit {
       } else {
         localStorage.setItem('token', res.token);
         localStorage.setItem('username', data.username);
+        this.socketService.sendUsername();
         this.router.navigateByUrl('/feed');
       }
     },
@@ -62,6 +64,7 @@ export class SignInComponent implements OnInit {
         if (res.token) {
           localStorage.setItem('token', res.token);
           localStorage.setItem('username', data.username);
+          this.socketService.sendUsername();
           this.router.navigateByUrl('/feed');
         } else {
           console.log(res.token);
