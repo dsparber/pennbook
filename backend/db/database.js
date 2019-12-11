@@ -416,6 +416,24 @@ async function chats(user, callback) {
     }
 }
 
+async function leaveChat(user, chatId, callback) {
+    try {
+        await db.UserChat.destroy({username: user, chatId: chatId});
+        callback(null, true);
+    } catch {
+        callback(err, false);
+    }
+} 
+
+async function joinChat(user, chatId, callback) {
+    try {
+        await db.UserChat.create({username: user, chatId: chatId});
+        callback(null, true);
+    } catch {
+        callback(err, false);
+    }
+} 
+
 async function chat(user, friend, chatId, callback) {
     try {
         let chat = null;
@@ -584,6 +602,8 @@ module.exports = {
     getGraph: getGraph,
     chat: chat,
     chats: chats,
+    leaveChat: leaveChat,
+    joinChat: joinChat,
     appendMessage: appendMessage,
     searchUser: searchUser,
 }

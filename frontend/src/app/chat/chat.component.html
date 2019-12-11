@@ -25,7 +25,10 @@
     <div class="chat">
         <div *ngIf="chat != null; then chatBlock else noChatBlock"></div>
         <ng-template #chatBlock>
-            <h3 class="title">{{chat.name}}</h3>
+            <div class="title">
+                <h3>{{chat.name}}</h3>
+                <button type="button" class="btn btn-danger" (click)="removeChat()">Leave chat</button>
+            </div>
 
             <div class="messages" #scrollMe [scrollTop]="scrollMe.scrollHeight">
                 <div *ngFor="let item of chat.messages">

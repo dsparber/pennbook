@@ -233,6 +233,28 @@ const chats = function(req, res) {
     });
 }
 
+const leaveChat = function(req, res) {
+    let user = req.auth.username;
+    let chatId = req.body.chatId;
+    db.leaveChat(user, chatId, function(error, success) {
+        res.json({
+            error: error,
+            success: success,
+        });
+    });
+}
+
+const joinChat = function(req, res) {
+    let user = req.body.username;
+    let chatId = req.body.chatId;
+    db.joinChat(user, chatId, function(error, success) {
+        res.json({
+            error: error,
+            success: success,
+        });
+    });
+}
+
 const searchUser = function(req, res) {
     let user = req.auth.username;
     let query = req.body.query;
@@ -281,6 +303,8 @@ module.exports = {
     getGraph: getGraph,
     chat: chat,
     chats: chats,
+    leaveChat: leaveChat,
+    joinChat: joinChat,
     activeUsers: activeUsers,
     searchUser: searchUser,
 }

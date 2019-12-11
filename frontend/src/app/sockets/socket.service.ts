@@ -1,14 +1,16 @@
 import { Injectable } from "@angular/core";
+import { ApiService } from '../api/api.service';
 import * as io from 'socket.io-client';
 
-const HOST = 'localhost:8080';
 
 @Injectable()
 export class SocketService {
 
-    public socket = io(HOST);
+    public socket:io;
 
-    constructor() { }
+    constructor(private api: ApiService) {
+        this.socket = io(api.host());
+    }
 
     sendUsername() {
         let user =  localStorage.getItem('username');

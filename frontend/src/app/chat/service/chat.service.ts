@@ -1,17 +1,18 @@
 import { Injectable } from "@angular/core";
 import * as io from 'socket.io-client';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-const API_URL = 'http://localhost:8080/api/';
-const TOKEN = `Bearer ${localStorage.getItem('token')}`;
+import { SocketService } from '../../sockets/socket.service';
+import { ApiService } from 'src/app/api/api.service';
 
 @Injectable()
 export class ChatService {
 
-    private socket = io('localhost:8080');
+    private socket:io;
 
-    constructor(private httpClient: HttpClient) { }
+    constructor(private api: ApiService, private socketService: SocketService) { 
+        this.socket = socketService.socket;
+    }
 
 
     loadMessages(chatId, friend) {
@@ -19,15 +20,18 @@ export class ChatService {
             chatId: chatId,
             friend: friend,
         };
-        return this.httpClient.post<any>(`${API_URL}chat`, data, {headers: {
-            Authorization: TOKEN,
-        }});
+        return this.api.post(`chat`, data);
+    }
+
+    removeChat(chatId) {
+        let data =  {
+            chatId: chatId,
+        };
+        return this.api.post(`chat/leave`, data);
     }
 
     loadChats() {
-        return this.httpClient.get<any>(`${API_URL}chat/all`, {headers: {
-            Authorization: TOKEN,
-        }});
+        return this.api.get(`chat/all`);
     }
 
     //Sends Join data to server
@@ -42,7 +46,7 @@ export class ChatService {
 
     //Sends Message to server
     public sendMessage(message) {
-        this.socket.emit('message',message);
+        this.socket.emit('message', message);
     }
 
     //Receives Message from server

@@ -41,27 +41,7 @@ export class ChatComponent implements OnInit {
         this.message = "";
     }
 
-    ngOnInit() {
-      this.route.queryParams.subscribe(params => {
-        if (this.chat) {
-          this._chatService.leaveChat(this.chat.chatId);
-        }
-        let chatId = params.id;
-        let friend = params.friend;
-        if (chatId || friend) {
-          this._chatService.loadMessages(chatId, friend).subscribe(
-            res => {
-              this.chat = res.result;
-              this.join();
-              this.router.navigate(['/chat'], { queryParams: { id: this.chat.chatId } });
-            },
-            err => console.log(err),
-          );
-        } else {
-          this.chat = null;
-        }
-      });
-      
+    loadChats() {
       this._chatService.loadChats().subscribe(
         res => {
           console.log(res);
@@ -69,6 +49,43 @@ export class ChatComponent implements OnInit {
         },
         err => console.log(err),
       );
+    }
+
+    switchChat(params) {
+      if (this.chat) {
+        this._chatService.leaveChat(this.chat.chatId);
+      }
+      let chatId = params.id;
+      let friend = params.friend;
+      if (chatId || friend) {
+        this._chatService.loadMessages(chatId, friend).subscribe(
+          res => {
+            this.chat = res.result;
+            this.join();
+            this.router.navigate(['/chat'], { queryParams: { id: this.chat.chatId } });
+          },
+          err => console.log(err),
+        );
+      } else {
+        this.chat = null;
+      }
+    }
+
+    removeChat() {
+      if (this.chat) {
+        this._chatService.removeChat(this.chat.chatId).subscribe(
+          res => {
+            this.chat = null;
+            this.loadChats();
+          },
+          err => console.log(err),
+        );
+      }
+    }
+
+    ngOnInit() {
+      this.route.queryParams.subscribe(params => this.switchChat(params));
+      this.loadChats();
     }
 
 }

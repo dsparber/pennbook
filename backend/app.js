@@ -30,6 +30,8 @@ app.post(`${path}/profile/update`, routes.updateProfile);
 app.post(`${path}/password/change`, routes.changePassword);
 app.post(`${path}/picture/upload`, storage.upload, routes.uploadPicture);
 app.post(`${path}/user/search`, routes.searchUser);
+app.post(`${path}/chat/join`, routes.joinChat);
+app.post(`${path}/chat/leave`, routes.leaveChat);
 app.post(`${path}/chat`, routes.chat);
 
 

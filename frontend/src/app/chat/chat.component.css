@@ -50,6 +50,15 @@
   margin: 0;
 }
 
+.title * {
+  display: inline-block;
+}
+
+.title button {
+  float: right;
+  margin: -3px 0;
+}
+
 .messages {
   position: absolute;
   width: 100%;
