@@ -215,7 +215,8 @@ const chat = function(req, res) {
     let user = req.auth.username;
     let friend = req.body.friend;
     let chatId = req.body.chatId;
-    db.chat(user, friend, chatId, function(error, result) {
+    let create = req.body.create;
+    db.chat(user, friend, chatId, create, function(error, result) {
         res.json({
             error: error,
             result: result,
@@ -248,6 +249,17 @@ const joinChat = function(req, res) {
     let user = req.body.username;
     let chatId = req.body.chatId;
     db.joinChat(user, chatId, function(error, success) {
+        res.json({
+            error: error,
+            success: success,
+        });
+    });
+}
+
+const renameChat = function(req, res) {
+    let chatId = req.body.chatId;
+    let name = req.body.name;
+    db.renameChat(chatId, name, function(error, success) {
         res.json({
             error: error,
             success: success,
@@ -305,6 +317,7 @@ module.exports = {
     chats: chats,
     leaveChat: leaveChat,
     joinChat: joinChat,
+    renameChat: renameChat,
     activeUsers: activeUsers,
     searchUser: searchUser,
 }

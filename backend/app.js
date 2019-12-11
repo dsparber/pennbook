@@ -32,6 +32,7 @@ app.post(`${path}/picture/upload`, storage.upload, routes.uploadPicture);
 app.post(`${path}/user/search`, routes.searchUser);
 app.post(`${path}/chat/join`, routes.joinChat);
 app.post(`${path}/chat/leave`, routes.leaveChat);
+app.post(`${path}/chat/rename`, routes.renameChat);
 app.post(`${path}/chat`, routes.chat);
 
 

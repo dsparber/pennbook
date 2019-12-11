@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as io from 'socket.io-client';
-import { Observable, from } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { SocketService } from '../../sockets/socket.service';
 import { ApiService } from 'src/app/api/api.service';
 
@@ -15,10 +14,11 @@ export class ChatService {
     }
 
 
-    loadMessages(chatId, friend) {
+    loadMessages(chatId, friend, create) {
         let data =  {
             chatId: chatId,
             friend: friend,
+            create: create ? true : false,
         };
         return this.api.post(`chat`, data);
     }
@@ -30,8 +30,28 @@ export class ChatService {
         return this.api.post(`chat/leave`, data);
     }
 
+    renameChat(chatId, newName) {
+        let data =  {
+            chatId: chatId,
+            name: newName
+        };
+        return this.api.post(`chat/rename`, data);
+    }
+
+    addMember(chatId, user) {
+        let data =  {
+            chatId: chatId,
+            username: user,
+        };
+        return this.api.post(`chat/join`, data);
+    }
+
     loadChats() {
         return this.api.get(`chat/all`);
+    }
+
+    loadFriends() {
+        return this.api.get('friends');
     }
 
     //Sends Join data to server

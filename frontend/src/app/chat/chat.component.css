@@ -57,6 +57,7 @@
 .title button {
   float: right;
   margin: -3px 0;
+  margin-left: 10px;
 }
 
 .messages {
@@ -96,5 +97,44 @@
 }
 
 .messages .user {
+  font-weight: bold;
+}
+
+.modal-body .friend {
+  display: inline-block;
+  margin: 5px;
+}
+
+.chat .friend {
+  display: inline-block;
+  margin: 10px;
+}
+
+.startChat {
+  border-radius: 10px;
+  width: 150px;
+  padding: 10px 20px;
+  background-color: white;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, .2);
+}
+
+.chatName {
+  margin: 10px;
+}
+
+.startChat:hover {
+  background-color: #eee;
+}
+
+.startChat:active {
+  background-color: #ddd;
+}
+
+.starChatPanel {
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.startChat .name {
   font-weight: bold;
 }

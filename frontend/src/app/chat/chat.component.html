@@ -5,6 +5,42 @@
 <app-header></app-header>
 
 <body>
+    <ng-template #addMember let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Add member</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="friend" *ngFor="let friend of getFriendsNotInChat()">
+                <button type="button" class="btn btn-outline-success" (click)="modal.close(friend.username)">{{ friend.fullName }} ({{friend.username}})</button>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #renameChat let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">Rename chat</h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-9">
+                            <input id="message" type="text" class="form-control" [(ngModel)]="chat.name" />
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="btn btn-primary" (click)="modal.close('rename')">Rename</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+              
+
     <div class="threads">
         <h3 class="title">Chats</h3>
         <div class="items">
@@ -17,7 +53,7 @@
             <div *ngFor="let item of chats"  [routerLink]="['/chat']" [queryParams]="{ id: item.chatId}" routerLinkActive="active">
                 <span>
                     <div class="name">{{item.name}}</div>
-                    <div *ngFor="let user of item.participants"> - {{user}}</div>
+                    <div>{{participants(item)}}</div>
                 </span>
             </div>
         </div>
@@ -28,6 +64,8 @@
             <div class="title">
                 <h3>{{chat.name}}</h3>
                 <button type="button" class="btn btn-danger" (click)="removeChat()">Leave chat</button>
+                <button *ngIf="canAddMember()" type="button" class="btn btn-success" (click)="open(addMember)">Add new member</button>
+                <button type="button" class="btn btn-primary" (click)="open(renameChat)">Rename chat</button>
             </div>
 
             <div class="messages" #scrollMe [scrollTop]="scrollMe.scrollHeight">
@@ -48,14 +86,18 @@
             </div>
         </ng-template>
         <ng-template #noChatBlock>
-                <h3 class="title">Start new chat</h3>
+            <h3 class="title">Start new chat</h3>
+            <div class="starChatPanel"> 
+                <div class="friend" *ngFor="let friend of friends">
+                        <div class="startChat" [routerLink]="['/chat']" [queryParams]="{ friend: friend.username, create: true}">
+                            <span>
+                                <div class="name">{{friend.fullName}}</div>
+                                <div>{{friend.username}}</div>
+                            </span>
+                        </div>                    
+                    </div>
+                </div>
         </ng-template>
-
-
-        <script src="/js/socket.js"></script>
-        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/rexeze/formatTimeStamp/src/index-cdn.js"></script>
-        <script src="/js/chat.js"></script>
     </div>
 </body>
 

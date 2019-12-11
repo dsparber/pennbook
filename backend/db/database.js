@@ -425,34 +425,45 @@ async function leaveChat(user, chatId, callback) {
     }
 } 
 
-async function joinChat(user, chatId, callback) {
+async function renameChat(chatId, name, callback) {
     try {
-        await db.UserChat.create({username: user, chatId: chatId});
+        await db.Chat.update({chatId: chatId, name: name});
         callback(null, true);
     } catch {
         callback(err, false);
     }
 } 
 
-async function chat(user, friend, chatId, callback) {
+async function joinChat(user, chatId, callback) {
+    try {
+        await db.UserChat.create({username: user, chatId: chatId});
+        callback(null, true);
+    } catch (err) {
+        callback(err, false);
+    }
+} 
+
+async function chat(user, friend, chatId, create, callback) {
     try {
         let chat = null;
         if (chatId) {
             chat = await getItem(db.Chat.query(chatId).exec());
         } else {
-            // check if exists
-            let existingChats = await getItems(db.UserChat.query(user).exec());
-            let existingIds = existingChats.map(c => c.chatId);
-            let chatsWithFriend = await getItems(db.UserChat.scan().where('username').eq(friend).where('chatId').in(existingIds).exec());
-            for (let i = 0; i < chatsWithFriend.length; i++) {
-                let id = chatsWithFriend[i].chatId;
-                let participants = (await chatParticipants(id)).length;
-                if (participants == 2) {
-                    chat = await getItem(db.Chat.query(id).exec());
-                    break;
+            if (!create) {
+                // check if exists
+                let existingChats = await getItems(db.UserChat.query(user).exec());
+                let existingIds = existingChats.map(c => c.chatId);
+                let chatsWithFriend = await getItems(db.UserChat.scan().where('username').eq(friend).where('chatId').in(existingIds).exec());
+                for (let i = 0; i < chatsWithFriend.length; i++) {
+                    let id = chatsWithFriend[i].chatId;
+                    let participants = (await chatParticipants(id)).length;
+                    if (participants == 2) {
+                        chat = await getItem(db.Chat.query(id).exec());
+                        break;
+                    }
                 }
             }
-
+           
             if (chat == null) {
                 chat = (await db.Chat.create({ name: "Unnamed" })).attrs;
                 await db.UserChat.create({ chatId: chat.chatId, username: user });
@@ -461,6 +472,7 @@ async function chat(user, friend, chatId, callback) {
         }
         chat.user = user;
         chat.messages = await messages(chat.chatId);
+        chat.participants = await chatParticipants(chat.chatId);
 
         callback(null, chat);
     } catch (err) {
@@ -602,6 +614,7 @@ module.exports = {
     getGraph: getGraph,
     chat: chat,
     chats: chats,
+    renameChat: renameChat,
     leaveChat: leaveChat,
     joinChat: joinChat,
     appendMessage: appendMessage,
