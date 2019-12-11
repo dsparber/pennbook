@@ -78,7 +78,8 @@
             </div>
 
             <div class="bottom">
-                <div class="messageInput"><input id="message" type="text" class="form-control" [(ngModel)]="message"
+                <div class="messageInput">
+                    <input id="message" type="text" class="form-control" [(ngModel)]="message"  on-keyup="$event.keyCode == 13 && sendMessage()"
                         placeholder="Type your message here..." /></div>
                 <div>
                     <button type="button" class="btn btn-primary" (click)="sendMessage()"> Send </button>
