@@ -29,6 +29,10 @@ export class HeaderComponent implements OnInit {
     return localStorage.getItem('token') != null;
   }
 
+  username() {
+    return localStorage.getItem('username');
+  }
+
   login(form) {
     let user = form.value;
     form.reset();

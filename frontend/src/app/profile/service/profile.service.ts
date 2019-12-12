@@ -9,8 +9,8 @@ export class ProfileService {
 
   constructor(private apiService: ApiService) { }
 
-  public getWall() {
-    return this.apiService.get(`wall/${localStorage.getItem('username')}`);
+  public getWall(user) {
+    return this.apiService.get(`wall/${user}`);
   }
 
   public addInterest(interest) {

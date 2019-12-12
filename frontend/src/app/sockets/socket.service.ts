@@ -9,7 +9,7 @@ export class SocketService {
     public socket:io;
 
     constructor(private api: ApiService) {
-        this.socket = io(api.host(),  {secure: true});
+        this.socket = io(api.host(),  {upgrade: true, rememberUpgrade: true});
     }
 
     sendUsername() {

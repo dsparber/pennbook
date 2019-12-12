@@ -5,6 +5,7 @@ import {FeedService} from './../feed/service/feed.service';
 import {ProfileService} from './service/profile.service'
 import {CommonService} from './../common/common.service'
 import * as moment from 'moment';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -12,6 +13,9 @@ import * as moment from 'moment';
   styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent implements OnInit {
+
+  user:String = null;
+
   model : any = {};
   myPage = true;
   friends = true;
@@ -33,10 +37,22 @@ export class ProfileComponent implements OnInit {
   afilString: any;
 
 
-  constructor(private modalService: NgbModal, private feedService: FeedService, private profileService: ProfileService, private commonService: CommonService) { }
+  constructor(
+    private modalService: NgbModal, 
+    private feedService: FeedService, 
+    private profileService: ProfileService, 
+    private commonService: CommonService,
+    private route: ActivatedRoute,
+  ) { }
 
-  ngOnInit() {
-    this.loadProfile();
+  ngOnInit() {      
+    this.route.params.subscribe(params => {
+      this.user = params.user;
+      this.profile = {};
+      this.posts = [];
+      this.loadProfile();
+    });
+
   }
 
   open(content, toggle, post) {
@@ -85,7 +101,7 @@ export class ProfileComponent implements OnInit {
 
 
   loadProfile() {
-    this.profileService.getWall().subscribe(
+    this.profileService.getWall(this.user).subscribe(
       res => {
         console.log(res);
         if (!res.error) {
