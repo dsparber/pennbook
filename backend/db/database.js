@@ -238,7 +238,7 @@ async function addAffiliation(user, affiliation, callback) {
 
 async function removeAffiliation(user, affiliationName, callback) {
     try {
-        await db.Interest.destroy({ username: user, name: affiliationName });
+        await db.Affiliation.destroy({ username: user, name: affiliationName });
         await post({
             wall: user,
             creator: user,
