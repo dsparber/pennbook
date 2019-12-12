@@ -347,6 +347,7 @@ async function mapPost(post) {
     post.picture = await getPictureUrlFromPost(post);
     post.creator = await profileAsync(post.creator);
     post.wall = await profileAsync(post.wall);
+    post.children = [];
 
     if (post.type == "friendship") {
         post.reference = await profileAsync(post.reference, false);
