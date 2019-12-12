@@ -15,17 +15,23 @@ function streamToPromise(stream) {
 if (!('toJSON' in Error.prototype))
     Object.defineProperty(Error.prototype, 'toJSON', {
         value: function () {
-            var alt = {};
-
-            Object.getOwnPropertyNames(this).forEach(function (key) {
-                alt[key] = this[key];
-            }, this);
-
+            var alt = {
+                code: this.code,
+                message: this.message,
+            };
             return alt;
         },
         configurable: true,
         writable: true
     });
+
+function groupBy(xs, key) {
+    return xs.reduce(function(rv, x) {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+    }, {});
+}
+      
 
 async function getItems(stream) {
     return (await streamToPromise(stream)).Items.map(p => p.attrs);
@@ -375,11 +381,16 @@ function wall(username, callback) {
     });
 }
 
+async function getFriendNames(user) {
+    let friendships = await getItems(db.Friend.query(user).loadAll().exec());
+    return friendships.map(f => f.friend);
+}
+
 async function getFriends(username, callback) {
     try {
-        let friends = await getItems(db.Friend.query(username).loadAll().exec());
+        let friends = await getFriendNames(username);
         friends = await Promise.all(friends.map(async friend => {
-            friend = await profileAsync(friend.friend);
+            friend = await profileAsync(friend);
             return friend;
         }));
         callback(null, friends);
@@ -597,6 +608,57 @@ async function getGraph(user, selected, callback) {
     }
 }
 
+async function getMapReduceData(callback) {
+    try {
+        let relations = new Set();
+
+        let toString = (a, b) => a < b ? `${a}\t${b}` : `${b}\t${a}`;
+
+        let addRelations = groups => Object.keys(groups).forEach(key => {
+            let items = groups[key];
+            let users = items.map(i => i.username);
+            users.forEach(a => users.forEach(b => {
+                if (a != b) {
+                    relations.add(toString(a, b));
+                }
+            }));
+        });
+
+        let friends = await getItems(db.Friend.scan().loadAll().exec());
+        let interests = await getItems(db.Interest.scan().loadAll().exec());
+        let affiliations = await getItems(db.Affiliation.scan().loadAll().exec());
+
+        interests = groupBy(interests, 'name');
+        affiliations = groupBy(affiliations, 'name');
+
+        friends.forEach(f => relations.add(toString(f.username, f.friend)));
+
+        addRelations(interests);
+        addRelations(affiliations);
+
+        callback(null, relations);
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
+function saveAdsorptionResult(result, callback) {
+    db.AdsorptionResult.create(result, callback);
+}
+
+async function friendRecommendations(user, callback) {
+    try {
+        let recommendations = await getItems(db.AdsorptionResult.query(user).exec());
+        recommendations = recommendations.sort((a, b) => a.score < b.score ? 1 : -1);
+        let friends = await getFriendNames(user);
+        recommendations = recommendations.map(r => r.username2).filter(u => !friends.includes(u));
+        let result = await Promise.all(recommendations.map(async u => await profileAsync(u, false)));
+        callback(null, result);
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
 module.exports = {
     login: login,
     signup: signup,
@@ -622,4 +684,7 @@ module.exports = {
     joinChat: joinChat,
     appendMessage: appendMessage,
     searchUser: searchUser,
+    getMapReduceData: getMapReduceData,
+    saveAdsorptionResult: saveAdsorptionResult,
+    friendRecommendations: friendRecommendations,
 }

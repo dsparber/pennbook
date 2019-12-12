@@ -180,6 +180,16 @@ const ChatMessages = dynamo.define('ChatMessages', {
     }
 });
 
+const AdsorptionResult = dynamo.define('AdsorptionResult', {
+    hashKey: 'username1',
+    rangeKey: 'username2',
+    schema: {
+        username1: Joi.string(),
+        username2: Joi.string(),
+        score: Joi.number(),
+    }
+});
+
 // Creates all models
 if (process.env.CREATE_TABLES === "true") {
     dynamo.createTables(function(err) {
@@ -206,5 +216,6 @@ module.exports = {
     Reaction: Reaction,
     Picture: Picture,
     PostPicture: PostPicture,
-    Interest: Interest
+    Interest: Interest,
+    AdsorptionResult: AdsorptionResult,
 };
