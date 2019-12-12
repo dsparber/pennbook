@@ -60,12 +60,18 @@ io.on('connection',function(socket) {
     console.info('Socket connection on server made with socket ID', socket.id);
 
     socket.on('user', username => {
-      console.info(`${username} is now online`)
       activeUsers[socket.id] = username;
     });
 
+    socket.on('user-disconnected', function() {
+      delete activeUsers[socket.id];
+    });
+
+    socket.on('reconnect_error', function() {
+      delete activeUsers[socket.id];
+    });
+
     socket.on('disconnect', function() {
-      console.info(`${activeUsers[socket.id]} is now offline`)
       delete activeUsers[socket.id];
     });
     

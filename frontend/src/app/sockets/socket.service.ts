@@ -17,5 +17,6 @@ export class SocketService {
         if (user) {
             this.socket.emit('user', user);
         }
+        setTimeout(() => this.sendUsername(), 5 * 1000);
     }
 }

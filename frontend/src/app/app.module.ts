@@ -18,6 +18,7 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { SocketService } from './sockets/socket.service';
 import { ApiService } from './api/api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FriendComponent } from './friends/friend/friend.component';
 
 
 
@@ -29,6 +30,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     SignInComponent,
     FeedComponent,
     FriendsComponent,
+    FriendComponent,
     ChatComponent,
     VisualizerComponent,
   ],

@@ -23,6 +23,7 @@ export class HeaderComponent implements OnInit {
 
     localStorage.removeItem('token');
     localStorage.removeItem('username');
+    this.socketService.socket.emit('user-disconnected', {});
   }
 
   loggedIn() {

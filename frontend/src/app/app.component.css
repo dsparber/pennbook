@@ -6,6 +6,12 @@ svg#clouds {
   width: 100%;
 }
 
-.spacer {
-  height: 60px;
+.app-container {
+  position: fixed;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  top: 60px;
+  height: calc(100% - 60px);
+  background-color: rgba(0, 0, 0, 0.1);
 }
