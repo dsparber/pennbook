@@ -64,8 +64,8 @@
             <div class="title">
                 <h3>{{chat.name}}</h3>
                 <button type="button" class="btn btn-danger" (click)="removeChat()">Leave chat</button>
-                <button *ngIf="canAddMember()" type="button" class="btn btn-success" (click)="open(addMember)">Add new member</button>
-                <button type="button" class="btn btn-primary" (click)="open(renameChat)">Rename chat</button>
+                <button *ngIf="canAddMember()" type="button" class="btn btn-success" (click)="open(addMember, 'addMember')">Add new member</button>
+                <button type="button" class="btn btn-primary" (click)="open(renameChat, 'renameChat')">Rename chat</button>
             </div>
 
             <div class="messages" #scrollMe [scrollTop]="scrollMe.scrollHeight">

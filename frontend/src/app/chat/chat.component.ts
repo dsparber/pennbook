@@ -29,10 +29,11 @@ export class ChatComponent implements OnInit {
     }
 
 
-    open(content) {
+    open(content, name) {
       this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then(
         (result) => {
-          if (content == 'addMember') {
+          console.log(content);
+          if (name == 'addMember') {
             let username = result;
             this._chatService.addMember(this.chat.chatId, username).subscribe(
               res => {
