@@ -6,6 +6,7 @@ import {ProfileService} from './service/profile.service'
 import {CommonService} from './../common/common.service'
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -13,6 +14,9 @@ import * as moment from 'moment';
   styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent implements OnInit {
+
+  user:String = null;
+
   model : any = {};
   myPage = true;
   friends = true;
@@ -33,6 +37,7 @@ export class ProfileComponent implements OnInit {
   afilString: any;
 
 
+<<<<<<< HEAD
   constructor(private modalService: NgbModal, private feedService: FeedService, private profileService: ProfileService, private commonService: CommonService, private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -41,6 +46,24 @@ export class ProfileComponent implements OnInit {
        console.log(id);
        this.loadProfile(id);
     });
+=======
+  constructor(
+    private modalService: NgbModal, 
+    private feedService: FeedService, 
+    private profileService: ProfileService, 
+    private commonService: CommonService,
+    private route: ActivatedRoute,
+  ) { }
+
+  ngOnInit() {      
+    this.route.params.subscribe(params => {
+      this.user = params.user;
+      this.profile = {};
+      this.posts = [];
+      this.loadProfile();
+    });
+
+>>>>>>> d4632fe27f5fd7bd2ae0fe56052c6622033b85c3
   }
 
   open(content, toggle, post) {
@@ -88,8 +111,13 @@ export class ProfileComponent implements OnInit {
 
 
 
+<<<<<<< HEAD
   loadProfile(username) {
     this.profileService.getWall(username).subscribe(
+=======
+  loadProfile() {
+    this.profileService.getWall(this.user).subscribe(
+>>>>>>> d4632fe27f5fd7bd2ae0fe56052c6622033b85c3
       res => {
         console.log(res);
         if (!res.error) {

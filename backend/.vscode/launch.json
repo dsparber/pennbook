@@ -13,5 +13,14 @@
             ],
             "program": "${workspaceFolder}/app.js"
         }
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Export",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/export.js"
+        }
     ]
 }

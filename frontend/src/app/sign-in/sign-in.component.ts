@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SignInService } from './service/sign-in.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { SocketService } from '../sockets/socket.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
@@ -11,10 +12,12 @@ export class SignInComponent implements OnInit {
 
   model : any = {};
   sign : any = {};
-  constructor(public signInService: SignInService, public router: Router) { }
+  constructor(public signInService: SignInService, public router: Router, private socketService: SocketService) { }
 
   ngOnInit() {
-
+    if (localStorage.getItem('token')){
+      this.router.navigate(['/feed']);
+    }
   }
 
   registerUser(form) {
@@ -23,7 +26,7 @@ export class SignInComponent implements OnInit {
       username: user.email,
       password: user.password,
       profile: {
-        fullName: user.firstName,
+        fullName: user.fullName,
         email: user.email,
         birthday: user.birthday
       }
@@ -36,7 +39,8 @@ export class SignInComponent implements OnInit {
       } else {
         localStorage.setItem('token', res.token);
         localStorage.setItem('username', data.username);
-        this.router.navigateByUrl(`/profile/${data.username}`);
+        this.socketService.sendUsername();
+        this.router.navigateByUrl('/feed');
       }
     },
     err => {
@@ -44,35 +48,6 @@ export class SignInComponent implements OnInit {
       console.log(err);
     });
 
-  }
-
-  login(form) {
-    let user = form.value;
-    console.log(form);
-    let data = {
-      username: user.username,
-      password: user.password
-    }
-
-    this.signInService.login(user).subscribe(res => {
-      if (!res.success) {
-        alert("Something went wrong: " + JSON.stringify(res.error));
-      } else {
-        if (res.token) {
-          console.log(res);
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('username', data.username);
-          this.router.navigateByUrl(`/profile/${data.username}`);
-        } else {
-          console.log(res.token);
-          alert("Invalid username or password " + JSON.stringify(res.error));
-        }
-      }
-    },
-    err => {
-      alert("Error: connection failed");
-      console.log(err);
-    });
   }
 
 }

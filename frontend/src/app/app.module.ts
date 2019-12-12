@@ -10,10 +10,15 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { FeedComponent } from './feed/feed.component';
 import { FriendsComponent } from './friends/friends.component';
 import { ChatComponent } from './chat/chat.component';
+import { VisualizerComponent } from './visualizer/visualizer.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {AuthGuard} from './guard/guard.service';
+import { AuthGuard } from './guard/guard.service';
+import { NgxGraphModule } from '@swimlane/ngx-graph';
+import { SocketService } from './sockets/socket.service';
+import { ApiService } from './api/api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FriendComponent } from './friends/friend/friend.component';
 
 
 
@@ -25,7 +30,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     SignInComponent,
     FeedComponent,
     FriendsComponent,
-    ChatComponent
+    FriendComponent,
+    ChatComponent,
+    VisualizerComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,9 +42,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HttpClientModule,
     NgbModule,
     TagInputModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgxGraphModule
   ],
-  providers: [AuthGuard],
+  providers: [AuthGuard, SocketService, ApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

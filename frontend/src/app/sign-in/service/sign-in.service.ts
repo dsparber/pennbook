@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {SignIn} from './../signin'
+import { ApiService } from 'src/app/api/api.service';
 
 const API_URL = "http://localhost:8080/api/";
 
@@ -11,13 +11,13 @@ const API_URL = "http://localhost:8080/api/";
 export class SignInService {
 
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private apiService: ApiService) { }
 
   public login(user) {
-    return this.httpClient.post<SignIn>(API_URL + "login", user);
+    return this.apiService.post("login", user);
   }
 
   public signup(user) {
-    return this.httpClient.post<SignIn>(API_URL + "signup", user);
+    return this.apiService.post("signup", user);
   }
 }

@@ -13,19 +13,25 @@ function streamToPromise(stream) {
 
 // Create a toJson function for errors, enables easier debugging
 if (!('toJSON' in Error.prototype))
-Object.defineProperty(Error.prototype, 'toJSON', {
-    value: function () {
-        var alt = {};
+    Object.defineProperty(Error.prototype, 'toJSON', {
+        value: function () {
+            var alt = {
+                code: this.code,
+                message: this.message,
+            };
+            return alt;
+        },
+        configurable: true,
+        writable: true
+    });
 
-        Object.getOwnPropertyNames(this).forEach(function (key) {
-            alt[key] = this[key];
-        }, this);
-
-        return alt;
-    },
-    configurable: true,
-    writable: true
-});
+function groupBy(xs, key) {
+    return xs.reduce(function(rv, x) {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+    }, {});
+}
+      
 
 async function getItems(stream) {
     return (await streamToPromise(stream)).Items.map(p => p.attrs);
@@ -36,13 +42,13 @@ async function getItem(stream) {
 }
 
 function login(username, password, callback) {
-    db.User.get(username, function(err, user) {
+    db.User.get(username, function (err, user) {
         if (!user) {
             callback("Invalide user / password combination", false);
             return;
         }
         let hash = user.get("password");
-        bcrypt.compare(password, hash, function(err, res) {
+        bcrypt.compare(password, hash, function (err, res) {
             if (res === true) {
                 callback(null, true);
             } else {
@@ -53,18 +59,18 @@ function login(username, password, callback) {
 }
 
 function changePassword(username, oldPassword, newPassword, callback) {
-    db.User.get(username, function(err, user) {
+    db.User.get(username, function (err, user) {
         if (err) {
             callback(err, false);
             return;
         }
         let hash = user.get("password");
-        bcrypt.compare(oldPassword, hash, function(err, equal) {
+        bcrypt.compare(oldPassword, hash, function (err, equal) {
             if (!equal) {
                 callback("Old password is invalid");
                 return;
             }
-            bcrypt.hash(newPassword, saltRounds, function(err, hash) {
+            bcrypt.hash(newPassword, saltRounds, function (err, hash) {
                 if (err) {
                     callback(err, false);
                     return;
@@ -85,7 +91,7 @@ function changePassword(username, oldPassword, newPassword, callback) {
 
 function signup(user, callback) {
     console.log(user);
-    bcrypt.hash(user.password, saltRounds, function(err, hash) {
+    bcrypt.hash(user.password, saltRounds, function (err, hash) {
         if (err) {
             callback(err, false);
             return;
@@ -95,11 +101,11 @@ function signup(user, callback) {
             username: user.username,
             password: hash
         }, {
-            overwrite : false
+            overwrite: false
         }, function (error, createdUser) {
             if (error) {
-              console.log(error);
-              callback("User already exists", false);
+                console.log(error);
+                callback("User already exists", false);
             } else {
                 let profile = user.profile;
                 profile.username = user.username;
@@ -115,13 +121,23 @@ function signup(user, callback) {
     });
 }
 
+async function isFriendAsync(user1, user2) {
+    if (user1 === user2) {
+        return true;
+    }
+
+    let items = await getItems(db.Friend.query(user1).where('friend').eq(user2).exec());
+    return items.length > 0;
+}
+
+
 function isFriend(user1, user2, callback) {
     if (user1 === user2) {
         callback(null, true);
         return;
     }
 
-    db.Friend.query(user1).where('friend').eq(user2).exec(function(err, result) {
+    db.Friend.query(user1).where('friend').eq(user2).exec(function (err, result) {
         if (err) {
             callback(err, false);
         } else {
@@ -130,33 +146,35 @@ function isFriend(user1, user2, callback) {
     });
 }
 
-function post(post, callback) {
-    let pictureId = post.pictureId;
-    delete post.pictureId;
-    db.Post.create(post, async function (error, createdPost) {
-        if (error) {
-            callback(error, false);
-            return;
+async function post(post, callback) {
+    try {
+        let pictureId = post.pictureId;
+        delete post.pictureId;
+        let createdPost = await db.Post.create(post);
+        if (post.parent) {
+            await db.SubPost.create({
+                postId: post.parent,
+                childPostId: createdPost.get('postId'),
+            });
         }
-        try {
-            if (post.parent) {
-                await db.SubPost.create({
-                    postId: post.parent,
-                    childPostId: createdPost.get('postId'),
-                });
-            }
-            if (pictureId) {
-                await db.PostPicture.create({
-                    postId: createdPost.get('postId'),
-                    pictureId: pictureId,
-                });
-            }
-            let result = await mapPost(createdPost.attrs);
+        if (pictureId) {
+            await db.PostPicture.create({
+                postId: createdPost.get('postId'),
+                pictureId: pictureId,
+            });
+        }
+        let result = await mapPost(createdPost.attrs);
+        if (callback) {
             callback(null, result);
-        } catch(err) {
-            callback(err, null);
         }
-    });
+           
+    } catch (err) {
+        if (callback) {
+            callback(err, null);
+        } else {
+            throw err;
+        }
+    }
 }
 
 function reaction(reaction, callback) {
@@ -170,52 +188,72 @@ function reaction(reaction, callback) {
 }
 
 
-function addInterest(user, interest, callback) {
-    interest.username = user;
-    db.Interest.create(interest, function(err) {
-        if (err) {
-            callback(err, false);
-            return;
-        }
+async function addInterest(user, interest, callback) {
+    try {
+        interest.username = user;
+        await db.Interest.create(interest);
+        await post({
+            wall: user,
+            creator: user,
+            reference: interest.name,
+            type: 'interest-added',
+        });
         callback(null, true);
-    });
+    } catch (err) {
+        callback(err, false);
+    }
 }
 
-function removeInterest(user, interestName, callback) {
-    db.Interest.destroy({username: user, name: interestName}, function(err) {
-        if (err) {
-            callback(err, false);
-            return;
-        }
+async function removeInterest(user, interestName, callback) {
+    try {
+        await db.Interest.destroy({ username: user, name: interestName });
+        await post({
+            wall: user,
+            creator: user,
+            reference: interestName,
+            type: 'interest-removed',
+        });
         callback(null, true);
-    });
+    } catch (err) {
+        callback(err, false);
+    }
 }
 
-function addAffiliation(user, affiliation, callback) {
-    affiliation.username = user;
-    db.Affiliation.create(affiliation, function(err, created) {
-        if (err) {
-            callback(err, false);
-            return;
-        }
+async function addAffiliation(user, affiliation, callback) {
+    try {
+        affiliation.username = user;
+        await db.Affiliation.create(affiliation);
+        await post({
+            wall: user,
+            creator: user,
+            reference: affiliation.name,
+            type: 'affiliation-added',
+        });
         callback(null, true);
-    });
+    } catch (err) {
+        callback(err, false);
+    }
 }
 
 
-function removeAffiliation(user, affiliationName, callback) {
-    db.Affiliation.destroy({username: user, name: affiliationName}, function(err) {
-        if (err) {
-            callback(err, false);
-            return;
-        }
+async function removeAffiliation(user, affiliationName, callback) {
+    try {
+        await db.Interest.destroy({ username: user, name: affiliationName });
+        await post({
+            wall: user,
+            creator: user,
+            reference: affiliationName,
+            type: 'affiliation-removed',
+        });
         callback(null, true);
-    });
+    } catch (err) {
+        callback(err, false);
+    }
 }
 
 function updateProfile(user, profile, callback) {
     profile.username = user;
-    db.Profile.update(profile, function(err) {
+    db.Profile.update(profile, function (err) {
         if (err) {
             callback(err, false);
             return;
@@ -245,7 +283,7 @@ async function getAffiliations(username) {
 async function profileAsync(username, includeAll) {
     let profile = await getItem(db.Profile.query(username).exec());
     if (!profile) {
-        return username;
+        return {username: username};
     }
     profile.profilePicture = await getProfilePicture(username);
     if (includeAll) {
@@ -264,26 +302,33 @@ async function profile(username, callback) {
     }
 }
 
-function addFriend(username, friend, callback) {
-    db.Friend.create({
-        username: username,
-        friend: friend
-    }, function(err, result) {
-        if (err) {
-            callback(err, false);
-            return;
-        }
-        db.Friend.create({
+async function addFriend(username, friend, callback) {
+    try {
+        await db.Friend.create({
+            username: username,
+            friend: friend
+        });
+        await db.Friend.create({
             username: friend,
             friend: username
-        }, function(err, result) {
-            if (err) {
-                callback(err, false);
-                return;
-            }
-            callback(null, true);
         });
-    });
+        // Create posts about new friendship
+        await post({
+            wall: username,
+            creator: username,
+            reference: friend,
+            type: 'friendship',
+        });
+        await post({
+            wall: friend,
+            creator: friend,
+            reference: username,
+            type: 'friendship',
+        });
+        callback(null, true);
+    } catch (err) {
+        callback(err, false);
+    }
 }
 
 async function getPictureUrl(pictureId) {
@@ -312,6 +357,11 @@ async function mapPost(post) {
     post.picture = await getPictureUrlFromPost(post);
     post.creator = await profileAsync(post.creator);
     post.wall = await profileAsync(post.wall);
+    post.children = [];
+
+    if (post.type == "friendship") {
+        post.reference = await profileAsync(post.reference, false);
+    }
 
     let subPosts = await getItems(db.SubPost.query(post.postId).exec());
     if (subPosts.length !== 0) {
@@ -325,20 +375,43 @@ async function mapPost(post) {
 async function posts(walls, callback) {
     try {
         let posts = await getItems(db.Post.scan().where('wall').in(walls).where('parent').null().exec());
-        posts = await Promise.all(posts.reverse().map(async post => await mapPost(post)));
+        posts = posts.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
+        posts = await Promise.all(posts.map(async post => await mapPost(post)));
         callback(null, posts);
-    } catch(err) {
+        return posts;
+    } catch (err) {
         callback(err, null);
     }
 }
 
-function userWall(username, callback) {
-    profile(username, function(err, profile) {
+async function userWall(user, wall, callback) {
+    try {
+        let profile = await profileAsync(wall, true);
+        let isFriend = await isFriendAsync(user, wall);
+        let userPosts = [];
+
+        if (isFriend) {
+            userPosts = await posts([wall], () => {});
+        }
+
+        let data = {
+            profile: profile,
+            isFriend: isFriend,
+            posts: userPosts,
+        }
+
+        callback(null, data);
+    } catch (err) {
+        callback(err, null);
+    }
+
+
+    profile(wall, function (err, profile) {
         if (err) {
             callback(err, null);
             return;
         }
-        posts([username], function(err, posts) {
+        posts([username], function (err, posts) {
             if (err) {
                 callback(err, null);
                 return;
@@ -350,7 +423,7 @@ function userWall(username, callback) {
         });
     });
 
-    db.Post.query(username).loadAll().exec(function(err, posts) {
+    db.Post.query(username).loadAll().exec(function (err, posts) {
         if (err) {
             callback(err, null);
         } else {
@@ -360,7 +433,7 @@ function userWall(username, callback) {
 }
 
 function wall(username, callback) {
-    db.Friend.query(username).loadAll().exec(function(err, friends) {
+    db.Friend.query(username).loadAll().exec(function (err, friends) {
         if (err) {
             callback(err, null);
             return;
@@ -374,14 +447,279 @@ function wall(username, callback) {
     });
 }
 
+async function getFriendNames(user) {
+    let friendships = await getItems(db.Friend.query(user).loadAll().exec());
+    return friendships.map(f => f.friend);
+}
+
 async function getFriends(username, callback) {
     try {
-        let friends = await getItems(db.Friend.query(username).loadAll().exec());
+        let friends = await getFriendNames(username);
         friends = await Promise.all(friends.map(async friend => {
-            friend.friend = await profileAsync(friend.friend);
+            friend = await profileAsync(friend);
             return friend;
         }));
         callback(null, friends);
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
+async function messages(chatId) {
+    let messages = await getItems(db.ChatMessages.query(chatId).exec());
+    messages = messages.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1);
+    return messages;
+}
+
+async function appendMessage(message) {
+    return (await db.ChatMessages.create(message)).attrs;
+}
+async function chatParticipants(chatId) {
+    return (await getItems(db.UserChat.query(chatId).usingIndex('ChatIdIndex').exec())).map(uc => uc.username);
+}
+
+async function chats(user, callback) {
+    try {
+        let userChats = await getItems(db.UserChat.query(user).exec());
+        let chatIds = userChats.map(c => c.chatId);
+        let chats = [];
+        if (chatIds.length > 0) {
+            chats = await getItems(db.Chat.scan().where('chatId').in(chatIds).exec());
+            chats = await Promise.all(chats.map(async chat => {
+                chat.participants = await chatParticipants(chat.chatId);
+                return chat;
+            }));
+        }
+        callback(null, chats);
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
+async function leaveChat(user, chatId, callback) {
+    try {
+        await db.UserChat.destroy({username: user, chatId: chatId});
+        callback(null, true);
+    } catch {
+        callback(err, false);
+    }
+} 
+
+async function renameChat(chatId, name, callback) {
+    try {
+        await db.Chat.update({chatId: chatId, name: name});
+        callback(null, true);
+    } catch {
+        callback(err, false);
+    }
+} 
+
+async function joinChat(user, chatId, callback) {
+    try {
+        await db.UserChat.create({username: user, chatId: chatId});
+        callback(null, true);
+    } catch (err) {
+        callback(err, false);
+    }
+} 
+
+async function chat(user, friend, chatId, create, callback) {
+    try {
+        let chat = null;
+        if (chatId) {
+            chat = await getItem(db.Chat.query(chatId).exec());
+        } else {
+            if (!create) {
+                // check if exists
+                let existingChats = await getItems(db.UserChat.query(user).exec());
+                let existingIds = existingChats.map(c => c.chatId);
+                let chatsWithFriend = await getItems(db.UserChat.scan().where('username').eq(friend).where('chatId').in(existingIds).exec());
+                for (let i = 0; i < chatsWithFriend.length; i++) {
+                    let id = chatsWithFriend[i].chatId;
+                    let participants = (await chatParticipants(id)).length;
+                    if (participants == 2) {
+                        chat = await getItem(db.Chat.query(id).exec());
+                        break;
+                    }
+                }
+            }
+           
+            if (chat == null) {
+                chat = (await db.Chat.create({ name: "Unnamed" })).attrs;
+                await db.UserChat.create({ chatId: chat.chatId, username: user });
+                await db.UserChat.create({ chatId: chat.chatId, username: friend });
+            }
+        }
+        chat.user = user;
+        chat.messages = await messages(chat.chatId);
+        chat.participants = await chatParticipants(chat.chatId);
+
+        callback(null, chat);
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
+async function searchUser(user, query, callback) {
+    try {
+        let users = await getItems(db.Profile.scan().loadAll().exec());
+        let result = [];
+        query = query.toLowerCase();
+        for (let i = 0; i < users.length; i++) {
+            let user = users[i];
+            let tokens = user.fullName.split(' ');
+            tokens.push(user.username);
+            tokens.push(user.email);
+            tokens = tokens.map(t => t.toLowerCase());
+
+            let match = false;
+            for (let j = 0; j < tokens.length; j++) {
+                let token = tokens[j];
+                if (token.startsWith(query)) {
+                    match = true;
+                    break;
+                }
+            }
+
+            if (match) {
+                result.push(user);
+            }
+        }
+        callback(null, result);
+    } catch (err) {
+        callback(err, null);
+    }
+
+}
+
+async function getGraph(user, selected, callback) {
+    try {
+        let links = [];
+        let nodes = [];
+
+        let userFriends = await getItems(db.Friend.query(user).loadAll().exec());
+        let userAffiliations = await getAffiliations(user);
+        let visibleAffiliations = userAffiliations.map(a => a.name);
+        let userWithCommonAffiliations = await getItems(db.Affiliation.scan().where('name').in(visibleAffiliations).exec());
+
+        let visibleUsers = [user];
+        visibleUsers = visibleUsers.concat(userFriends.map(f => f.friend));
+        visibleUsers = visibleUsers.concat([...new Set(userWithCommonAffiliations.map(a => a.username))]);
+
+        let selectedUser = user;
+        let selectedAffiliation = null;
+        let affiliations = null;
+
+        if (selected) {
+            let split = selected.split(/-(.+)/);
+            let type = split[0];
+            if (type === "user") {
+                selectedUser = split[1];
+            } else if (type === "affiliation") {
+                affiliations = await getItems(db.Affiliation.query(split[1]).exec());
+                selectedAffiliation = [split[1]];
+                visibleAffiliations = [split[1]];
+                selectedUser = null;
+            }
+        }
+
+        let friends = [];
+        let friendNames = [];
+
+        if (affiliations == null) {
+            affiliations = await getAffiliations(selectedUser);
+            visibleAffiliations = affiliations.map(a => a.name).filter(a => visibleAffiliations.includes(a));
+            friends = await getItems(db.Friend.query(selectedUser).loadAll().exec());
+            friendNames.push(selectedUser);
+            friendNames = friendNames.concat(friends.map(a => a.friend));
+        } else {
+            friends = [];
+        }
+        friendNames = friendNames.concat(affiliations.map(a => a.username));
+        friendNames = [...new Set(friendNames.filter(f => visibleUsers.includes(f)))];
+
+        links = links.concat(friends
+            .filter(e => visibleUsers.includes(e.friend))
+            .map(e => ({
+                id: e.username < e.friend ? `friends-${e.username}-${e.friend}` : `friends-${e.friend}-${e.username}`,
+                source: `user-${e.username}`,
+                target: `user-${e.friend}`
+            })));
+        links = links.concat(affiliations
+            .filter(a => visibleAffiliations.includes(a.name))
+            .map(a => ({
+                id: `userAffiliation-${a.username}-${a.name}`,
+                source: `user-${a.username}`,
+                target: `affiliation-${a.name}`
+            })));
+
+        nodes = nodes.concat(friendNames.map(e => ({
+            id: `user-${e}`,
+            color: e == selectedUser ? 'red' : '#1a71b3',
+            label: e
+        })));
+        nodes = nodes.concat(visibleAffiliations.map(a => ({
+            id: `affiliation-${a}`,
+            color: a == selectedAffiliation ? 'red' : '#009933',
+            label: a
+        })));
+
+        return callback(null, {
+            nodes: nodes,
+            links: links,
+        });
+
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
+async function getMapReduceData(callback) {
+    try {
+        let relations = new Set();
+
+        let toString = (a, b) => a < b ? `${a}\t${b}` : `${b}\t${a}`;
+
+        let addRelations = groups => Object.keys(groups).forEach(key => {
+            let items = groups[key];
+            let users = items.map(i => i.username);
+            users.forEach(a => users.forEach(b => {
+                if (a != b) {
+                    relations.add(toString(a, b));
+                }
+            }));
+        });
+
+        let friends = await getItems(db.Friend.scan().loadAll().exec());
+        let interests = await getItems(db.Interest.scan().loadAll().exec());
+        let affiliations = await getItems(db.Affiliation.scan().loadAll().exec());
+
+        interests = groupBy(interests, 'name');
+        affiliations = groupBy(affiliations, 'name');
+
+        friends.forEach(f => relations.add(toString(f.username, f.friend)));
+
+        addRelations(interests);
+        addRelations(affiliations);
+
+        callback(null, relations);
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
+function saveAdsorptionResult(result, callback) {
+    db.AdsorptionResult.create(result, callback);
+}
+
+async function friendRecommendations(user, callback) {
+    try {
+        let recommendations = await getItems(db.AdsorptionResult.query(user).exec());
+        recommendations = recommendations.sort((a, b) => a.score < b.score ? 1 : -1);
+        let friends = await getFriendNames(user);
+        recommendations = recommendations.map(r => r.username2).filter(u => !friends.includes(u));
+        let result = await Promise.all(recommendations.map(async u => await profileAsync(u, false)));
+        callback(null, result);
     } catch (err) {
         callback(err, null);
     }
@@ -404,4 +742,15 @@ module.exports = {
     updateProfile: updateProfile,
     changePassword: changePassword,
     getFriends: getFriends,
+    getGraph: getGraph,
+    chat: chat,
+    chats: chats,
+    renameChat: renameChat,
+    leaveChat: leaveChat,
+    joinChat: joinChat,
+    appendMessage: appendMessage,
+    searchUser: searchUser,
+    getMapReduceData: getMapReduceData,
+    saveAdsorptionResult: saveAdsorptionResult,
+    friendRecommendations: friendRecommendations,
 }

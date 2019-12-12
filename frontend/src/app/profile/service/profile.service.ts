@@ -1,52 +1,43 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ApiService } from 'src/app/api/api.service';
 
-const API_URL = 'http://localhost:8080/api/';
-const TOKEN = `Bearer ${localStorage.getItem('token')}`;
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private apiService: ApiService) { }
 
+<<<<<<< HEAD
   public getWall(username) {
     console.log(TOKEN);
     return this.httpClient.get<any>(`${API_URL}wall/${username}`, {headers: {
       Authorization: TOKEN
     }});
+=======
+  public getWall(user) {
+    return this.apiService.get(`wall/${user}`);
+>>>>>>> d4632fe27f5fd7bd2ae0fe56052c6622033b85c3
   }
 
   public addInterest(interest) {
-    return this.httpClient.post<any>(`${API_URL}interest/add`, interest, {headers: {
-      Authorization: TOKEN
-    }})
+    return this.apiService.post(`interest/add`, interest);
   }
 
   public removeInterest(interest) {
-    return this.httpClient.post<any>(`${API_URL}interest/remove`, interest, {headers: {
-      Authorization: TOKEN
-    }})
+    return this.apiService.post(`interest/remove`, interest);
   }
 
   public addAffiliation(affiliation) {
-    return this.httpClient.post<any>(`${API_URL}affiliation/add`, affiliation, {headers: {
-      Authorization: TOKEN
-    }})
+    return this.apiService.post(`affiliation/add`, affiliation);
   }
 
   public removeAffiliation(affiliation) {
-    return this.httpClient.post<any>(`${API_URL}affiliation/remove`, affiliation, {headers: {
-      Authorization: TOKEN
-    }})
+    return this.apiService.post(`affiliation/remove`, affiliation);
   }
 
   public updateProfile(profile) {
-    return this.httpClient.post<any>(`${API_URL}profile/update`, profile, {headers: {
-      Authorization: TOKEN
-    }})
+    return this.apiService.post(`profile/update`, profile);
   }
-
-
 }

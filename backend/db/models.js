@@ -80,7 +80,8 @@ const Post = dynamo.define('Post', {
         postId: dynamo.types.uuid(),
         content: Joi.string(),
         creator: Joi.string(),
-        parent: dynamo.types.uuid(),
+        reference: Joi.string(),
+        parent: Joi.string(),
         type: Joi.string(),
     },
     indexes: [
@@ -175,6 +176,18 @@ const ChatMessages = dynamo.define('ChatMessages', {
     schema: {
         chatId: dynamo.types.uuid(),
         messageId: dynamo.types.uuid(),
+        content: Joi.string(),
+        creator: Joi.string(),
+    }
+});
+
+const AdsorptionResult = dynamo.define('AdsorptionResult', {
+    hashKey: 'username1',
+    rangeKey: 'username2',
+    schema: {
+        username1: Joi.string(),
+        username2: Joi.string(),
+        score: Joi.number(),
     }
 });
 
@@ -204,5 +217,6 @@ module.exports = {
     Reaction: Reaction,
     Picture: Picture,
     PostPicture: PostPicture,
-    Interest: Interest
+    Interest: Interest,
+    AdsorptionResult: AdsorptionResult,
 };

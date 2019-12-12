@@ -1,36 +1,27 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {Posts} from './../posts'
+import { ApiService } from 'src/app/api/api.service';
 
-const API_URL = 'http://localhost:8080/api/';
-const TOKEN = `Bearer ${localStorage.getItem('token')}`;
 
 @Injectable({
   providedIn: 'root'
 })
 export class FeedService {
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private apiService: ApiService) {
 
   }
 
   
   public getFeed() {
-    return this.httpClient.get<Posts>(API_URL + 'wall', {headers: {
-      Authorization: TOKEN
-    }});
+    return this.apiService.get('wall');
   }
 
   public like(reaction) {
-    return this.httpClient.post<any>(API_URL + 'reaction', reaction, {headers: {
-      Authorization: TOKEN
-    }});
+    return this.apiService.post('reaction', reaction);
   }
 
   public post(post) {
-    return this.httpClient.post<any>(API_URL + 'post', post, {headers: {
-      Authorization: TOKEN
-    }});
+    return this.apiService.post('post', post);
   }
 
 }
