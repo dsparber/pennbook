@@ -9,16 +9,8 @@ export class ProfileService {
 
   constructor(private apiService: ApiService) { }
 
-<<<<<<< HEAD
-  public getWall(username) {
-    console.log(TOKEN);
-    return this.httpClient.get<any>(`${API_URL}wall/${username}`, {headers: {
-      Authorization: TOKEN
-    }});
-=======
   public getWall(user) {
     return this.apiService.get(`wall/${user}`);
->>>>>>> d4632fe27f5fd7bd2ae0fe56052c6622033b85c3
   }
 
   public addInterest(interest) {
@@ -39,5 +31,9 @@ export class ProfileService {
 
   public updateProfile(profile) {
     return this.apiService.post(`profile/update`, profile);
+  }
+
+  public addFriend(friend) {
+    return this.apiService.post(`friends/add`, friend);
   }
 }
