@@ -18,21 +18,23 @@ export class ChatComponent implements OnInit {
 
     constructor(private _chatService: ChatService,  private route: ActivatedRoute, private router: Router, private modalService: NgbModal){
       //displays data received from server to client
+      /*
       this._chatService.newUserJoined()
         .subscribe(data=> this.chat.messages.push(data));
 
       this._chatService.userLeftChat()
       .subscribe(data=>this.chat.messages.push(data));
+      */
 
       this._chatService.newMessageReceived()
       .subscribe(data=>this.chat.messages.push(data));
     }
+    
 
 
     open(content, name) {
       this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then(
         (result) => {
-          console.log(content);
           if (name == 'addMember') {
             let username = result;
             this._chatService.addMember(this.chat.chatId, username).subscribe(

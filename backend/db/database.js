@@ -325,7 +325,8 @@ async function mapPost(post) {
 async function posts(walls, callback) {
     try {
         let posts = await getItems(db.Post.scan().where('wall').in(walls).where('parent').null().exec());
-        posts = await Promise.all(posts.reverse().map(async post => await mapPost(post)));
+        posts = posts.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
+        posts = await Promise.all(posts.map(async post => await mapPost(post)));
         callback(null, posts);
     } catch (err) {
         callback(err, null);
@@ -388,7 +389,9 @@ async function getFriends(username, callback) {
 }
 
 async function messages(chatId) {
-    return await getItems(db.ChatMessages.query(chatId).exec());
+    let messages = await getItems(db.ChatMessages.query(chatId).exec());
+    messages = messages.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1);
+    return messages;
 }
 
 async function appendMessage(message) {
