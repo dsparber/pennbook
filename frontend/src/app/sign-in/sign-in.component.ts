@@ -26,8 +26,7 @@ export class SignInComponent implements OnInit {
       username: user.email,
       password: user.password,
       profile: {
-        firstName: user.firstName,
-        lastName: user.firstName,
+        fullName: user.fullName,
         email: user.email,
         birthday: user.birthday
       }
