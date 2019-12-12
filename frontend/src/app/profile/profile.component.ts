@@ -4,6 +4,7 @@ import { TagInputModule } from 'ngx-chips';
 import {FeedService} from './../feed/service/feed.service';
 import {ProfileService} from './service/profile.service'
 import {CommonService} from './../common/common.service'
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 
@@ -19,7 +20,6 @@ export class ProfileComponent implements OnInit {
   model : any = {};
   myPage = true;
   friends = true;
-
   profile:any = {};
   posts:any = [];
   interest:any = [];
@@ -37,6 +37,16 @@ export class ProfileComponent implements OnInit {
   afilString: any;
 
 
+<<<<<<< HEAD
+  constructor(private modalService: NgbModal, private feedService: FeedService, private profileService: ProfileService, private commonService: CommonService, private route: ActivatedRoute) { }
+
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+       let id = params.id;
+       console.log(id);
+       this.loadProfile(id);
+    });
+=======
   constructor(
     private modalService: NgbModal, 
     private feedService: FeedService, 
@@ -53,6 +63,7 @@ export class ProfileComponent implements OnInit {
       this.loadProfile();
     });
 
+>>>>>>> d4632fe27f5fd7bd2ae0fe56052c6622033b85c3
   }
 
   open(content, toggle, post) {
@@ -100,8 +111,13 @@ export class ProfileComponent implements OnInit {
 
 
 
+<<<<<<< HEAD
+  loadProfile(username) {
+    this.profileService.getWall(username).subscribe(
+=======
   loadProfile() {
     this.profileService.getWall(this.user).subscribe(
+>>>>>>> d4632fe27f5fd7bd2ae0fe56052c6622033b85c3
       res => {
         console.log(res);
         if (!res.error) {
@@ -161,49 +177,52 @@ export class ProfileComponent implements OnInit {
 
 
   postLike(post) {
-    let data = {
-      postId: post.postId,
-      username: localStorage.getItem('username'),
-      type: 'like',
-    }
-    this.feedService.like(data).subscribe(
-      res => {
-        console.log(res);
-        if (res.success) {
-          post.reactions.push(data);
-          post.likedByUser = true;
-        }
-      },
-      err => {
-        alert("connection timout");
-      }
-    )
+    // let data = {
+    //   postId: post.postId,
+    //   username: localStorage.getItem('username'),
+    //   type: 'like',
+    // }
+    // this.feedService.like(data).subscribe(
+    //   res => {
+    //     console.log(res);
+    //     if (res.success) {
+    //       post.reactions.push(data);
+    //       post.likedByUser = true;
+    //     }
+    //   },
+    //   err => {
+    //     alert("connection timout");
+    //   }
+    // )
+
+    this.commonService.postLike(post);
   }
 
   postComment(comment) {
-    console.log(comment);
-    let parent = this.currPost;
-    let data = {
-      wall : parent.wall,
-      content: comment.form.value.content,
-      creator: localStorage.getItem('username'),
-      parent: parent.postId,
-      pictureId: "null",
-      type: 'post',
-    }
+    // let parent = this.currPost;
+    // let data = {
+    //   wall : parent.wall,
+    //   content: comment.form.value.content,
+    //   creator: localStorage.getItem('username'),
+    //   parent: parent.postId,
+    //   pictureId: "null",
+    //   type: 'post',
+    // }
+    // this.modalService.dismissAll();
+    //
+    // this.feedService.post(data).subscribe(
+    //   res => {
+    //     console.log(res);
+    //     if (res.success) {
+    //       parent.children.push(data);
+    //     }
+    //   },
+    //   err => {
+    //     alert("Connection timout");
+    //   }
+    // )
+    this.commonService.postComment(comment, this.currPost);
     this.modalService.dismissAll();
-
-    this.feedService.post(data).subscribe(
-      res => {
-        console.log(res);
-        if (res.success) {
-          parent.children.push(data);
-        }
-      },
-      err => {
-        alert("Connection timout");
-      }
-    )
   }
 
   updateBio(bio) {
