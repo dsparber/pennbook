@@ -349,7 +349,8 @@ async function getProfilePicture(username) {
     if (profilePicturePosts.length === 0) {
         return null;
     }
-    return await getPictureUrlFromPost(profilePicturePosts.reverse()[0]);
+    profilePicturePosts = profilePicturePosts.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
+    return await getPictureUrlFromPost(profilePicturePosts[0]);
 }
 
 async function mapPost(post) {
