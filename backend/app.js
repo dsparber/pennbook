@@ -43,6 +43,7 @@ app.get(`${path}/user/recommendations`, routes.friendRecommendations);
 app.get(`${path}/friends`, routes.getFriends);
 app.get(`${path}/wall`, routes.wall);
 app.get(`${path}/wall/:username`, routes.userWall);
+app.get(`${path}/profile/:username`, routes.userProfile);
 app.get(`${path}/graph`, routes.getGraph);
 app.get(`${path}/graph/:selected`, routes.getGraph);
 

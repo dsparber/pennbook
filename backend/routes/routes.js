@@ -87,9 +87,13 @@ const reaction = function(req, res) {
 }
 
 const userWall = function(req, res) {
-    var username = req.auth.username;
     var wall = req.params.username;
-    db.userWall(username, wall, jsonCallback(res));
+    db.userWall(wall, jsonCallback(res));
+}
+
+const userProfile = function(req, res) {
+    var username = req.auth.username;
+    db.userProfile(username, jsonCallback(res));
 }
 
 const addFriend = function(req, res) {
@@ -236,4 +240,5 @@ module.exports = {
     activeUsers: activeUsers,
     searchUser: searchUser,
     friendRecommendations: friendRecommendations,
+    userProfile: userProfile,
 }

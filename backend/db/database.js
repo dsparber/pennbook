@@ -385,52 +385,23 @@ async function posts(walls, callback) {
     }
 }
 
-async function userWall(user, wall, callback) {
+async function userProfile(user, callback) {
     try {
-        let profile = await profileAsync(wall, true);
-        let isFriend = await isFriendAsync(user, wall);
-        let userPosts = [];
-
-        if (isFriend) {
-            userPosts = await posts([wall], () => {});
-        }
-
-        let data = {
-            profile: profile,
-            isFriend: isFriend,
-            posts: userPosts,
-        }
-
-        callback(null, data);
+        let profile = await profileAsync(user, true);
+        callback(null, profile);
     } catch (err) {
         callback(err, null);
     }
+}
 
 
-    profile(wall, function (err, profile) {
-        if (err) {
-            callback(err, null);
-            return;
-        }
-        posts([username], function (err, posts) {
-            if (err) {
-                callback(err, null);
-                return;
-            }
-            callback(null, {
-                profile: profile,
-                posts: posts
-            });
-        });
-    });
-
-    db.Post.query(username).loadAll().exec(function (err, posts) {
-        if (err) {
-            callback(err, null);
-        } else {
-
-        }
-    });
+async function userWall(wall, callback) {
+    try {
+        let userPosts = await posts([wall], () => {});
+        callback(null, userPosts);
+    } catch (err) {
+        callback(err, null);
+    }
 }
 
 function wall(username, callback) {
@@ -754,4 +725,5 @@ module.exports = {
     getMapReduceData: getMapReduceData,
     saveAdsorptionResult: saveAdsorptionResult,
     friendRecommendations: friendRecommendations,
+    userProfile: userProfile,
 }
