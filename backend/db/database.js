@@ -121,6 +121,16 @@ function signup(user, callback) {
     });
 }
 
+async function isFriendAsync(user1, user2) {
+    if (user1 === user2) {
+        return true;
+    }
+
+    let items = await getItems(db.Friend.query(user1).where('friend').eq(user2).exec());
+    return items.length > 0;
+}
+
+
 function isFriend(user1, user2, callback) {
     if (user1 === user2) {
         callback(null, true);
@@ -368,13 +378,35 @@ async function posts(walls, callback) {
         posts = posts.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
         posts = await Promise.all(posts.map(async post => await mapPost(post)));
         callback(null, posts);
+        return posts;
     } catch (err) {
         callback(err, null);
     }
 }
 
-function userWall(username, callback) {
-    profile(username, function (err, profile) {
+async function userWall(user, wall, callback) {
+    try {
+        let profile = await profileAsync(wall, true);
+        let isFriend = await isFriendAsync(user, wall);
+        let userPosts = [];
+
+        if (isFriend) {
+            userPosts = await posts([wall], () => {});
+        }
+
+        let data = {
+            profile: profile,
+            isFriend: isFriend,
+            posts: userPosts,
+        }
+
+        callback(null, data);
+    } catch (err) {
+        callback(err, null);
+    }
+
+
+    profile(wall, function (err, profile) {
         if (err) {
             callback(err, null);
             return;

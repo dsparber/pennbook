@@ -89,9 +89,7 @@ const reaction = function(req, res) {
 const userWall = function(req, res) {
     var username = req.auth.username;
     var wall = req.params.username;
-    checkPermission(username, wall, res, function() {
-        db.userWall(wall, jsonCallback(res));
-    });
+    db.userWall(username, wall, jsonCallback(res));
 }
 
 const addFriend = function(req, res) {
