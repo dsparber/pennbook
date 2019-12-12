@@ -238,7 +238,7 @@ async function addAffiliation(user, affiliation, callback) {
 
 async function removeAffiliation(user, affiliationName, callback) {
     try {
-        await db.Interest.destroy({ username: user, name: affiliationName });
+        await db.Affiliation.destroy({ username: user, name: affiliationName });
         await post({
             wall: user,
             creator: user,
@@ -349,7 +349,8 @@ async function getProfilePicture(username) {
     if (profilePicturePosts.length === 0) {
         return null;
     }
-    return await getPictureUrlFromPost(profilePicturePosts.reverse()[0]);
+    profilePicturePosts = profilePicturePosts.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
+    return await getPictureUrlFromPost(profilePicturePosts[0]);
 }
 
 async function mapPost(post) {
