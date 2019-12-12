@@ -26,6 +26,7 @@ export class CommonService {
   }
 
   postComment(comment, currPost) {
+    console.log(currPost);
     let data = {
       wall : currPost.wall.username,
       content: comment.form.value.content,
@@ -33,15 +34,26 @@ export class CommonService {
       parent: currPost.postId,
       type: 'post',
     }
+  if (!currPost.postId) {
+    delete data['postId'];
+  }
 
     this.feedService.post(data).subscribe(
       res => {
         console.log(res);
-        if (res.success) {
-          currPost.children.push(data);
+        if (!res.error) {
+          if (currPost.generalPost) {
+            res.result.createdAt = this.time_ago(res.result.createdAt);
+            currPost.posts.unshift(res.result);
+          } else {
+            console.log(res);
+            res.result.createdAt = this.time_ago(res.result.createdAt);
+            currPost.children.push(res.result);
+          }
         }
       },
       err => {
+        console.log(err);
         alert("Connection timout");
       }
     )
