@@ -80,6 +80,7 @@ const Post = dynamo.define('Post', {
         postId: dynamo.types.uuid(),
         content: Joi.string(),
         creator: Joi.string(),
+        reference: Joi.string(),
         parent: dynamo.types.uuid(),
         type: Joi.string(),
     },

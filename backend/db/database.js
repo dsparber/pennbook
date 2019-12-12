@@ -136,33 +136,35 @@ function isFriend(user1, user2, callback) {
     });
 }
 
-function post(post, callback) {
-    let pictureId = post.pictureId;
-    delete post.pictureId;
-    db.Post.create(post, async function (error, createdPost) {
-        if (error) {
-            callback(error, false);
-            return;
+async function post(post, callback) {
+    try {
+        let pictureId = post.pictureId;
+        delete post.pictureId;
+        let createdPost = await db.Post.create(post);
+        if (post.parent) {
+            await db.SubPost.create({
+                postId: post.parent,
+                childPostId: createdPost.get('postId'),
+            });
         }
-        try {
-            if (post.parent) {
-                await db.SubPost.create({
-                    postId: post.parent,
-                    childPostId: createdPost.get('postId'),
-                });
-            }
-            if (pictureId) {
-                await db.PostPicture.create({
-                    postId: createdPost.get('postId'),
-                    pictureId: pictureId,
-                });
-            }
-            let result = await mapPost(createdPost.attrs);
+        if (pictureId) {
+            await db.PostPicture.create({
+                postId: createdPost.get('postId'),
+                pictureId: pictureId,
+            });
+        }
+        let result = await mapPost(createdPost.attrs);
+        if (callback) {
             callback(null, result);
-        } catch (err) {
-            callback(err, null);
         }
-    });
+           
+    } catch (err) {
+        if (callback) {
+            callback(err, null);
+        } else {
+            throw err;
+        }
+    }
 }
 
 function reaction(reaction, callback) {
@@ -176,47 +178,67 @@ function reaction(reaction, callback) {
 }
 
 
-function addInterest(user, interest, callback) {
-    interest.username = user;
-    db.Interest.create(interest, function (err) {
-        if (err) {
-            callback(err, false);
-            return;
-        }
+async function addInterest(user, interest, callback) {
+    try {
+        interest.username = user;
+        await db.Interest.create(interest);
+        await post({
+            wall: username,
+            creator: username,
+            reference: interest.name,
+            type: 'interest-added',
+        });
         callback(null, true);
-    });
+    } catch (err) {
+        callback(err, false);
+    }
 }
 
-function removeInterest(user, interestName, callback) {
-    db.Interest.destroy({ username: user, name: interestName }, function (err) {
-        if (err) {
-            callback(err, false);
-            return;
-        }
+async function removeInterest(user, interestName, callback) {
+    try {
+        await db.Interest.destroy({ username: user, name: interestName });
+        await post({
+            wall: username,
+            creator: username,
+            reference: interestName,
+            type: 'interest-removed',
+        });
         callback(null, true);
-    });
+    } catch (err) {
+        callback(err, false);
+    }
 }
 
-function addAffiliation(user, affiliation, callback) {
-    affiliation.username = user;
-    db.Affiliation.create(affiliation, function (err, created) {
-        if (err) {
-            callback(err, false);
-            return;
-        }
+async function addAffiliation(user, affiliation, callback) {
+    try {
+        affiliation.username = user;
+        await db.Affiliation.create(affiliation);
+        await post({
+            wall: username,
+            creator: username,
+            reference: affiliation.name,
+            type: 'affiliation-added',
+        });
         callback(null, true);
-    });
+    } catch (err) {
+        callback(err, false);
+    }
 }
 
 
-function removeAffiliation(user, affiliationName, callback) {
-    db.Affiliation.destroy({ username: user, name: affiliationName }, function (err) {
-        if (err) {
-            callback(err, false);
-            return;
-        }
+async function removeAffiliation(user, affiliationName, callback) {
+    try {
+        await db.Interest.destroy({ username: user, name: affiliationName });
+        await post({
+            wall: username,
+            creator: username,
+            reference: affiliationName,
+            type: 'affiliation-removed',
+        });
         callback(null, true);
-    });
+    } catch (err) {
+        callback(err, false);
+    }
 }
 
 function updateProfile(user, profile, callback) {
@@ -270,26 +292,33 @@ async function profile(username, callback) {
     }
 }
 
-function addFriend(username, friend, callback) {
-    db.Friend.create({
-        username: username,
-        friend: friend
-    }, function (err, result) {
-        if (err) {
-            callback(err, false);
-            return;
-        }
-        db.Friend.create({
+async function addFriend(username, friend, callback) {
+    try {
+        await db.Friend.create({
+            username: username,
+            friend: friend
+        });
+        await db.Friend.create({
             username: friend,
             friend: username
-        }, function (err, result) {
-            if (err) {
-                callback(err, false);
-                return;
-            }
-            callback(null, true);
         });
-    });
+        // Create posts about new friendship
+        await post({
+            wall: username,
+            creator: username,
+            reference: friend,
+            type: 'friendship',
+        });
+        await post({
+            wall: friend,
+            creator: friend,
+            reference: username,
+            type: 'friendship',
+        });
+        callback(null, true);
+    } catch (err) {
+        callback(err, false);
+    }
 }
 
 async function getPictureUrl(pictureId) {
@@ -318,6 +347,10 @@ async function mapPost(post) {
     post.picture = await getPictureUrlFromPost(post);
     post.creator = await profileAsync(post.creator);
     post.wall = await profileAsync(post.wall);
+
+    if (post.type == "friendship") {
+        post.reference = await profileAsync(post.reference, false);
+    }
 
     let subPosts = await getItems(db.SubPost.query(post.postId).exec());
     if (subPosts.length !== 0) {
