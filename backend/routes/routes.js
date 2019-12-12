@@ -92,7 +92,7 @@ const userWall = function(req, res) {
 }
 
 const userProfile = function(req, res) {
-    var username = req.auth.username;
+    var username = req.params.username;
     db.userProfile(username, jsonCallback(res));
 }
 
