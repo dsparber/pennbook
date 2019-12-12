@@ -183,8 +183,8 @@ async function addInterest(user, interest, callback) {
         interest.username = user;
         await db.Interest.create(interest);
         await post({
-            wall: username,
-            creator: username,
+            wall: user,
+            creator: user,
             reference: interest.name,
             type: 'interest-added',
         });
@@ -198,8 +198,8 @@ async function removeInterest(user, interestName, callback) {
     try {
         await db.Interest.destroy({ username: user, name: interestName });
         await post({
-            wall: username,
-            creator: username,
+            wall: user,
+            creator: user,
             reference: interestName,
             type: 'interest-removed',
         });
@@ -214,8 +214,8 @@ async function addAffiliation(user, affiliation, callback) {
         affiliation.username = user;
         await db.Affiliation.create(affiliation);
         await post({
-            wall: username,
-            creator: username,
+            wall: user,
+            creator: user,
             reference: affiliation.name,
             type: 'affiliation-added',
         });
@@ -230,8 +230,8 @@ async function removeAffiliation(user, affiliationName, callback) {
     try {
         await db.Interest.destroy({ username: user, name: affiliationName });
         await post({
-            wall: username,
-            creator: username,
+            wall: user,
+            creator: user,
             reference: affiliationName,
             type: 'affiliation-removed',
         });
