@@ -23,8 +23,7 @@ export class SignInComponent implements OnInit {
       username: user.email,
       password: user.password,
       profile: {
-        firstName: user.firstName,
-        lastName: user.firstName,
+        fullName: user.firstName,
         email: user.email,
         birthday: user.birthday
       }
@@ -37,7 +36,7 @@ export class SignInComponent implements OnInit {
       } else {
         localStorage.setItem('token', res.token);
         localStorage.setItem('username', data.username);
-        this.router.navigateByUrl('/feed');
+        this.router.navigateByUrl(`/profile/${data.username}`);
       }
     },
     err => {
@@ -60,9 +59,10 @@ export class SignInComponent implements OnInit {
         alert("Something went wrong: " + JSON.stringify(res.error));
       } else {
         if (res.token) {
+          console.log(res);
           localStorage.setItem('token', res.token);
           localStorage.setItem('username', data.username);
-          this.router.navigateByUrl('/feed');
+          this.router.navigateByUrl(`/profile/${data.username}`);
         } else {
           console.log(res.token);
           alert("Invalid username or password " + JSON.stringify(res.error));

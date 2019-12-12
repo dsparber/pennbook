@@ -321,7 +321,7 @@
                   <img src='assets/profile.jpg' width =50 height=50 >
                 </div>
                 <div  style=' width:50%; margin-left: 75px; min-width:500px; max-width:500px;'>
-                  <p style="padding-left:0;">{{post.creator}}</p>
+                  <p style="padding-left:0;">{{post.creator.username}}</p>
                   <p style='font-style:italic; font-size: small'> {{post.createdAt}}</p>
                   <div style=" padding-top: 10px; margin-left: 22px;">
                     <p style=" max-width:325px;min-width:325px"> {{post.content}}</p>
@@ -345,7 +345,7 @@
                      <img src='assets/profile.jpg' width =50 height=50 >
                    </div>
                    <div  style=' width:90%; padding-left: 40px; float: left;'>
-                     <p style="padding-left:0;">{{comment.creator}}</p>
+                     <p style="padding-left:0;">{{comment.creator.username}}</p>
                      <p style='font-style:italic; font-size: small'> {{comment.createdAt}}</p>
                      <div style=" padding-top: 10px; padding-left:10px;">
                        <p style=" max-width:325px;min-width:325px"> {{comment.content}} </p>

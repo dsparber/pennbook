@@ -11,9 +11,9 @@ export class ProfileService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getWall() {
+  public getWall(username) {
     console.log(TOKEN);
-    return this.httpClient.get<any>(`${API_URL}wall/${localStorage.getItem('username')}`, {headers: {
+    return this.httpClient.get<any>(`${API_URL}wall/${username}`, {headers: {
       Authorization: TOKEN
     }});
   }

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import {FeedService} from './../feed/service/feed.service'
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
 
-  constructor() { }
+  constructor(private feedService: FeedService) { }
 
   copy(arr1, arr2) {
     for (let i = 0; i < arr1.length; i++) {
@@ -22,6 +23,48 @@ export class CommonService {
       }
     }
     return arr2;
+  }
+
+  postComment(comment, currPost) {
+    let data = {
+      wall : currPost.wall.username,
+      content: comment.form.value.content,
+      creator: localStorage.getItem('username'),
+      parent: currPost.postId,
+      type: 'post',
+    }
+
+    this.feedService.post(data).subscribe(
+      res => {
+        console.log(res);
+        if (res.success) {
+          currPost.children.push(data);
+        }
+      },
+      err => {
+        alert("Connection timout");
+      }
+    )
+  }
+
+  postLike(post) {
+    let data = {
+      postId: post.postId,
+      username: localStorage.getItem('username'),
+      type: 'like',
+    }
+    this.feedService.like(data).subscribe(
+      res => {
+        console.log(res);
+        if (res.success) {
+          post.reactions.push(data);
+          post.likedByUser = true;
+        }
+      },
+      err => {
+        alert("connection timout");
+      }
+    )
   }
 
   time_ago(time) {

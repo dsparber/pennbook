@@ -12,7 +12,7 @@ import { ChatComponent } from './chat/chat.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/signin', pathMatch: 'full' },
-  { path: 'profile', component: ProfileComponent, },
+  { path: 'profile/:id', component: ProfileComponent, },
   { path: 'signin', component: SignInComponent},
   { path: 'feed', component: FeedComponent},
   { path: 'friends', component: FriendsComponent},
