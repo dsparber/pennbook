@@ -1,27 +1,17 @@
-<head>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script language="javascript" type="text/javascript" src="scripts/jit.js"></script>
-</head>
-
-<body>
-  <app-header></app-header>
-  <div id="container">
-    <ngx-graph 
-      class="chart-container" 
-      [draggingEnabled]="false" 
-      [panningEnabled]="false" 
-      [enableZoom]="false"
-      [autoZoom]="true" 
-      [autoCenter]="true" 
-      [links]="links" 
-      [nodes]="nodes">
-      <ng-template #nodeTemplate let-node>
-        <svg:g class="node" (click)="nodeClicked(node.id)">
-          <svg:text alignment-baseline="central" y="15" [attr.fill]="node.color">{{node.label}}</svg:text>
-        </svg:g>
-      </ng-template>
-    </ngx-graph>
-  </div>
-</body>
+<div id="container">
+  <ngx-graph 
+    class="chart-container" 
+    [draggingEnabled]="false" 
+    [panningEnabled]="false" 
+    [enableZoom]="false"
+    [autoZoom]="true" 
+    [autoCenter]="true" 
+    [links]="links" 
+    [nodes]="nodes">
+    <ng-template #nodeTemplate let-node>
+      <svg:g class="node" (click)="nodeClicked(node.id)">
+        <svg:text alignment-baseline="central" y="15" [attr.fill]="node.color">{{node.label}}</svg:text>
+      </svg:g>
+    </ng-template>
+  </ngx-graph>
+</div>

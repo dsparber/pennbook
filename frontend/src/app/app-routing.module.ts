@@ -8,13 +8,13 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { VisualizerComponent } from './visualizer/visualizer.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/signin', pathMatch: 'full' },
   { path: 'profile', component: ProfileComponent, },
   { path: 'signin', component: SignInComponent},
   { path: 'feed', component: FeedComponent},
   { path: 'friends', component: FriendsComponent},
   { path: 'chat', component: ChatComponent}, 
   { path: 'visualizer', component: VisualizerComponent}, 
+  { path: '**', redirectTo: '/feed' },
 ];
 
 

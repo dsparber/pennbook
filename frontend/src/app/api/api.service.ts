@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 
-const HOST = 'ec2-3-84-147-190.compute-1.amazonaws.com'
+const HOST = 'pennbook.sparber.io'
 
 @Injectable()
 export class ApiService {
@@ -13,7 +13,7 @@ export class ApiService {
     }
 
     apiUrl() {
-        return `http://${this.host()}/api/`;
+        return `https://${this.host()}/api/`;
     }
 
     token() {
