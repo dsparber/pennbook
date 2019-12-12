@@ -81,7 +81,7 @@ const Post = dynamo.define('Post', {
         content: Joi.string(),
         creator: Joi.string(),
         reference: Joi.string(),
-        parent: dynamo.types.uuid(),
+        parent: Joi.string(),
         type: Joi.string(),
     },
     indexes: [
