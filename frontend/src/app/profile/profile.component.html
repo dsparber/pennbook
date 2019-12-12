@@ -295,7 +295,7 @@
         <div  style='padding-top:30px; width:100%; padding-left: 130px;'>
           <h5  style="padding-left:0;">{{profile.fullName}}
             <button *ngIf= "!myPage && friends"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary">Add Friend</button>
-            <button *ngIf= "myPage"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary" (click)="open(content, 'profile', post)">Edit Profile</button>
+            <button *ngIf= "myPage"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary" (click)="open(content, 'profile', null)">Edit Profile</button>
             <button *ngIf= "!myPage && !friends"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary">Add Friend</button>
           </h5>
           <p>Lives in:
@@ -304,11 +304,11 @@
           <p>Studies at:
           </p>
         </div>
-        <p style="margin-top: 50px; font-weight:bold"> About Me: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'bio', post)">edit</button></p>
+        <p style="margin-top: 50px; font-weight:bold"> About Me: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'bio', null)">edit</button></p>
         <p style="margin-top: 10px"> {{profile.about}}</p>
-        <p style="padding-top: 40px; font-weight:bold"> Interests: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'interests', post)">edit</button></p>
+        <p style="padding-top: 40px; font-weight:bold"> Interests: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'interests', null)">edit</button></p>
         <p style="padding-top: 5px; padding-bottom: 30px"> {{interestString}}</p>
-        <p style="padding-top: 5px; font-weight:bold"> Affiliations: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'affil', post)">edit</button></p>
+        <p style="padding-top: 5px; font-weight:bold"> Affiliations: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'affil', null)">edit</button></p>
         <p style="padding-top: 5px; padding-bottom: 30px"> {{afilString}}</p>
       </div>
 
@@ -372,7 +372,7 @@
         </button>
       </div>
       <div class="modal-body" style="mid-width:600px; ">
-        <form (ngSubmit)="editProfile(profile)" #profile="ngForm" style="mid-width:600px;">
+        <form (ngSubmit)="upadteProfile(profile)" #profile="ngForm" style="mid-width:600px;">
           <div class="form-group">
             <div class="container">
               <div class="row">

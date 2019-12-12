@@ -316,7 +316,7 @@
       </div>
       <div class="form-group">
         <label for="exampleInputEmail1">Birthday</label>
-        <input  class="form-control" name="birthday" type="date" [ngModel] ="dt | date:'yyyy-MM-dd'" [(ngModel)]="model.birthday" #birthday="ngModel" aria-describedby="emailHelp" placeholder="Enter email" required>
+        <input  class="form-control" name="birthday" type="date" [ngModel] ="model.birthday | date:'yyyy-MM-dd'" [(ngModel)]="model.birthday" #birthday="ngModel" aria-describedby="emailHelp" placeholder="Enter email" required>
       </div>
       <div class="form-group">
         <label for="exampleInputEmail1">Email</label>

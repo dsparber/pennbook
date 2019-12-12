@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 
-const HOST = 'localhost:8080'
+const HOST = 'ec2-3-84-147-190.compute-1.amazonaws.com'
 
 @Injectable()
 export class ApiService {

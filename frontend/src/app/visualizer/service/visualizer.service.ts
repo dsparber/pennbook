@@ -1,23 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-const API_URL = "http://localhost:8080/api/";
-const TOKEN = `Bearer ${localStorage.getItem('token')}`;
+import { ApiService } from 'src/app/api/api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class VisualizerService {
-  constructor(private httpClient: HttpClient) { }
+  constructor(private apiService: ApiService) { }
 
   public getGraph(selected) {
-    let url = `${API_URL}graph`;
+    let url = `graph`;
     if (selected) {
       url += `/${selected}`;
     }
-    return this.httpClient.get<any>(url, { headers: {
-      Authorization: TOKEN
-    }});
+    return this.apiService.get(url);
   }
 }
