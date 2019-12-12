@@ -8,6 +8,7 @@ const storage = require('./db/storage.js');
 
 const port = process.env.PORT;
 const path = process.env.API_PATH;
+const debug = process.env.MODE == 'debug';
 const cors = require('cors');
 
 const app = express();
@@ -51,7 +52,7 @@ var server = app.listen(port, function(){
 });
 
 //Socket Setup
-var io = socket(server);
+var io = socket(server,  {secure: true});
 io.origins('*:*')
 
 io.on('connection',function(socket) {
