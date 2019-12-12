@@ -15,3 +15,7 @@ svg#clouds {
   height: calc(100% - 60px);
   background-color: rgba(0, 0, 0, 0.1);
 }
+
+.app-container.signup {
+  background-color: white;
+}
