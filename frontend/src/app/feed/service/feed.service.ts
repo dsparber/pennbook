@@ -12,9 +12,9 @@ export class FeedService {
   }
 
   
-  public getFeed(wall) {
+  public getFeed(wall, type) {
     if (wall) {
-      return this.apiService.get(`wall/${wall}`);
+      return this.apiService.get(`wall/${type}/${wall}`);
     }
     return this.apiService.get('wall');
   }

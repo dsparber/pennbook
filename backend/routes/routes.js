@@ -93,6 +93,17 @@ const userWall = function(req, res) {
     db.userWall(wall, jsonCallback(res));
 }
 
+const affiliationWall = function(req, res) {
+    var name = req.params.name;
+    db.affiliationWall(name, jsonCallback(res));
+}
+
+const interestWall = function(req, res) {
+    var name = req.params.name;
+    db.interestWall(name, jsonCallback(res));
+}
+
+
 const getPost = function(req, res) {
     var postId = req.params.postId;
     db.getPost(postId, jsonCallback(res));
@@ -269,4 +280,6 @@ module.exports = {
     getPost: getPost,
     getPostChildren: getPostChildren,
     getPostReactions: getPostReactions,
+    interestWall: interestWall,
+    affiliationWall: affiliationWall,
 }

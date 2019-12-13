@@ -24,6 +24,8 @@ import { Post } from './post/post.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ProfilePicture } from './profile-picture/profile-picture.component';
 import { StringEditor } from './string-editor/string-editor.component';
+import { InterestFeedComponent } from './interest-feed/interest-feed.component';
+import { AffiliationFeedComponent } from './affiliation-feed/affiliation-feed.component';
 
 
 
@@ -42,6 +44,8 @@ import { StringEditor } from './string-editor/string-editor.component';
     VisualizerComponent,
     ProfilePicture,
     StringEditor,
+    InterestFeedComponent,
+    AffiliationFeedComponent,
   ],
   imports: [
     BrowserModule,

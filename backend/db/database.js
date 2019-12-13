@@ -263,10 +263,18 @@ async function removeAffiliation(user, affiliationName, callback) {
 
 function updateProfile(user, profile, callback) {
     profile.username = user;
-    db.Profile.update(profile, function (err, updated) {
+    db.Profile.update(profile, async function (err, updated) {
         if (err) {
             callback(err, null);
             return;
+        }
+        if (profile.about) {
+            await post({
+                wall: friend,
+                creator: friend,
+                content: profile.about,
+                type: 'about-changed',
+            });
         }
         callback(null, updated);
     })
@@ -415,9 +423,28 @@ async function posts(walls, callback) {
     try {
         let posts = await getItems(db.Post.scan().where('wall').in(walls).where('parent').null().exec());
         posts = posts.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
-        posts.forEach(p => p.ready = false);
         callback(null, posts);
         return posts;
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
+async function affiliationWall(name, callback) {
+    try {
+        let users = (await getItems(db.Affiliation.query(name).exec())).map(e => e.username);
+        let data = await posts(users, () => {});
+        callback(null, data);
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
+async function interestWall(name, callback) {
+    try {
+        let users = (await getItems(db.Interest.query(name).exec())).map(e => e.username);
+        let data = await posts(users, () => {});
+        callback(null, data);
     } catch (err) {
         callback(err, null);
     }

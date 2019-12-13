@@ -9,6 +9,7 @@ import { FeedService } from './service/feed.service'
 export class FeedComponent implements OnInit, OnChanges  {
 
   @Input() wall:String = null;
+  @Input() type:String = null;
   postIds:any = null;
   delta:number = 5;
   maxPosts:number = 5;
@@ -52,8 +53,12 @@ export class FeedComponent implements OnInit, OnChanges  {
     console.log(event);
   }
 
+  showCreate() {
+    return this.type == null || this.type  == 'user';
+  }
+
   getFeed() {
-    this.feedService.getFeed(this.wall)
+    this.feedService.getFeed(this.wall, this.type)
       .subscribe(
         res => {
           this.postIds = res.result.map(p => p.postId);

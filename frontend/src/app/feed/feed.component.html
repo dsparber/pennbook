@@ -1,6 +1,6 @@
-<div [ngClass]="{container: wall == null}">
+<div [ngClass]="{ container: type != null }">
   <div class="row">
-    <div class="col-12 col-lg-8 offset-lg-2">
+    <div *ngIf="showCreate()" class="col-12 col-lg-8 offset-lg-2">
       <app-create-post (onPost)="insertPost($event)" [wall]="wall"></app-create-post>
     </div>
     <div class="col-12 col-lg-8 offset-lg-2" *ngFor="let postId of (postIds || []); let i=index">

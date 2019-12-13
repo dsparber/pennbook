@@ -6,9 +6,12 @@ import { FriendsComponent } from './friends/friends.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { VisualizerComponent } from './visualizer/visualizer.component';
+import { AffiliationFeedComponent } from './affiliation-feed/affiliation-feed.component';
 
 const routes: Routes = [
   { path: 'profile/:user', component: ProfileComponent, },
+  { path: 'affiliation/:name', component: AffiliationFeedComponent, },
+  { path: 'interest/:name', component: AffiliationFeedComponent, },
   { path: 'signin', component: SignInComponent},
   { path: 'feed', component: FeedComponent},
   { path: 'friends', component: FriendsComponent},
