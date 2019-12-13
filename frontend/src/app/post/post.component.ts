@@ -28,6 +28,8 @@ export class Post implements OnInit {
 
   ngOnInit() {
     this.loadPost();
+    this.loadPostChildren();
+    this.loadPostReactions();
   }
 
   loadPost() {

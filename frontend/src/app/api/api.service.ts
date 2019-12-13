@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 
-const HOST = 'localhost:8080'
+const HOST = 'pennbook.sparber.io'
 
 @Injectable()
 export class ApiService {
@@ -13,7 +13,7 @@ export class ApiService {
     }
 
     apiUrl() {
-        return `http://${this.host()}/api/`;
+        return `https://${this.host()}/api/`;
     }
 
     token() {
