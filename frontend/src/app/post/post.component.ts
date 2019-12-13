@@ -45,10 +45,11 @@ export class Post implements OnInit {
       username: this.user(),
       type: type,
     };
+    let oldReaction = this.getReaction();
     this.removeReaction();
 
     // Add
-    if (this.getReaction() ==  null || reaction.type != this.getReaction().type) {
+    if (oldReaction ==  null || reaction.type != oldReaction.type) {
       this.api.post('reaction', reaction).subscribe(
         res => this.post.reactions.push(reaction),
         err => console.error(err),

@@ -21,7 +21,7 @@ var activeUsers = {};
 app.post(`${path}/login`, routes.login);
 app.post(`${path}/signup`, routes.signup);
 app.post(`${path}/post`, routes.post);
-app.post(`${path}/reaction`, routes.reaction);
+app.post(`${path}/reaction/add`, routes.reaction);
 app.post(`${path}/reaction/remove`, routes.removeReaction);
 app.post(`${path}/friends/add`, routes.addFriend);
 app.post(`${path}/interest/add`, routes.addInterest);
