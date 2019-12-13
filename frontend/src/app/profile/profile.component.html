@@ -17,7 +17,7 @@
               <div>{{ profile.email || '---' }}</div>
               <div class="spacer small"></div>
               <div><strong>About me</strong></div>
-              <div>{{ profile.about || '---' }}</div>
+              <app-string-editor [initialValue]="profile.about" [editable]="myPage()" (onSave)="updateAbout($event)"></app-string-editor>
               <div class="spacer small"></div>
               <div><strong>Affiliations</strong></div>
               <div>{{ toString(profile.affiliations) }}</div>
@@ -26,7 +26,6 @@
               <div>{{ toString(profile.interests) }}</div>
             </div>
           </div>
-          <button *ngIf="myPage()" class="btn btn-warning">Edit</button>
           <button *ngIf="!isFriend" (click)="addFriend()" class="btn btn-success">Add Friend</button>
         </div>
         <div class="spacer"></div>

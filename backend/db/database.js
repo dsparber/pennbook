@@ -263,12 +263,12 @@ async function removeAffiliation(user, affiliationName, callback) {
 
 function updateProfile(user, profile, callback) {
     profile.username = user;
-    db.Profile.update(profile, function (err) {
+    db.Profile.update(profile, function (err, updated) {
         if (err) {
-            callback(err, false);
+            callback(err, null);
             return;
         }
-        callback(null, true);
+        callback(null, updated);
     })
 }
 

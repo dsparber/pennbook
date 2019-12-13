@@ -23,6 +23,7 @@ import { CreatePost } from './create-post/create-post.component';
 import { Post } from './post/post.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ProfilePicture } from './profile-picture/profile-picture.component';
+import { StringEditor } from './string-editor/string-editor.component';
 
 
 
@@ -40,6 +41,7 @@ import { ProfilePicture } from './profile-picture/profile-picture.component';
     Post,
     VisualizerComponent,
     ProfilePicture,
+    StringEditor,
   ],
   imports: [
     BrowserModule,

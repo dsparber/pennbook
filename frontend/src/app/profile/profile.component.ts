@@ -49,6 +49,19 @@ export class ProfileComponent implements OnInit {
     );
   }
 
+  updateAbout(value) {
+    this.profile.about = value;
+    this.updateProfile({about: value});
+  }
+
+  updateProfile(data) {
+    data['username'] = this.user;
+    this.api.post('profile/update', data).subscribe(
+      res => {},
+      err => console.error(err)
+    )
+  }
+
   loadIsFriend() {
     this.api.get(`friend/${this.user}`).subscribe(
       res => this.isFriend = res.result,
