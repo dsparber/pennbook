@@ -421,7 +421,7 @@ function wall(username, callback) {
             return;
         }
         let usernames = [];
-        if (friends.Items.length === 0) {
+        if (friends.Items.length > 0) {
             usernames = friends.Items.map(v => v.get('friend'));
         }
         usernames.push(username);
