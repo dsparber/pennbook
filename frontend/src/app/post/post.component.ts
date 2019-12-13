@@ -11,7 +11,8 @@ import { faHeart, faThumbsUp, faThumbsDown, faSmileBeam, faSadTear} from '@forta
 
 export class Post implements OnInit {
 
-  @Input() post:any;
+  @Input() postId:any;
+  post:any = {};
   reactions:any = null;
   children:any = null;
   comment:String = null;
@@ -27,6 +28,10 @@ export class Post implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit() {
+    this.post = {
+      ready: false,
+      postId: this.postId,
+    }
     this.loadPost();
     this.loadPostChildren();
     this.loadPostReactions();
