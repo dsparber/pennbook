@@ -41,3 +41,32 @@
     background-color: rgba(255, 255, 255, 1);
     color: #1976d2;
 }
+
+.card {
+    margin: 15px 0;
+}
+
+.card h5 {
+    margin: 0;
+}
+
+.card-actions {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-actions .btn {
+    margin-top: 10px;
+}
+
+.card-img-top-container {
+    height: 150px;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-img-top-container .card-img-top  {
+    position: absolute;
+}

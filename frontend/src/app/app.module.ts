@@ -19,7 +19,8 @@ import { SocketService } from './sockets/socket.service';
 import { ApiService } from './api/api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FriendComponent } from './friends/friend/friend.component';
-
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
+import { SelectDropDownModule } from 'ngx-select-dropdown'
 
 
 @NgModule({
@@ -43,7 +44,9 @@ import { FriendComponent } from './friends/friend/friend.component';
     NgbModule,
     TagInputModule,
     BrowserAnimationsModule,
-    NgxGraphModule
+    NgxGraphModule,
+    AngularMultiSelectModule,
+    SelectDropDownModule
   ],
   providers: [AuthGuard, SocketService, ApiService],
   bootstrap: [AppComponent]

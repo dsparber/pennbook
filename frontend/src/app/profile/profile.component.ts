@@ -51,6 +51,7 @@ export class ProfileComponent implements OnInit {
       this.posts = [];
       this.myPage = this.user == localStorage.getItem('username');
       this.loadProfile();
+      this.loadWall();
     });
 
   }
@@ -111,17 +112,37 @@ export class ProfileComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
-
-
   loadProfile() {
+    this.profileService.getProfile(this.user).subscribe(
+      res => {
+        this.friends = res.result.isFriend;
+
+        this.profile = res.result;
+        console.log(res);
+
+        this.affiliations = res.result.affiliations;
+
+        for (let i = 0; i < res.result.affiliations.length; i++) {
+          this.afil.push(res.result.affiliations[i].name);
+        }
+        this.afilCopy = this.commonService.copy(this.afil, []);
+        this.buildAffilationString();
+
+        for (let i = 0; i < res.result.interests.length; i++) {
+          this.interest.push(res.result.interests[i].name);
+        }
+        this.copyInterest = this.commonService.copy(this.interest, []);
+        this.buildInterestString();
+      }
+    )
+  }
+
+  loadWall() {
     this.profileService.getWall(this.user).subscribe(
       res => {
-        console.log(res);
-        this.friends = res.result.isFriend;
         if (!res.error) {
-          this.profile = res.result.profile;
-          let postsArray = res.result.posts;
-
+          console.log(res);
+          let postsArray = res.result;
           for (let i = 0; i < postsArray.length; i++) {
             postsArray[i].createdAt = this.commonService.time_ago(postsArray[i].createdAt);
             if (postsArray[i].type == 'post') {
@@ -150,19 +171,6 @@ export class ProfileComponent implements OnInit {
               }
             }
           }
-          this.affiliations = res.result.affiliations;
-
-          for (let i = 0; i < res.result.profile.affiliations.length; i++) {
-            this.afil.push(res.result.profile.affiliations[i].name);
-          }
-          this.afilCopy = this.commonService.copy(this.afil, []);
-          this.buildAffilationString();
-
-          for (let i = 0; i < res.result.profile.interests.length; i++) {
-            this.interest.push(res.result.profile.interests[i].name);
-          }
-          this.copyInterest = this.commonService.copy(this.interest, []);
-          this.buildInterestString();
         }
       },
       err => {
@@ -209,6 +217,7 @@ export class ProfileComponent implements OnInit {
       this.commonService.postComment(comment, this.currPost);
     }
     this.modalService.dismissAll();
+    this.model.email = "";
   }
 
   updateBio(bio) {

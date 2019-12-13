@@ -246,5 +246,4 @@ module.exports = {
     searchUser: searchUser,
     friendRecommendations: friendRecommendations,
     userProfile: userProfile,
-    removeReaction: removeReaction,
 }
