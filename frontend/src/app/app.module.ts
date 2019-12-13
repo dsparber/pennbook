@@ -19,6 +19,7 @@ import { SocketService } from './sockets/socket.service';
 import { ApiService } from './api/api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FriendComponent } from './friends/friend/friend.component';
+import { CreatePost } from './create-post/create-post.component';
 
 
 
@@ -32,6 +33,7 @@ import { FriendComponent } from './friends/friend/friend.component';
     FriendsComponent,
     FriendComponent,
     ChatComponent,
+    CreatePost,
     VisualizerComponent,
   ],
   imports: [

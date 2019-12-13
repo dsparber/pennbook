@@ -167,7 +167,7 @@ async function post(post, callback) {
         if (callback) {
             callback(null, result);
         }
-           
+        return result;  
     } catch (err) {
         if (callback) {
             callback(err, null);
@@ -377,6 +377,7 @@ async function posts(walls, callback) {
     try {
         let posts = await getItems(db.Post.scan().where('wall').in(walls).where('parent').null().exec());
         posts = posts.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
+        posts = [posts[0]]; /// TEST 
         posts = await Promise.all(posts.map(async post => await mapPost(post)));
         callback(null, posts);
         return posts;
