@@ -12,12 +12,17 @@ export class SignInComponent implements OnInit {
 
   model : any = {};
   sign : any = {};
+  error: boolean = false;
   constructor(public signInService: SignInService, public router: Router, private socketService: SocketService) { }
 
   ngOnInit() {
     if (localStorage.getItem('token')){
       this.router.navigate(['/feed']);
     }
+  }
+
+  closeError() {
+    this.error = false;
   }
 
   registerUser(form) {
@@ -35,7 +40,8 @@ export class SignInComponent implements OnInit {
     console.log(data);
     this.signInService.signup(data).subscribe(res => {
       if (!res.success) {
-        alert("Something went wrong: " + JSON.stringify(res.error))
+        this.error = true;
+        console.log(res);
       } else {
         localStorage.setItem('token', res.token);
         localStorage.setItem('username', data.username);
