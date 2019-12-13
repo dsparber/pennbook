@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ApiService } from '../api/api.service';
-import {CommonService} from '../common/common.service'
 
 @Component({
   selector: 'app-create-post',
@@ -11,14 +10,13 @@ import {CommonService} from '../common/common.service'
 export class CreatePost  {
 
   @Input() wall:String;
-  @Input() currPosts:any;
   @Output() onPost:any = new EventEmitter();
 
   content:String = "";
   file:any = null;
   profilePicture:boolean = false;
 
-  constructor(private api: ApiService, private commonService: CommonService,) { }
+  constructor(private api: ApiService) { }
 
   onFileChanged(event: any) {
     this.file = event.target.files[0];
@@ -45,9 +43,7 @@ export class CreatePost  {
     const formData = new FormData();
     formData.append("picture", this.file, this.file.name);
     this.api.post('picture/upload', formData).subscribe(
-      res => {
-        this.post(res.result.pictureId);
-      },
+      res => this.post(res.result.pictureId),
       err => console.error(err),
     );
   }

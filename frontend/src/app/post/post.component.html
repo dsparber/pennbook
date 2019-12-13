@@ -7,24 +7,27 @@
         <span *ngIf="post.creator.username != post.wall.username">
           &gt; <a routerLink='/profile/{{post.wall.username}}'><strong>{{post.wall.fullName}}</strong></a>
         </span>
+        <div class="timestamp">
+          <small> {{ timeString(post.createdAt) }}</small>
+        </div>
         <div *ngIf="post.type == 'friendship'">
           {{ post.creator.fullName }} is now friends with <a
-            routerLink='/profile/{{post.wall.username}}'>{{ post.reference.fullName }}</a>.
+            routerLink='/profile/{{post.reference.username}}'>{{ post.reference.fullName }}</a>.
         </div>
         <div *ngIf="post.type == 'profilePicture'">
           {{ post.creator.fullName }} added a new profile picture.
         </div>
         <div *ngIf="post.type == 'affiliation-added'">
-          {{ post.creator.fullName }} is now affiliated with {{ post.refernece }}.
+          {{ post.creator.fullName }} is now affiliated with {{ post.reference }}.
         </div>
         <div *ngIf="post.type == 'affiliation-removed'">
-          {{ post.creator.fullName }} is no longer affiliated with {{ post.refernece }}.
+          {{ post.creator.fullName }} is no longer affiliated with {{ post.reference }}.
         </div>
         <div *ngIf="post.type == 'interest-added'">
-          {{ post.creator.fullName }} is now interested in {{ post.refernece }}.
+          {{ post.creator.fullName }} is now interested in {{ post.reference }}.
         </div>
         <div *ngIf="post.type == 'interest-removed'">
-          {{ post.creator.fullName }} is no longer interested in {{ post.refernece }}.
+          {{ post.creator.fullName }} is no longer interested in {{ post.reference }}.
         </div>
         <div>{{ post.content }}</div>
       </div>
@@ -38,16 +41,16 @@
       <span class="reactions">
         <span *ngFor="let reaction of allReactions" >
           <span *ngIf="countReactions(reaction.type) > 0" [ngStyle]="{color: reaction.color}">
-            {{ countReactions(reaction.type) }} 
+            {{ countReactions(reaction.type) }}
             <fa-icon [icon]="reaction.icon"></fa-icon> &nbsp;
           </span>
-        </span> 
+        </span>
         <span *ngIf="post.reactions.length == 0">No reactions yet</span>
       </span>
       <div class="btn-group" role="group" aria-label="Reactions">
 
-        <button 
-          *ngFor="let reaction of allReactions" 
+        <button
+          *ngFor="let reaction of allReactions"
           (click)="react(reaction.type)"
           class="btn" [ngClass]="(getReaction()?.type == reaction.type)?'btn-dark':'btn-light'">
             <span [ngStyle]="{color: reaction.color}">
@@ -59,11 +62,14 @@
     <div *ngIf="post.children.length > 0">
       <div *ngFor="let comment of post.children">
         <div class="spacer"></div>
-        <div  class="post-content">
+        <div class="post-content">
           <app-profile-picture class="profile-picture" [size]="'48px'" [url]="post.creator.profilePicture"></app-profile-picture>
           <div>
             <div>
               <a routerLink='/profile/{{post.creator.username}}'><strong>{{comment.creator.fullName}}</strong></a>
+            </div>
+            <div class="timestamp">
+              <small> {{ timeString(comment.createdAt) }}</small>
             </div>
             <div>
               {{comment.content}}

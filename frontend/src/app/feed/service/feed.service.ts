@@ -12,7 +12,10 @@ export class FeedService {
   }
 
   
-  public getFeed() {
+  public getFeed(wall) {
+    if (wall) {
+      return this.apiService.get(`wall/${wall}`);
+    }
     return this.apiService.get('wall');
   }
 

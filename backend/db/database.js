@@ -263,12 +263,12 @@ async function removeAffiliation(user, affiliationName, callback) {
 
 function updateProfile(user, profile, callback) {
     profile.username = user;
-    db.Profile.update(profile, function (err) {
+    db.Profile.update(profile, function (err, updated) {
         if (err) {
-            callback(err, false);
+            callback(err, null);
             return;
         }
-        callback(null, true);
+        callback(null, updated);
     })
 }
 
@@ -421,7 +421,7 @@ function wall(username, callback) {
             return;
         }
         let usernames = [];
-        if (friends.Items.length === 0) {
+        if (friends.Items.length > 0) {
             usernames = friends.Items.map(v => v.get('friend'));
         }
         usernames.push(username);

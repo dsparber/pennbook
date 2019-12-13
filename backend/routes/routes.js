@@ -17,13 +17,10 @@ const checkPermission = function(user, accessedUser, res, callback) {
 }
 
 const jsonCallback = (res) => (err, result) => {
-
-    let data = { error: err };
-    if (typeof variable === "boolean") {
-        data.success = result;
-    } else {
-        data.result = result;
-    }
+    let data = { 
+        error: err,
+        result: result
+    };
     res.status(err ? 400 : 200)
     res.json(data);
 }
@@ -105,6 +102,12 @@ const addFriend = function(req, res) {
     var username = req.auth.username;
     var friend = req.body.friend;
     db.addFriend(username, friend, jsonCallback(res));
+}
+
+const isFriend = function(req, res) {
+    var username = req.auth.username;
+    var friend = req.params.user;
+    db.isFriend(username, friend, jsonCallback(res));
 }
 
 const addAffiliation = function(req, res) {
@@ -246,4 +249,6 @@ module.exports = {
     searchUser: searchUser,
     friendRecommendations: friendRecommendations,
     userProfile: userProfile,
+    removeReaction: removeReaction,
+    isFriend: isFriend,
 }

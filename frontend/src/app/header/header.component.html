@@ -45,12 +45,20 @@
     </div>
     <div class="modal-body modal-lg" >
       <div class="row">
-        <div class="col-6 col-sm-6 col-sm-6 card-rows" *ngFor="let friend of friends">
-          <app-friend [friend]="friend" [showChat]="true"></app-friend>
+        <div class="col-6 col-sm-6 col-sm-6 card-rows" style='margin-top:10px;' *ngFor="let friend of friends">
+          <div style='width:10%;float:left'>
+            <app-profile-picture class="profile-picture" [url]="friend.profilePicture"></app-profile-picture>
+          </div>
+          <div style = 'width:50%; float:right; margin-right: 30px; margin-top:5px;'class="content">
+            <a routerLink='/profile/{{friend.username}}'>{{friend.fullName}}</a>
+            <span *ngIf="friend.username != friend.username">
+              &gt; <a routerLink='/profile/{{friend.username}}'><strong>{{friend.fullName}}</strong></a>
+            </span>
         </div>
         <div class="col" *ngIf="friends.length == 0">No users found!</div>
       </div>
     </div>
+  </div>
   </div>
 
 </ng-template>

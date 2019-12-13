@@ -19,8 +19,12 @@ import { SocketService } from './sockets/socket.service';
 import { ApiService } from './api/api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FriendComponent } from './friends/friend/friend.component';
-import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
-import { SelectDropDownModule } from 'ngx-select-dropdown'
+import { CreatePost } from './create-post/create-post.component';
+import { Post } from './post/post.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ProfilePicture } from './profile-picture/profile-picture.component';
+import { StringEditor } from './string-editor/string-editor.component';
+
 
 
 @NgModule({
@@ -33,7 +37,11 @@ import { SelectDropDownModule } from 'ngx-select-dropdown'
     FriendsComponent,
     FriendComponent,
     ChatComponent,
+    CreatePost,
+    Post,
     VisualizerComponent,
+    ProfilePicture,
+    StringEditor,
   ],
   imports: [
     BrowserModule,
@@ -45,8 +53,7 @@ import { SelectDropDownModule } from 'ngx-select-dropdown'
     TagInputModule,
     BrowserAnimationsModule,
     NgxGraphModule,
-    AngularMultiSelectModule,
-    SelectDropDownModule
+    FontAwesomeModule
   ],
   providers: [AuthGuard, SocketService, ApiService],
   bootstrap: [AppComponent]

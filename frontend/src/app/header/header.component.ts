@@ -72,6 +72,7 @@ export class HeaderComponent implements OnInit {
     this.profileService.searchUser({query: user.model}).subscribe(
       res => {
         this.friends = res.result;
+        console.log(this.friends);
       }
     )
   }

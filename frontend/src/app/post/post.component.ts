@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ApiService } from '../api/api.service';
+import * as moment from 'moment';
 import { faHeart, faThumbsUp, faThumbsDown, faSmileBeam, faSadTear} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -12,7 +13,7 @@ export class Post implements OnInit {
 
   @Input() post:any;
   comment:String = null;
-  
+
   allReactions:any = [
     { icon: faThumbsUp, color: '#02b002', type: 'like' },
     { icon: faThumbsDown, color: '#f02100', type: 'dislike' },
@@ -39,6 +40,10 @@ export class Post implements OnInit {
     this.post.reactions = this.post.reactions.filter(r => r.username != this.user());
   }
 
+  timeString(datetime) {
+    return moment(datetime).fromNow();
+  }
+
   react(type) {
     let reaction = {
       postId: this.post.postId,
@@ -50,7 +55,7 @@ export class Post implements OnInit {
 
     // Add
     if (oldReaction ==  null || reaction.type != oldReaction.type) {
-      this.api.post('reaction', reaction).subscribe(
+      this.api.post('reaction/add', reaction).subscribe(
         res => this.post.reactions.push(reaction),
         err => console.error(err),
       );
