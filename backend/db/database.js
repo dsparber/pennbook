@@ -187,6 +187,16 @@ function reaction(reaction, callback) {
     });
 }
 
+function removeReaction(reaction, callback) {
+    db.Reaction.destroy(reaction, function (error, _) {
+        if (error) {
+            callback(error, false);
+        } else {
+            callback(null, true);
+        }
+    });
+}
+
 
 async function addInterest(user, interest, callback) {
     try {
@@ -702,6 +712,7 @@ module.exports = {
     signup: signup,
     post: post,
     reaction: reaction,
+    removeReaction: removeReaction,
     userWall: userWall,
     wall: wall,
     addFriend: addFriend,

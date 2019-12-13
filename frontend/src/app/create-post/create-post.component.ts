@@ -1,7 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
-import { SignInService } from '../sign-in/service/sign-in.service';
-import { SocketService } from '../sockets/socket.service';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ApiService } from '../api/api.service';
 
 @Component({
@@ -10,9 +7,11 @@ import { ApiService } from '../api/api.service';
   styleUrls: ['./create-post.component.css']
 })
 
-export class CreatePost implements OnInit {
+export class CreatePost  {
 
   @Input() wall:String;
+  @Output() onPost:any = new EventEmitter();
+
   content:String = "";
   file:any = null;
   profilePicture:boolean = false;
@@ -44,7 +43,7 @@ export class CreatePost implements OnInit {
     const formData = new FormData();
     formData.append("picture", this.file, this.file.name);
     this.api.post('picture/upload', formData).subscribe(
-      res => this.post(res.pictureId),
+      res => this.post(res.result.pictureId),
       err => console.error(err),
     );
   }
@@ -64,11 +63,9 @@ export class CreatePost implements OnInit {
         this.content = "";
         this.file = null;
         this.profilePicture = false;
+        this.onPost.emit(res.result);
       },
       err => console.error(err),
     );
-  }
-
-  ngOnInit() {
   }
 }

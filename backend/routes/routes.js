@@ -86,6 +86,11 @@ const reaction = function(req, res) {
     db.reaction(reaction, jsonCallback(res));
 }
 
+const removeReaction = function(req, res) {
+    var reaction = req.body;
+    db.removeReaction(reaction, jsonCallback(res));
+}
+
 const userWall = function(req, res) {
     var wall = req.params.username;
     db.userWall(wall, jsonCallback(res));
@@ -241,4 +246,5 @@ module.exports = {
     searchUser: searchUser,
     friendRecommendations: friendRecommendations,
     userProfile: userProfile,
+    removeReaction: removeReaction,
 }

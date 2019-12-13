@@ -10,7 +10,7 @@
           <label class="custom-file-label" for="validatedCustomFile">{{file?.name || 'Upload picture...' }}</label>
         </div>
         <div *ngIf="ownWall() && file != null" class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="profilePicture" [(value)]="profilePicture">
+            <input type="checkbox" class="custom-control-input" id="profilePicture" [(ngModel)]="profilePicture">
             <label class="custom-control-label" for="profilePicture">Use as profile picture</label>
           </div>
       </div>

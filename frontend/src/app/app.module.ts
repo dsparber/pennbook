@@ -20,6 +20,9 @@ import { ApiService } from './api/api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FriendComponent } from './friends/friend/friend.component';
 import { CreatePost } from './create-post/create-post.component';
+import { Post } from './post/post.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ProfilePicture } from './profile-picture/profile-picture.component';
 
 
 
@@ -34,7 +37,9 @@ import { CreatePost } from './create-post/create-post.component';
     FriendComponent,
     ChatComponent,
     CreatePost,
+    Post,
     VisualizerComponent,
+    ProfilePicture,
   ],
   imports: [
     BrowserModule,
@@ -45,7 +50,8 @@ import { CreatePost } from './create-post/create-post.component';
     NgbModule,
     TagInputModule,
     BrowserAnimationsModule,
-    NgxGraphModule
+    NgxGraphModule,
+    FontAwesomeModule
   ],
   providers: [AuthGuard, SocketService, ApiService],
   bootstrap: [AppComponent]
