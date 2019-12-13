@@ -6,9 +6,6 @@
     <div class="col-12 col-lg-8 offset-lg-2" *ngFor="let postId of (postIds || []); let i=index">
       <app-post *ngIf="i<=maxPosts" [postId]="postId"></app-post>
     </div>
-    <div *ngIf="postIds != null && postIds.length > maxPosts" class="col-12 col-lg-8 offset-lg-2">
-      <button class="btn btn-primary" (click)="showMore()">Load more</button>
-    </div>
     <div class="col-12 col-lg-8 offset-lg-2" *ngIf="postIds == null">
       <div class="spinner-grow text-secondary" role="status">
         <span class="sr-only">Loading...</span>

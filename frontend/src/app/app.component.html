@@ -4,7 +4,7 @@
     </head>
     <body>
         <app-header></app-header>
-        <div [class]="loggedIn() ? 'app-container' : 'app-container signup'"> 
+        <div id="app-container" [class]="loggedIn() ? 'app-container' : 'app-container signup'"> 
             <router-outlet></router-outlet>
         </div>
         <svg id="clouds" alt="Gray Clouds Background" xmlns="http://www.w3.org/2000/svg" width="1900.084" height="380" viewBox="0 0 3111.084 485.677">

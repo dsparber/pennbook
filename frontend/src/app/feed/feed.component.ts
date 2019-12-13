@@ -18,6 +18,20 @@ export class FeedComponent implements OnInit, OnChanges  {
 
   ngOnInit() {
     this.getFeed();
+    this.setupOnScroll();
+  }
+
+  setupOnScroll() {
+    let element = document.getElementById('app-container');
+    element.onscroll = () => {
+
+      let scroll = element.offsetHeight + element.scrollTop;
+      let height = element.scrollHeight;
+
+      if (scroll + 100 > height) {
+        this.showMore();
+      }
+    };
   }
 
   ngOnChanges() {
