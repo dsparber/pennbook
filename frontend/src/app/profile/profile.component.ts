@@ -54,9 +54,55 @@ export class ProfileComponent implements OnInit {
     this.updateProfile({about: value});
   }
 
+  updateEmail(value) {
+    this.profile.email = value;
+    this.updateProfile({email: value});
+  }
+
+  updateBirthday(value) {
+    this.profile.birthday = value;
+    this.updateProfile({birthday: value});
+  }
+
   updateProfile(data) {
-    data['username'] = this.user;
     this.api.post('profile/update', data).subscribe(
+      res => {},
+      err => console.error(err)
+    )
+  }
+
+  addAffiliation(name) {
+    let data = {name: name};
+    this.profile.affiliations.push(data);
+    this.profileService.addAffiliation(data).subscribe(
+      res => {},
+      err => console.error(err)
+    )
+  }
+
+  addInterest(name) {
+    let data = {name: name};
+    this.profile.interests.push(data);
+    this.profileService.addInterest(data).subscribe(
+      res => {},
+      err => console.error(err)
+    )
+  }
+
+  removeInterest(name) {
+    let data = {name: name};
+    this.profile.interests = this.profile.interests.filter(x => x.name != name);
+    this.profileService.removeInterest(data).subscribe(
+      res => {},
+      err => console.error(err)
+    )
+  }
+
+  removeAffiliation(name) {
+    let data = {name: name};
+    console.log(name);
+    this.profile.affiliations = this.profile.affiliations.filter(x => x.name != name);
+    this.profileService.removeAffiliation(data).subscribe(
       res => {},
       err => console.error(err)
     )

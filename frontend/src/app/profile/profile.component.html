@@ -14,16 +14,21 @@
             <div class="spacer"></div>
             <div>
               <div><strong>Email</strong></div>
-              <div>{{ profile.email || '---' }}</div>
+              <app-string-editor [value]="profile.email" [editable]="myPage()" (onSave)="updateEmail($event)"></app-string-editor>
+              <div class="spacer small"></div>
+              <div><strong>Birthday</strong></div>
+              <app-string-editor [value]="profile.birthday" [type]="'date'" [editable]="myPage()" (onSave)="updateBirthday($event)"></app-string-editor>
               <div class="spacer small"></div>
               <div><strong>About me</strong></div>
-              <app-string-editor [initialValue]="profile.about" [editable]="myPage()" (onSave)="updateAbout($event)"></app-string-editor>
+              <app-string-editor [value]="profile.about" [editable]="myPage()" (onSave)="updateAbout($event)"></app-string-editor>
               <div class="spacer small"></div>
               <div><strong>Affiliations</strong></div>
-              <div>{{ toString(profile.affiliations) }}</div>
+              <app-string-editor *ngFor="let value of profile.affiliations" [value]="value.name" [deletable]="myPage()" (onDelete)="removeAffiliation($event)"></app-string-editor>
+              <app-string-editor [addable]="myPage()" (onSave)="addAffiliation($event)"></app-string-editor>
               <div class="spacer small"></div>
               <div><strong>Interests</strong></div>
-              <div>{{ toString(profile.interests) }}</div>
+              <app-string-editor *ngFor="let value of profile.interests" [value]="value.name" [deletable]="myPage()" (onDelete)="removeInterest($event)"></app-string-editor>
+              <app-string-editor [addable]="myPage()" (onSave)="addInterest($event)"></app-string-editor>
             </div>
           </div>
           <button *ngIf="!isFriend" (click)="addFriend()" class="btn btn-success">Add Friend</button>
@@ -36,140 +41,5 @@
 
 
 <div class="container">
-
   <app-feed *ngIf="user" [wall]="user"></app-feed>
-
-  <ng-template #content let-modal>
-    <div *ngIf='editProfile'>
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Update Profile</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="upadteProfile(profile)" #profile="ngForm">
-          <div class="form-group">
-            <div class="container">
-              <div class="row">
-                <div class="col">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Education</label>
-                    <input type="email" class="form-control" name="education" [(ngModel)]="model.education"
-                      #education="ngModel" placeholder="Education" required>
-                  </div>
-                </div>
-                <div class="w-100"></div>
-                <div class="col">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Work/Employment</label>
-                    <input type="email" class="form-control" name="work" [(ngModel)]="model.work" #work="ngModel"
-                      placeholder="Employment" required>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Location</label>
-                    <input type="email" class="form-control" name="location" [(ngModel)]="model.location"
-                      #location="ngModel" placeholder="Location" required>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-dark">Post</button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <div *ngIf='comment'>
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Write what's on your mind!</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="postComment(comment)" #comment="ngForm">
-          <div class="form-group">
-            <div class="form-group">
-              <textarea class="form-control" name="content" [(ngModel)]="model.email" #email="ngModel"
-                id="exampleFormControlTextarea1" rows="3"></textarea>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-dark">Post</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div *ngIf='editBio'>
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Edit Bio</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="updateBio(bio)" #bio="ngForm">
-          <div class="form-group">
-            <div class="form-group">
-              <textarea class="form-control" name="content" [(ngModel)]="model.email" #email="ngModel"
-                id="exampleFormControlTextarea1" rows="3"></textarea>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-dark">Post</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div *ngIf='editInterests'>
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Edit Interests</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="updateInterests(interests)" #interests="ngForm">
-          <div class="form-group">
-            <div class="form-group">
-              <tag-input name="interests" theme='minimal' placeholder="add interest" [(ngModel)]="interest"
-                [editable]='true' #interests="ngModel" aria-describedby="emailHelp" placeholder="Interests" required>
-              </tag-input>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-dark">Post</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div *ngIf='editAffil'>
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Edit Affiliations</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="updateAffiliations(affil)" #affil="ngForm">
-          <div class="form-group">
-            <div class="form-group">
-              <tag-input name="affiliations" theme='minimal' placeholder="add affiliation" [(ngModel)]="afil"
-                [editable]='true' #afill="ngModel" aria-describedby="emailHelp" placeholder="Affiliations" required>
-              </tag-input>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-dark">Post</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </ng-template>
+</div>

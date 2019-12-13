@@ -7,22 +7,19 @@ import { faPencilAlt, faCheck, faCross, faPlus } from '@fortawesome/free-solid-s
   styleUrls: ['./string-editor.component.css']
 })
 
-export class StringEditor implements OnInit {
+export class StringEditor {
 
   iconEdit:any = faPencilAlt;
   iconSave:any = faCheck;
   iconDelete:any = faCross;
   iconAdd:any = faPlus;
 
-  value:String;
   editing:boolean = false;
 
-  ngOnInit() {
-    this.value = this.initialValue;
-  }
-
-  @Input() initialValue:String;
+  @Input() value:String;
+  @Input() type:String;
   @Input() deletable:boolean = false;
+  @Input() addable:boolean = false;
   @Input() editable:boolean = false;
   @Output() onSave:any = new EventEmitter();
   @Output() onDelete:any = new EventEmitter();
@@ -33,13 +30,14 @@ export class StringEditor implements OnInit {
 
   save() {
     this.editing = false;
-    if (this.value != this.initialValue) {
-      this.onSave.emit(this.value);
+    this.onSave.emit(this.value);
+    if (this.addable && !this.editable) {
+      this.value = null;
     }
   }
 
   delete() {
-    this.onDelete.emit();
+    this.editing = false;
+    this.onDelete.emit(this.value);
   }
-
 }
