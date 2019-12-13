@@ -42,6 +42,7 @@ app.get(`${path}/chat/all`, routes.chats);
 app.get(`${path}/user/active`, routes.activeUsers(activeUsers));
 app.get(`${path}/user/recommendations`, routes.friendRecommendations);
 app.get(`${path}/friends`, routes.getFriends);
+app.get(`${path}/friend/:user`, routes.isFriend);
 app.get(`${path}/wall`, routes.wall);
 app.get(`${path}/wall/:username`, routes.userWall);
 app.get(`${path}/profile/:username`, routes.userProfile);

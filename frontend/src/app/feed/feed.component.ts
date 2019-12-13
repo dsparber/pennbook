@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FeedService } from './service/feed.service'
 
 @Component({
@@ -8,6 +8,7 @@ import { FeedService } from './service/feed.service'
 })
 export class FeedComponent implements OnInit {
 
+  @Input() wall:String = null;
   posts:any = [];
 
   constructor(private feedService: FeedService) { }
@@ -21,7 +22,7 @@ export class FeedComponent implements OnInit {
   }
 
   getFeed() {
-    this.feedService.getFeed()
+    this.feedService.getFeed(this.wall)
       .subscribe(
         res => this.posts = res.result,
         err => console.error(err),

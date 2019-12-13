@@ -1,4 +1,4 @@
-<div class="container">
+<div [ngClass]="{container: wall == null}">
   <div class="row">
     <div class="col-12 col-lg-8 offset-lg-2">
       <app-create-post (onPost)="insertPost($event)"></app-create-post>

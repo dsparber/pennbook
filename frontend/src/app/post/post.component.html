@@ -7,9 +7,12 @@
         <span *ngIf="post.creator.username != post.wall.username">
           &gt; <a routerLink='/profile/{{post.wall.username}}'><strong>{{post.wall.fullName}}</strong></a>
         </span>
+        <div class="timestamp">
+          <small> {{ timeString(post.createdAt) }}</small>
+        </div>
         <div *ngIf="post.type == 'friendship'">
           {{ post.creator.fullName }} is now friends with <a
-            routerLink='/profile/{{post.wall.username}}'>{{ post.reference.fullName }}</a>.
+            routerLink='/profile/{{post.reference.username}}'>{{ post.reference.fullName }}</a>.
         </div>
         <div *ngIf="post.type == 'profilePicture'">
           {{ post.creator.fullName }} added a new profile picture.
@@ -59,11 +62,14 @@
     <div *ngIf="post.children.length > 0">
       <div *ngFor="let comment of post.children">
         <div class="spacer"></div>
-        <div  class="post-content">
+        <div class="post-content">
           <app-profile-picture class="profile-picture" [size]="'48px'" [url]="post.creator.profilePicture"></app-profile-picture>
           <div>
             <div>
               <a routerLink='/profile/{{post.creator.username}}'><strong>{{comment.creator.fullName}}</strong></a>
+            </div>
+            <div class="timestamp">
+              <small> {{ timeString(comment.createdAt) }}</small>
             </div>
             <div>
               {{comment.content}}
