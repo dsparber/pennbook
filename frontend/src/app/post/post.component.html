@@ -31,7 +31,7 @@
             {{ post.creator.fullName }} is no longer interested in <a routerLink='/interest/{{ post.reference }}'>{{ post.reference }}</a>.
           </div>
           <div *ngIf="post.type == 'about-changed'">
-            {{ post.creator.fullName }} add a new information</a>.
+            {{ post.creator.fullName }} add a new information.
           </div>
           <div>{{ post.content }}</div>
         </div>
