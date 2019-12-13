@@ -22,6 +22,7 @@ export class FeedComponent implements OnInit {
   }
 
   getFeed() {
+    this.posts = [];
     this.feedService.getFeed(this.wall)
       .subscribe(
         res => this.posts = res.result,

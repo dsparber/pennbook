@@ -1,7 +1,7 @@
 <div [ngClass]="{container: wall == null}">
   <div class="row">
     <div class="col-12 col-lg-8 offset-lg-2">
-      <app-create-post (onPost)="insertPost($event)"></app-create-post>
+      <app-create-post (onPost)="insertPost($event)" [wall]="wall"></app-create-post>
     </div>
     <div class="col-12 col-lg-8 offset-lg-2" *ngFor="let post of posts">
       <app-post [post]="post"></app-post>

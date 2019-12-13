@@ -18,16 +18,16 @@
           {{ post.creator.fullName }} added a new profile picture.
         </div>
         <div *ngIf="post.type == 'affiliation-added'">
-          {{ post.creator.fullName }} is now affiliated with {{ post.refernece }}.
+          {{ post.creator.fullName }} is now affiliated with {{ post.reference }}.
         </div>
         <div *ngIf="post.type == 'affiliation-removed'">
-          {{ post.creator.fullName }} is no longer affiliated with {{ post.refernece }}.
+          {{ post.creator.fullName }} is no longer affiliated with {{ post.reference }}.
         </div>
         <div *ngIf="post.type == 'interest-added'">
-          {{ post.creator.fullName }} is now interested in {{ post.refernece }}.
+          {{ post.creator.fullName }} is now interested in {{ post.reference }}.
         </div>
         <div *ngIf="post.type == 'interest-removed'">
-          {{ post.creator.fullName }} is no longer interested in {{ post.refernece }}.
+          {{ post.creator.fullName }} is no longer interested in {{ post.reference }}.
         </div>
         <div>{{ post.content }}</div>
       </div>

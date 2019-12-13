@@ -11,8 +11,9 @@ import { ApiService } from '../api/api.service';
 export class ProfileComponent implements OnInit {
 
   user: String = null;
-  profile: any = {};
-  isFriend: boolean = true;
+  profile:any = {};
+  isFriend:boolean = true;
+  editing:boolean = false;
 
   constructor(
     private api: ApiService,
@@ -43,6 +44,7 @@ export class ProfileComponent implements OnInit {
   }
 
   loadProfile() {
+    this.profile = {};
     this.api.get(`profile/${this.user}`).subscribe(
       res => this.profile = res.result,
       err => console.error(err)
