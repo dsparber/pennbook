@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-friend',
@@ -12,5 +13,9 @@ export class FriendComponent {
 
   friends:any = [];
 
-  constructor() { }
+  constructor(private modalService: NgbModal,) { }
+
+  closeModal() {
+    this.modalService.dismissAll();
+  }
 }

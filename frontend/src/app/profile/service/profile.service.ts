@@ -13,6 +13,10 @@ export class ProfileService {
     return this.apiService.get(`wall/${user}`);
   }
 
+  public getProfile(user) {
+    return this.apiService.get(`profile/${user}`);
+  }
+
   public addInterest(interest) {
     return this.apiService.post(`interest/add`, interest);
   }
@@ -35,5 +39,9 @@ export class ProfileService {
 
   public addFriend(friend) {
     return this.apiService.post(`friends/add`, friend);
+  }
+
+  public searchUser(query) {
+    return this.apiService.post(`user/search`, query);
   }
 }

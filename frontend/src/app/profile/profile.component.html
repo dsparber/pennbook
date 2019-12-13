@@ -34,11 +34,11 @@
                   <img src='assets/profile.jpg' width =50 height=50 >
                 </div>
                 <div  style=' width:50%; margin-left: 75px; min-width:500px; max-width:500px;'>
-                  <p style="padding-left:0;">
+                  <div style="padding-left:0;">
                     <a routerLink='/profile/{{post.creator.username}}'>{{post.creator.fullName}}</a> &gt;
                     <a routerLink='/profile/{{post.wall.username}}'>{{post.wall.fullName}}</a>
-                  </p>
-                  <p style='font-style:italic; font-size: small'> {{post.createdAt}}</p>
+                  </div>
+                  <div style='font-style:italic; font-size: small'> {{post.createdAt}}</div>
 
                   <div style=" padding-top: 10px; margin-left: 22px;">
                     <p style=" max-width:325px;min-width:325px"> {{post.content}}</p>
@@ -62,8 +62,11 @@
                      <img src='assets/profile.jpg' width =50 height=50 >
                    </div>
                    <div  style=' width:90%; padding-left: 40px; float: left;'>
-                     <p style="padding-left:0;"><a routerLink='/profile/{{comment.creator.username}}'>{{comment.creator.fullName}}</a></p>
-                     <p style='font-style:italic; font-size: small'> {{comment.createdAt}}</p>
+                     <div>
+                       <a routerLink='/profile/{{comment.creator.username}}'>{{comment.creator.fullName}}</a>
+                      </div>
+                      <div style='font-style:italic; font-size: small'> {{comment.createdAt}}
+                      </div>
                      <div style=" padding-top: 10px; padding-left:10px;">
                        <p style=" max-width:325px;min-width:325px"> {{comment.content}} </p>
                     </div>
