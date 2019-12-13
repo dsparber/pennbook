@@ -16,7 +16,7 @@ export class Post implements OnInit {
   reactions:any = null;
   children:any = null;
   comment:String = null;
-  
+
   allReactions:any = [
     { icon: faThumbsUp, color: '#02b002', type: 'like' },
     { icon: faThumbsDown, color: '#f02100', type: 'dislike' },

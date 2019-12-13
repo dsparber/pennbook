@@ -8,8 +8,8 @@
       <div>{{friend.username}}</div>
     </div>
     <div class="card-actions">
-      <a *ngIf="showChat" [routerLink]="['/chat']" [queryParams]="{ friend: friend.username }" class="btn btn-success">Send message</a>
-      <a [routerLink]="['/profile', friend.username]" class="btn btn-primary">Go to profile</a>
+      <a *ngIf="showChat" [routerLink]="['/chat']" [queryParams]="{ friend: friend.username }" class="btn btn-success" (click) = 'closeModal()'>Send message</a>
+      <a [routerLink]="['/profile', friend.username]" class="btn btn-primary" (click) = 'closeModal()'>Go to profile</a>
     </div>
   </div>
 </div>

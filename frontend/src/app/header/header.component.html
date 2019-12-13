@@ -20,8 +20,9 @@
       </li>
     </ul>
   </div>
-  <form *ngIf="loggedIn()" class="form-inline" >
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+
+  <form *ngIf="loggedIn()" class="form-inline" (ngSubmit)="open(content, user)" #user="ngForm">
+      <input name="user" [(ngModel)]="model.user" #user="ngModel" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
       <button class="btn btn-primary-success btn-light" type="submit">Search</button>
   </form>
 </span>
@@ -30,6 +31,34 @@
     <input class="form-control mr-sm-2" type="password" name="password" [(ngModel)]="sign.password" #password="ngModel" placeholder="Password" aria-label="Search">
     <button class="btn btn-primary-success btn-light" type="submit">Login</button>
   </form>
- 
+
   <button *ngIf="loggedIn()" type="button" class="btn btn-danger" (click)="logout()">Logout</button>
 </nav>
+
+<ng-template #content let-modal >
+  <div>
+    <div class="modal-header ">
+      <h4 class="modal-title" id="modal-basic-title">Users:</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body modal-lg" >
+      <div class="row">
+        <div class="col-6 col-sm-6 col-sm-6 card-rows" style='margin-top:10px;' *ngFor="let friend of friends">
+          <div style='width:10%;float:left'>
+            <app-profile-picture class="profile-picture" [url]="friend.profilePicture"></app-profile-picture>
+          </div>
+          <div style = 'width:50%; float:right; margin-right: 30px; margin-top:5px;'class="content">
+            <a routerLink='/profile/{{friend.username}}'>{{friend.fullName}}</a>
+            <span *ngIf="friend.username != friend.username">
+              &gt; <a routerLink='/profile/{{friend.username}}'><strong>{{friend.fullName}}</strong></a>
+            </span>
+        </div>
+        <div class="col" *ngIf="friends.length == 0">No users found!</div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</ng-template>

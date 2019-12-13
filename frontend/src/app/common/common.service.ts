@@ -68,7 +68,7 @@ export class CommonService {
     this.feedService.like(data).subscribe(
       res => {
         console.log(res);
-        if (res.success) {
+        if (res.result) {
           post.reactions.push(data);
           post.likedByUser = true;
         }

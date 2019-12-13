@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SignInService } from '../sign-in/service/sign-in.service';
 import { SocketService } from '../sockets/socket.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ProfileService} from './../profile/service/profile.service'
 
 @Component({
   selector: 'app-header',
@@ -13,9 +15,18 @@ export class HeaderComponent implements OnInit {
 
   model : any = {};
   sign : any = {};
+  friends: any = [];
 
 
-  constructor(private router: Router, private signInService: SignInService, private socketService: SocketService) { }
+
+
+  constructor(private router: Router, private signInService: SignInService, private socketService: SocketService, private modalService: NgbModal, private profileService: ProfileService) { }
+
+
+  ngOnInit() {
+
+  }
+
 
   logout() {
     this.router.navigate(['/signin']);
@@ -57,6 +68,22 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  searchUser(user) {
+    this.profileService.searchUser({query: user.model}).subscribe(
+      res => {
+        this.friends = res.result;
+        console.log(this.friends);
+      }
+    )
   }
+
+  open(content, user) {
+    this.searchUser(user);
+    this.modalService.open(content).result.then((result) => {;
+    }, (reason) => {
+    });
+  }
+
+
+
 }
