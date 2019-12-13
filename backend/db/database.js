@@ -364,30 +364,58 @@ async function getProfilePicture(username) {
 }
 
 async function mapPost(post) {
-    post.reactions = await getItems(db.Reaction.query(post.postId).exec());
     post.picture = await getPictureUrlFromPost(post);
     post.creator = await profileAsync(post.creator);
     post.wall = await profileAsync(post.wall);
+    post.ready = true;
     post.children = [];
+    post.reactions = [];
 
     if (post.type == "friendship") {
         post.reference = await profileAsync(post.reference, false);
     }
-
-    let subPosts = await getItems(db.SubPost.query(post.postId).exec());
-    if (subPosts.length !== 0) {
-        let subPostIds = subPosts.map(s => s.childPostId);
-        let children = await getItems(db.Post.scan().where('postId').in(subPostIds).loadAll().exec());
-        post.children = await Promise.all(children.map(async child => await mapPost(child)));
-    }
     return post;
 }
+
+async function getPost(postId, callback) {
+    try {
+        let post = await getItem(db.Post.query(postId).usingIndex('PostIdIndex').exec());
+        post = await mapPost(post);
+        callback(null, post);
+    } catch (err) {
+        callback(err, null);
+    }
+ }
+
+ async function getPostChildren(postId, callback) {
+    try {
+        let children = [];
+        let subPosts = await getItems(db.SubPost.query(post.postId).exec());
+        if (subPosts.length !== 0) {
+            let subPostIds = subPosts.map(s => s.childPostId);
+            children = await getItems(db.Post.scan().where('postId').in(subPostIds).loadAll().exec());
+            children = await Promise.all(children.map(async child => await mapPost(child)));
+        }
+        callback(null, children);
+    } catch (err) {
+        callback(err, null);
+    }
+ }
+
+ async function getPostReactions(postId, callback) {
+    try {
+        let reactions = await getItems(db.Reaction.query(postId).exec());
+        callback(null, reactions);
+    } catch (err) {
+        callback(err, null);
+    }
+ }
 
 async function posts(walls, callback) {
     try {
         let posts = await getItems(db.Post.scan().where('wall').in(walls).where('parent').null().exec());
         posts = posts.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
-        posts = await Promise.all(posts.map(async post => await mapPost(post)));
+        posts.forEach(p => p.ready = false);
         callback(null, posts);
         return posts;
     } catch (err) {
@@ -737,4 +765,7 @@ module.exports = {
     saveAdsorptionResult: saveAdsorptionResult,
     friendRecommendations: friendRecommendations,
     userProfile: userProfile,
+    getPost,
+    getPostChildren,
+    getPostReactions,
 }

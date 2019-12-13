@@ -6,5 +6,14 @@
     <div class="col-12 col-lg-8 offset-lg-2" *ngFor="let post of posts">
       <app-post [post]="post"></app-post>
     </div>
+    <div class="col-12 col-lg-8 offset-lg-2" *ngIf="posts.length == 0">
+      <div class="spinner-grow text-secondary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div><div class="spinner-grow text-secondary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div><div class="spinner-grow text-secondary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
   </div>
 </div>

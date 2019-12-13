@@ -93,6 +93,21 @@ const userWall = function(req, res) {
     db.userWall(wall, jsonCallback(res));
 }
 
+const getPost = function(req, res) {
+    var postId = req.params.postId;
+    db.getPost(postId, jsonCallback(res));
+}
+
+const getPostChildren = function(req, res) {
+    var postId = req.params.postId;
+    db.getPostChildren(postId, jsonCallback(res));
+}
+
+const getPostReactions = function(req, res) {
+    var postId = req.params.postId;
+    db.getPostReactions(postId, jsonCallback(res));
+}
+
 const userProfile = function(req, res) {
     var username = req.params.username;
     db.userProfile(username, jsonCallback(res));
@@ -251,4 +266,7 @@ module.exports = {
     userProfile: userProfile,
     removeReaction: removeReaction,
     isFriend: isFriend,
+    getPost: getPost,
+    getPostChildren: getPostChildren,
+    getPostReactions: getPostReactions,
 }
