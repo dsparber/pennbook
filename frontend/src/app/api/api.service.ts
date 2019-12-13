@@ -1,8 +1,11 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 
-// const HOST = 'pennbook.sparber.io'
-const HOST = 'localhost:8080'
+const LOCAL = false;
+
+const HOST = LOCAL ? 'localhost:8080' : 'pennbook.sparber.io';
+const PROTOCOL = LOCAL ? 'http' : 'https'
+
 @Injectable()
 export class ApiService {
 
@@ -13,8 +16,7 @@ export class ApiService {
     }
 
     apiUrl() {
-        // return `https://${this.host()}/api/`;
-        return `http://${this.host()}/api/`;
+        return `${PROTOCOL}://${this.host()}/api/`;
     }
 
     token() {

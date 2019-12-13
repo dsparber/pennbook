@@ -126,3 +126,8 @@
     max-width: 250px;
     margin-right: 10px;
 }
+
+
+.modal-dialog {
+    width: 800px;
+  }

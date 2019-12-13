@@ -593,6 +593,7 @@ async function searchUser(user, query, callback) {
 
             if (match) {
                 result.push(user);
+                user.profilePicture = await getProfilePicture(user.username);
             }
         }
         callback(null, result);

@@ -15,7 +15,7 @@ export class HeaderComponent implements OnInit {
 
   model : any = {};
   sign : any = {};
-  friends: any = [];
+  friends: any = null;
 
 
 
@@ -69,7 +69,10 @@ export class HeaderComponent implements OnInit {
   }
 
   searchUser(user) {
-    this.profileService.searchUser({query: user.model}).subscribe(
+    this.friends = null;
+    let value = user.model;
+    this.model.user = null;
+    this.profileService.searchUser({query: value}).subscribe(
       res => {
         this.friends = res.result;
         console.log(this.friends);
