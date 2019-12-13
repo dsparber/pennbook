@@ -12,6 +12,8 @@ import { faHeart, faThumbsUp, faThumbsDown, faSmileBeam, faSadTear} from '@forta
 export class Post implements OnInit {
 
   @Input() post:any;
+  reactions:any = null;
+  children:any = null;
   comment:String = null;
 
   allReactions:any = [
@@ -25,10 +27,34 @@ export class Post implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit() {
+    this.loadPost();
+    this.loadPostChildren();
+    this.loadPostReactions();
+  }
+
+  loadPost() {
+    this.api.get(`post/${this.post.postId}`).subscribe(
+      res => this.post = res.result,
+      err => console.log(err),
+    )
+  }
+
+  loadPostChildren() {
+    this.api.get(`post/${this.post.postId}/children`).subscribe(
+      res => this.children = res.result,
+      err => console.log(err),
+    )
+  }
+
+  loadPostReactions() {
+    this.api.get(`post/${this.post.postId}/reactions`).subscribe(
+      res => this.reactions = res.result,
+      err => console.log(err),
+    )
   }
 
   getReaction() {
-    for (let reaction of this.post.reactions) {
+    for (let reaction of this.reactions) {
       if (reaction.username == this.user()) {
         return reaction;
       }
@@ -37,7 +63,7 @@ export class Post implements OnInit {
   }
 
   removeReaction() {
-    this.post.reactions = this.post.reactions.filter(r => r.username != this.user());
+    this.reactions = this.reactions.filter(r => r.username != this.user());
   }
 
   timeString(datetime) {
@@ -56,7 +82,7 @@ export class Post implements OnInit {
     // Add
     if (oldReaction ==  null || reaction.type != oldReaction.type) {
       this.api.post('reaction/add', reaction).subscribe(
-        res => this.post.reactions.push(reaction),
+        res => this.reactions.push(reaction),
         err => console.error(err),
       );
     }
@@ -70,7 +96,7 @@ export class Post implements OnInit {
   }
 
   countReactions(type) {
-    return this.post.reactions.filter(r => r.type == type).length;
+    return this.reactions.filter(r => r.type == type).length;
   }
 
   user() {
@@ -89,7 +115,7 @@ export class Post implements OnInit {
     }).subscribe(
       res => {
         this.comment = null;
-        this.post.children.push(res.result);
+        this.children.push(res.result);
       },
       err => console.error(err),
     );

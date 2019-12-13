@@ -15,6 +15,7 @@ export class CreatePost  {
   content:String = "";
   file:any = null;
   profilePicture:boolean = false;
+  posting:boolean = false;
 
   constructor(private api: ApiService) { }
 
@@ -35,6 +36,11 @@ export class CreatePost  {
   }
 
   postWithPicture() {
+    if (!this.content) {
+      return;
+    }
+
+    this.posting = true;
     if (!this.file) {
       this.post(null);
       return;
@@ -63,9 +69,13 @@ export class CreatePost  {
         this.content = "";
         this.file = null;
         this.profilePicture = false;
+        this.posting = false;
         this.onPost.emit(res.result);
       },
-      err => console.error(err),
+      err => {
+        this.posting = false;
+        console.error(err);
+      }
     );
   }
 }
