@@ -27,11 +27,26 @@
               <div class="spacer"></div>
               <div>
                 <div><strong>Affiliations</strong></div>
-                <app-string-editor *ngFor="let value of profile.affiliations" [value]="value.name" [deletable]="editing && myPage()" (onDelete)="removeAffiliation($event)"></app-string-editor>
+                <span *ngIf = 'editing'>
+                    <app-string-editor  *ngFor="let value of profile.affiliations" [value]="value.name" [deletable]="editing && myPage()" (onDelete)="removeAffiliation($event)"></app-string-editor>
+                </span>
+                <span *ngIf = '!editing'>
+                  <div *ngFor="let value of profile.affiliations">
+                    <a routerLink='/affiiliation/{{value.name}}'>{{value.name}}</a>
+                  </div>
+                </span>
                 <app-string-editor *ngIf="editing && myPage()" [addable]="true" (onSave)="addAffiliation($event)"></app-string-editor>
                 <div class="spacer small"></div>
                 <div><strong>Interests</strong></div>
-                <app-string-editor *ngFor="let value of profile.interests" [value]="value.name" [deletable]="editing && myPage()" (onDelete)="removeInterest($event)"></app-string-editor>
+                <span *ngIf = 'editing'>
+                  <app-string-editor *ngFor="let value of profile.interests" [value]="value.name" [deletable]="editing && myPage()" (onDelete)="removeInterest($event)"></app-string-editor>
+                </span>
+                <span *ngIf = '!editing'>
+                  <div *ngFor="let value of profile.interests">
+                      <a  routerLink='/interest/{{value.name}}'>{{value.name}}</a>
+                  </div>
+                </span>
+
                 <app-string-editor *ngIf="editing && myPage()" [addable]="true" (onSave)="addInterest($event)"></app-string-editor>
               </div>
             </div>

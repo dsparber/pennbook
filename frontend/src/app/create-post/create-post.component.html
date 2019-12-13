@@ -1,4 +1,7 @@
 <div class="card">
+  <div *ngIf = 'error' class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Something went wrong!</strong> Please add text and retry
+  </div>
   <div class="card-body">
     <h5 class="card-title">New post</h5>
     <textarea class="form-control" name="content" [(ngModel)]="content" #email="ngModel" id="content" rows="3"

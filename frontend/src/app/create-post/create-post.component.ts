@@ -16,6 +16,7 @@ export class CreatePost  {
   file:any = null;
   profilePicture:boolean = false;
   posting:boolean = false;
+  error: boolean = false;
 
   constructor(private api: ApiService) { }
 
@@ -35,10 +36,17 @@ export class CreatePost  {
     return this.user() == this.getWall();
   }
 
+  closeError() {
+    this.error = false;
+  }
+
   postWithPicture() {
+
     if (!this.content) {
+      this.error = true;
       return;
     }
+    this.error = false;
 
     this.posting = true;
     if (!this.file) {
