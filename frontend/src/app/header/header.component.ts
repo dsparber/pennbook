@@ -71,7 +71,6 @@ export class HeaderComponent implements OnInit {
   searchUser(user) {
     this.friends = null;
     let value = user.model;
-    this.model.user = null;
     this.profileService.searchUser({query: value}).subscribe(
       res => {
         this.friends = res.result;
@@ -81,6 +80,9 @@ export class HeaderComponent implements OnInit {
   }
 
   open(content, user) {
+    if (user.model == '' || user.model == null) {
+      return;
+    }
     this.searchUser(user);
     this.modalService.open(content).result.then((result) => {;
     }, (reason) => {

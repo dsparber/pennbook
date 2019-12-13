@@ -24,7 +24,7 @@
 
     <form *ngIf="loggedIn()" class="form-inline" (ngSubmit)="open(content, user)" #user="ngForm">
       <input name="user" [(ngModel)]="model.user" #user="ngModel" class="form-control mr-sm-2" type="search"
-        placeholder="Search" aria-label="Search">
+        placeholder="Search" aria-label="Search" required>
       <button class="btn btn-primary-success btn-light" type="submit">Search</button>
     </form>
   </span>
