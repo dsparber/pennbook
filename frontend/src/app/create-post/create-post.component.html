@@ -14,7 +14,11 @@
             <label class="custom-control-label" for="profilePicture">Use as profile picture</label>
           </div>
       </div>
-      <button class="btn btn-primary" (click)="postWithPicture()">Post</button>
+      <button *ngIf="!posting" class="btn btn-primary" (click)="postWithPicture()">Post</button>
+      <button *ngIf="posting" class="btn btn-primary" type="button" disabled>
+        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+        Posting...
+      </button>
     </div>
   </div>
 </div>
