@@ -9,7 +9,7 @@ import { FeedService } from './service/feed.service'
 export class FeedComponent implements OnInit, OnChanges  {
 
   @Input() wall:String = null;
-  posts:any = [];
+  postIds:any = [];
 
   constructor(private feedService: FeedService) { }
 
@@ -22,14 +22,20 @@ export class FeedComponent implements OnInit, OnChanges  {
   }
 
   insertPost(post) {
-    this.posts.splice(0, 0, post);
+    this.postIds.splice(0, 0, post.postId);
+  }
+
+  onScroll(event) {
+    console.log(event);
   }
 
   getFeed() {
-    this.posts = [];
     this.feedService.getFeed(this.wall)
       .subscribe(
-        res => this.posts = res.result,
+        res => {
+          this.postIds = res.result.map(p => p.postId);
+          setTimeout(() => this.getFeed(), 10 * 1000);
+        },
         err => console.error(err),
       );
   }

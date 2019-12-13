@@ -46,14 +46,20 @@ export class Post implements OnInit {
 
   loadPostChildren() {
     this.api.get(`post/${this.post.postId}/children`).subscribe(
-      res => this.children = res.result,
+      res => {
+        this.children = res.result;
+        setTimeout(() => this.loadPostChildren(), 30 * 1000);
+      },
       err => console.log(err),
     )
   }
 
   loadPostReactions() {
     this.api.get(`post/${this.post.postId}/reactions`).subscribe(
-      res => this.reactions = res.result,
+      res => {
+        this.reactions = res.result;
+        setTimeout(() => this.loadPostChildren(), 30 * 1000);
+      },
       err => console.log(err),
     )
   }
