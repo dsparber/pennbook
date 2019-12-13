@@ -19,16 +19,19 @@
             {{ post.creator.fullName }} added a new profile picture.
           </div>
           <div *ngIf="post.type == 'affiliation-added'">
-            {{ post.creator.fullName }} is now affiliated with {{ post.reference }}.
+            {{ post.creator.fullName }} is now affiliated with <a routerLink='/affiliation/{{ post.reference }}'>{{ post.reference }}</a>.
           </div>
           <div *ngIf="post.type == 'affiliation-removed'">
-            {{ post.creator.fullName }} is no longer affiliated with {{ post.reference }}.
+            {{ post.creator.fullName }} is no longer affiliated with <a routerLink='/affiliation/{{ post.reference }}'>{{ post.reference }}</a>.
           </div>
           <div *ngIf="post.type == 'interest-added'">
-            {{ post.creator.fullName }} is now interested in {{ post.reference }}.
+            {{ post.creator.fullName }} is now interested in <a routerLink='/interest/{{ post.reference }}'>{{ post.reference }}</a>.
           </div>
           <div *ngIf="post.type == 'interest-removed'">
-            {{ post.creator.fullName }} is no longer interested in {{ post.reference }}.
+            {{ post.creator.fullName }} is no longer interested in <a routerLink='/interest/{{ post.reference }}'>{{ post.reference }}</a>.
+          </div>
+          <div *ngIf="post.type == 'about-changed'">
+            {{ post.creator.fullName }} add a new information</a>.
           </div>
           <div>{{ post.content }}</div>
         </div>

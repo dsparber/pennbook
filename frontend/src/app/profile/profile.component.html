@@ -32,7 +32,7 @@
                 </span>
                 <span *ngIf = '!editing'>
                   <div *ngFor="let value of profile.affiliations">
-                    <a routerLink='/affiiliation/{{value.name}}'>{{value.name}}</a>
+                    <a routerLink='/affiliation/{{value.name}}'>{{value.name}}</a>
                   </div>
                 </span>
                 <app-string-editor *ngIf="editing && myPage()" [addable]="true" (onSave)="addAffiliation($event)"></app-string-editor>
@@ -46,7 +46,6 @@
                       <a  routerLink='/interest/{{value.name}}'>{{value.name}}</a>
                   </div>
                 </span>
-
                 <app-string-editor *ngIf="editing && myPage()" [addable]="true" (onSave)="addInterest($event)"></app-string-editor>
               </div>
             </div>

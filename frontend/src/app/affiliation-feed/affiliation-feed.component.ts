@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-feed',
+  selector: 'app-affiliation-feed',
   templateUrl: './affiliation-feed.component.html',
 })
 export class AffiliationFeedComponent implements OnInit  {

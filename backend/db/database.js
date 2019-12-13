@@ -796,4 +796,6 @@ module.exports = {
     getPost,
     getPostChildren,
     getPostReactions,
+    interestWall: interestWall,
+    affiliationWall: affiliationWall,
 }
