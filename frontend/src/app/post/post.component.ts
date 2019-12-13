@@ -16,6 +16,7 @@ export class Post implements OnInit {
   reactions:any = null;
   children:any = null;
   comment:String = null;
+  commenting:boolean = false;
 
   allReactions:any = [
     { icon: faThumbsUp, color: '#02b002', type: 'like' },
@@ -118,6 +119,7 @@ export class Post implements OnInit {
     if (!this.comment) {
       return;
     }
+    this.commenting = true;
     this.api.post('post', {
       parent: this.post.postId,
       content: this.comment,
@@ -127,8 +129,9 @@ export class Post implements OnInit {
       res => {
         this.comment = null;
         this.children.push(res.result);
+        this.commenting = false;
       },
-      err => console.error(err),
+      err => this.commenting = false,
     );
   }
 }
