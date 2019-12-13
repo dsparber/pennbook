@@ -121,6 +121,16 @@ function signup(user, callback) {
     });
 }
 
+async function isFriendAsync(user1, user2) {
+    if (user1 === user2) {
+        return true;
+    }
+
+    let items = await getItems(db.Friend.query(user1).where('friend').eq(user2).exec());
+    return items.length > 0;
+}
+
+
 function isFriend(user1, user2, callback) {
     if (user1 === user2) {
         callback(null, true);
@@ -157,7 +167,7 @@ async function post(post, callback) {
         if (callback) {
             callback(null, result);
         }
-           
+        return result;  
     } catch (err) {
         if (callback) {
             callback(err, null);
@@ -169,6 +179,16 @@ async function post(post, callback) {
 
 function reaction(reaction, callback) {
     db.Reaction.create(reaction, function (error, createdReaction) {
+        if (error) {
+            callback(error, false);
+        } else {
+            callback(null, true);
+        }
+    });
+}
+
+function removeReaction(reaction, callback) {
+    db.Reaction.destroy(reaction, function (error, _) {
         if (error) {
             callback(error, false);
         } else {
@@ -228,7 +248,7 @@ async function addAffiliation(user, affiliation, callback) {
 
 async function removeAffiliation(user, affiliationName, callback) {
     try {
-        await db.Interest.destroy({ username: user, name: affiliationName });
+        await db.Affiliation.destroy({ username: user, name: affiliationName });
         await post({
             wall: user,
             creator: user,
@@ -339,7 +359,8 @@ async function getProfilePicture(username) {
     if (profilePicturePosts.length === 0) {
         return null;
     }
-    return await getPictureUrlFromPost(profilePicturePosts.reverse()[0]);
+    profilePicturePosts = profilePicturePosts.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
+    return await getPictureUrlFromPost(profilePicturePosts[0]);
 }
 
 async function mapPost(post) {
@@ -368,36 +389,29 @@ async function posts(walls, callback) {
         posts = posts.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
         posts = await Promise.all(posts.map(async post => await mapPost(post)));
         callback(null, posts);
+        return posts;
     } catch (err) {
         callback(err, null);
     }
 }
 
-function userWall(username, callback) {
-    profile(username, function (err, profile) {
-        if (err) {
-            callback(err, null);
-            return;
-        }
-        posts([username], function (err, posts) {
-            if (err) {
-                callback(err, null);
-                return;
-            }
-            callback(null, {
-                profile: profile,
-                posts: posts
-            });
-        });
-    });
+async function userProfile(user, callback) {
+    try {
+        let profile = await profileAsync(user, true);
+        callback(null, profile);
+    } catch (err) {
+        callback(err, null);
+    }
+}
 
-    db.Post.query(username).loadAll().exec(function (err, posts) {
-        if (err) {
-            callback(err, null);
-        } else {
 
-        }
-    });
+async function userWall(wall, callback) {
+    try {
+        let userPosts = await posts([wall], () => {});
+        callback(null, userPosts);
+    } catch (err) {
+        callback(err, null);
+    }
 }
 
 function wall(username, callback) {
@@ -698,6 +712,7 @@ module.exports = {
     signup: signup,
     post: post,
     reaction: reaction,
+    removeReaction: removeReaction,
     userWall: userWall,
     wall: wall,
     addFriend: addFriend,
@@ -721,4 +736,5 @@ module.exports = {
     getMapReduceData: getMapReduceData,
     saveAdsorptionResult: saveAdsorptionResult,
     friendRecommendations: friendRecommendations,
+    userProfile: userProfile,
 }

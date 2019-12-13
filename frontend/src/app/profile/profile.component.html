@@ -5,9 +5,9 @@
         </div>
         <div  style='padding-top:30px; width:100%; padding-left: 130px;'>
           <h5  style="padding-left:0;">{{profile.fullName}}
-            <button *ngIf= "!myPage && friends"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary">Add Friend</button>
+            <button *ngIf= "!myPage && friends"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-primary">Friends ✔️</button>
             <button *ngIf= "myPage"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary" (click)="open(content, 'profile', null)">Edit Profile</button>
-            <button *ngIf= "!myPage && !friends"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary">Add Friend</button>
+            <button *ngIf= "!myPage && !friends"  style= "margin-top: 10px;float:right" class="btn btn-sm btn-outline-primary" (click)='addFriend()'>Add Friend</button>
           </h5>
           <p>Lives in:
           </p>
@@ -15,16 +15,18 @@
           <p>Studies at:
           </p>
         </div>
-        <p style="margin-top: 50px; font-weight:bold"> About Me: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'bio', null)">edit</button></p>
+        <p style="margin-top: 50px; font-weight:bold"> About Me: <button *ngIf='myPage' class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'bio', null)">edit</button></p>
         <p style="margin-top: 10px"> {{profile.about}}</p>
-        <p style="padding-top: 40px; font-weight:bold"> Interests: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'interests', null)">edit</button></p>
+        <p style="padding-top: 40px; font-weight:bold"> Interests: <button *ngIf='myPage' class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'interests', null)">edit</button></p>
         <p style="padding-top: 5px; padding-bottom: 30px"> {{interestString}}</p>
-        <p style="padding-top: 5px; font-weight:bold"> Affiliations: <button class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'affil', null)">edit</button></p>
+        <p style="padding-top: 5px; font-weight:bold"> Affiliations: <button *ngIf='myPage' class = 'btn btn-outline-primary btn-sm' style ='font:10px;float:right; font-weight: normal' (click)="open(content, 'affil', null)">edit</button></p>
         <p style="padding-top: 5px; padding-bottom: 30px"> {{afilString}}</p>
       </div>
 
       <div class ='col-6' style= "width: 50%; float:right; margin-right: 40px">
-        <h3 style='padding-top:15px; color: black; margin-left:25px'> Timeline </h3>
+        <h3 style='padding-top:15px; color: black; margin-left:25px'> Timeline
+        <button   style= "margin-top: 10px;float:right" class="btn btn-md btn-primary" (click)="open(content, 'comment', null)">Post</button>
+        </h3>
         <div style="padding-top: 10px;">
           <div class = 'row' style="padding-top: 10px; padding-bottom:10px;">
               <div  *ngFor="let post of posts" style= "background-color:#F6F4F4; border-radius:20px; padding-top:20px; padding-bottom:10px; margin-top:0px; margin-bottom:20px">
@@ -34,9 +36,10 @@
                 <div  style=' width:50%; margin-left: 75px; min-width:500px; max-width:500px;'>
                   <p style="padding-left:0;">
                     <a routerLink='/profile/{{post.creator.username}}'>{{post.creator.fullName}}</a> &gt;
-                    <a routerLink='/profile/{{post.wall.username}}'>{{post.wall.fullName}}</a> 
+                    <a routerLink='/profile/{{post.wall.username}}'>{{post.wall.fullName}}</a>
                   </p>
                   <p style='font-style:italic; font-size: small'> {{post.createdAt}}</p>
+
                   <div style=" padding-top: 10px; margin-left: 22px;">
                     <p style=" max-width:325px;min-width:325px"> {{post.content}}</p>
                  </div>
@@ -117,7 +120,7 @@
       </div>
       <div *ngIf = 'comment'>
         <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">Write a Comment!</h4>
+          <h4 class="modal-title" id="modal-basic-title">Write what's on your mind!</h4>
           <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
           </button>

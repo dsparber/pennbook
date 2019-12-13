@@ -32,4 +32,8 @@ export class ProfileService {
   public updateProfile(profile) {
     return this.apiService.post(`profile/update`, profile);
   }
+
+  public addFriend(friend) {
+    return this.apiService.post(`friends/add`, friend);
+  }
 }

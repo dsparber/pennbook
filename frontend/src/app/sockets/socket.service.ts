@@ -10,6 +10,9 @@ export class SocketService {
 
     constructor(private api: ApiService) {
         this.socket = io(api.host(),  {upgrade: true, rememberUpgrade: true});
+        this.socket.on('reconnect', () => {
+            this.sendUsername();
+        });
     }
 
     sendUsername() {

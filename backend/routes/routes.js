@@ -86,12 +86,19 @@ const reaction = function(req, res) {
     db.reaction(reaction, jsonCallback(res));
 }
 
+const removeReaction = function(req, res) {
+    var reaction = req.body;
+    db.removeReaction(reaction, jsonCallback(res));
+}
+
 const userWall = function(req, res) {
-    var username = req.auth.username;
     var wall = req.params.username;
-    checkPermission(username, wall, res, function() {
-        db.userWall(wall, jsonCallback(res));
-    });
+    db.userWall(wall, jsonCallback(res));
+}
+
+const userProfile = function(req, res) {
+    var username = req.params.username;
+    db.userProfile(username, jsonCallback(res));
 }
 
 const addFriend = function(req, res) {
@@ -238,4 +245,6 @@ module.exports = {
     activeUsers: activeUsers,
     searchUser: searchUser,
     friendRecommendations: friendRecommendations,
+    userProfile: userProfile,
+    removeReaction: removeReaction,
 }

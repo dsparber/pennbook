@@ -4,8 +4,8 @@ import { TagInputModule } from 'ngx-chips';
 import {FeedService} from './../feed/service/feed.service';
 import {ProfileService} from './service/profile.service'
 import {CommonService} from './../common/common.service'
-import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-profile',
@@ -17,9 +17,8 @@ export class ProfileComponent implements OnInit {
   user:String = null;
 
   model : any = {};
-  myPage = true;
-  friends = true;
-
+  myPage = false;
+  friends = false;
   profile:any = {};
   posts:any = [];
   interest:any = [];
@@ -38,21 +37,34 @@ export class ProfileComponent implements OnInit {
 
 
   constructor(
-    private modalService: NgbModal, 
-    private feedService: FeedService, 
-    private profileService: ProfileService, 
+    private modalService: NgbModal,
+    private feedService: FeedService,
+    private profileService: ProfileService,
     private commonService: CommonService,
     private route: ActivatedRoute,
   ) { }
 
-  ngOnInit() {      
+  ngOnInit() {
     this.route.params.subscribe(params => {
       this.user = params.user;
       this.profile = {};
       this.posts = [];
+      this.myPage = this.user == localStorage.getItem('username');
       this.loadProfile();
     });
 
+  }
+
+  addFriend() {
+    this.profileService.addFriend({friend: this.user}).subscribe(
+      res => {
+        console.log(res);
+        this.friends = true;
+      },
+      err => {
+        console.log(err);
+      }
+    )
   }
 
   open(content, toggle, post) {
@@ -62,6 +74,7 @@ export class ProfileComponent implements OnInit {
       this.editInterests = false;
       this.editProfile = false;
       this.editAffil = false;
+      this.currPost = post;
     } else if (toggle == 'bio') {
       this.comment= false;
       this.editBio = true;
@@ -104,13 +117,14 @@ export class ProfileComponent implements OnInit {
     this.profileService.getWall(this.user).subscribe(
       res => {
         console.log(res);
+        this.friends = res.result.isFriend;
         if (!res.error) {
           this.profile = res.result.profile;
           let postsArray = res.result.posts;
 
           for (let i = 0; i < postsArray.length; i++) {
             postsArray[i].createdAt = this.commonService.time_ago(postsArray[i].createdAt);
-            if (postsArray[i].parent == null) {
+            if (postsArray[i].type == 'post') {
               this.posts.push(postsArray[i]);
               postsArray[i].children.sort((a,b) => {
                 let date1 = new Date(a.createdAt);
@@ -155,55 +169,46 @@ export class ProfileComponent implements OnInit {
         alert("connection timout");
       }
     )
+
   }
 
 
 
 
   postLike(post) {
-    let data = {
-      postId: post.postId,
-      username: localStorage.getItem('username'),
-      type: 'like',
-    }
-    this.feedService.like(data).subscribe(
-      res => {
-        console.log(res);
-        if (res.success) {
-          post.reactions.push(data);
-          post.likedByUser = true;
-        }
-      },
-      err => {
-        alert("connection timout");
-      }
-    )
+    // let data = {
+    //   postId: post.postId,
+    //   username: localStorage.getItem('username'),
+    //   type: 'like',
+    // }
+    // this.feedService.like(data).subscribe(
+    //   res => {
+    //     console.log(res);
+    //     if (res.success) {
+    //       post.reactions.push(data);
+    //       post.likedByUser = true;
+    //     }
+    //   },
+    //   err => {
+    //     alert("connection timout");
+    //   }
+    // )
+
+    this.commonService.postLike(post)
   }
 
   postComment(comment) {
-    console.log(comment);
-    let parent = this.currPost;
-    let data = {
-      wall : parent.wall,
-      content: comment.form.value.content,
-      creator: localStorage.getItem('username'),
-      parent: parent.postId,
-      pictureId: "null",
-      type: 'post',
+    if (this.currPost == null) {
+      let data = {
+        wall: {username: this.user},
+        generalPost: true,
+        posts: this.posts
+      };
+      this.commonService.postComment(comment, data);
+    } else {
+      this.commonService.postComment(comment, this.currPost);
     }
     this.modalService.dismissAll();
-
-    this.feedService.post(data).subscribe(
-      res => {
-        console.log(res);
-        if (res.success) {
-          parent.children.push(data);
-        }
-      },
-      err => {
-        alert("Connection timout");
-      }
-    )
   }
 
   updateBio(bio) {
@@ -332,6 +337,7 @@ export class ProfileComponent implements OnInit {
           name: this.afilCopy[i]
         }).subscribe(
           res => {
+            console.log(res);
             if (!res.error) {
               this.afilCopy = this.commonService.remove(this.afilCopy, this.afilCopy[i]);
               this.buildAffilationString();

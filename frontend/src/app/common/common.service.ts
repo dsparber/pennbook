@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import {FeedService} from './../feed/service/feed.service'
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
 
-  constructor() { }
+  constructor(private feedService: FeedService) { }
 
   copy(arr1, arr2) {
     for (let i = 0; i < arr1.length; i++) {
@@ -22,6 +23,60 @@ export class CommonService {
       }
     }
     return arr2;
+  }
+
+  postComment(comment, currPost) {
+    console.log(currPost);
+    let data = {
+      wall : currPost.wall.username,
+      content: comment.form.value.content,
+      creator: localStorage.getItem('username'),
+      parent: currPost.postId,
+      type: 'post',
+    }
+  if (!currPost.postId) {
+    delete data['postId'];
+  }
+
+    this.feedService.post(data).subscribe(
+      res => {
+        console.log(res);
+        if (!res.error) {
+          if (currPost.generalPost) {
+            res.result.createdAt = this.time_ago(res.result.createdAt);
+            currPost.posts.unshift(res.result);
+          } else {
+            console.log(res);
+            res.result.createdAt = this.time_ago(res.result.createdAt);
+            currPost.children.push(res.result);
+          }
+        }
+      },
+      err => {
+        console.log(err);
+        alert("Connection timout");
+      }
+    )
+  }
+
+  postLike(post) {
+    let data = {
+      postId: post.postId,
+      username: localStorage.getItem('username'),
+      type: 'like',
+    }
+    this.feedService.like(data).subscribe(
+      res => {
+        console.log(res);
+        if (res.success) {
+          post.reactions.push(data);
+          post.likedByUser = true;
+        }
+      },
+      err => {
+        alert("connection timout");
+      }
+    )
   }
 
   time_ago(time) {

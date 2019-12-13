@@ -21,7 +21,8 @@ var activeUsers = {};
 app.post(`${path}/login`, routes.login);
 app.post(`${path}/signup`, routes.signup);
 app.post(`${path}/post`, routes.post);
-app.post(`${path}/reaction`, routes.reaction);
+app.post(`${path}/reaction/add`, routes.reaction);
+app.post(`${path}/reaction/remove`, routes.removeReaction);
 app.post(`${path}/friends/add`, routes.addFriend);
 app.post(`${path}/interest/add`, routes.addInterest);
 app.post(`${path}/interest/remove`, routes.removeInterest);
@@ -43,6 +44,7 @@ app.get(`${path}/user/recommendations`, routes.friendRecommendations);
 app.get(`${path}/friends`, routes.getFriends);
 app.get(`${path}/wall`, routes.wall);
 app.get(`${path}/wall/:username`, routes.userWall);
+app.get(`${path}/profile/:username`, routes.userProfile);
 app.get(`${path}/graph`, routes.getGraph);
 app.get(`${path}/graph/:selected`, routes.getGraph);
 
