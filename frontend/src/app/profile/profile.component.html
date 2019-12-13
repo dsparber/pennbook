@@ -38,7 +38,11 @@
           </div>
           <button *ngIf="myPage() && !editing" (click)="editing = true" class="btn btn-warning">Edit</button>
           <button *ngIf="myPage() && editing" (click)="editing = false" class="btn btn-primary">Done</button>
-          <button *ngIf="!isFriend" (click)="addFriend()" class="btn btn-success">Add Friend</button>
+          <button *ngIf="!isFriend && !addingFriend" (click)="addFriend()" class="btn btn-success">Add Friend</button>
+          <button *ngIf="!isFriend && addingFriend" class="btn btn-success" type="button" disabled>
+            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+            Adding Friend...
+          </button>
         </div>
         <div class="spacer"></div>
       </div>

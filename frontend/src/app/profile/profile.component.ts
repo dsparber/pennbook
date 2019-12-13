@@ -13,6 +13,7 @@ export class ProfileComponent implements OnInit {
   user: String = null;
   profile:any = {};
   isFriend:boolean = true;
+  addingFriend:boolean = false;
   editing:boolean = false;
 
   constructor(
@@ -37,9 +38,13 @@ export class ProfileComponent implements OnInit {
   }
 
   addFriend() {
+    this.addingFriend = true;
     this.profileService.addFriend({ friend: this.user }).subscribe(
-      res => this.isFriend = true,
-      err => console.error(err),
+      res => {
+        this.isFriend = true;
+        this.addingFriend = false;
+      },
+      err => this.addingFriend = false,
     );
   }
 

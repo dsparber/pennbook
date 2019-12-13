@@ -94,8 +94,13 @@
         <input type="text" class="form-control" [(ngModel)]="comment" placeholder="Add a new comment..."
           aria-label="Comment" on-keyup="$event.keyCode == 13 && addComment()">
         <div class="input-group-append">
-          <button class="btn btn-outline-primary" type="button" (click)="addComment()">Comment</button>
+          <button *ngIf = '!commenting' class="btn btn-outline-primary" type="button" (click)="addComment()">Comment</button>
+          <button *ngIf="commenting" class="btn btn-primary" type="button" disabled>
+            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+            Commenting ...
+          </button>
         </div>
+
       </div>
     </div>
 
