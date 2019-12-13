@@ -24,9 +24,7 @@
       </div>
 
       <div class ='col-6' style= "width: 50%; float:right; margin-right: 40px">
-        <h3 style='padding-top:15px; color: black; margin-left:25px'> Timeline
-        <button   style= "margin-top: 10px;float:right" class="btn btn-md btn-primary" (click)="open(content, 'comment', null)">Post</button>
-        </h3>
+        <app-create-post [wall]="user"></app-create-post>
         <div style="padding-top: 10px;">
           <div class = 'row' style="padding-top: 10px; padding-bottom:10px;">
               <div  *ngFor="let post of posts" style= "background-color:#F6F4F4; border-radius:20px; padding-top:20px; padding-bottom:10px; margin-top:0px; margin-bottom:20px">
