@@ -1,0 +1,9 @@
+(ETH)	noLabels;Daniel:1.0 
+(Spain)	noLabels;Iris:1.0 
+(Upenn)	noLabels;Daniel:0.25 Zoe:0.25 Stefan:0.25 Iris:0.25 
+(Usyd)	noLabels;Zoe:1.0 
+Daniel	Daniel:1 ;Zoe:0.25 (ETH):0.25 (Upenn):0.25 Stefan:0.25 
+Iris	Iris:1 ;(Spain):0.25 Maria:0.25 Zoe:0.25 (Upenn):0.25 
+Maria	Maria:1 ;Iris:1.0 
+Stefan	Stefan:1 ;(Upenn):0.5 Daniel:0.5 
+Zoe	Zoe:1 ;Daniel:0.25 (Upenn):0.25 Iris:0.25 (Usyd):0.25 
