@@ -381,7 +381,7 @@ async function getPost(postId, callback) {
     try {
         let post = await getItem(db.Post.query(postId).usingIndex('PostIdIndex').exec());
         post = await mapPost(post);
-        callback(null, post);
+         callback(null, post);
     } catch (err) {
         callback(err, null);
     }
@@ -390,7 +390,7 @@ async function getPost(postId, callback) {
  async function getPostChildren(postId, callback) {
     try {
         let children = [];
-        let subPosts = await getItems(db.SubPost.query(post.postId).exec());
+        let subPosts = await getItems(db.SubPost.query(postId).exec());
         if (subPosts.length !== 0) {
             let subPostIds = subPosts.map(s => s.childPostId);
             children = await getItems(db.Post.scan().where('postId').in(subPostIds).loadAll().exec());
