@@ -18,7 +18,7 @@ export class AffiliationFeedComponent implements OnInit  {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.name = params.name;
-      this.api.get(`users/affiliation/${this.name}`).subscribe(
+      this.api.get(`user/affiliation/${this.name}`).subscribe(
         res => this.users = res.result,
         err => console.error(err),
       );

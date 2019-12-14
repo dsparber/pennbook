@@ -17,7 +17,7 @@ export class InterestFeedComponent implements OnInit  {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.name = params.name;
-      this.api.get(`users/interest/${this.name}`).subscribe(
+      this.api.get(`user/interest/${this.name}`).subscribe(
         res => this.users = res.result,
         err => console.error(err),
       );
