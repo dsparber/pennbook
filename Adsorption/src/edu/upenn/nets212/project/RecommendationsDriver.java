@@ -314,15 +314,17 @@ public class RecommendationsDriver
   public static void composite(String inputDir, String outputDir, String intermDir1, String intermDir2, String diffDir, int noReducers) throws Exception {
 	  initDriver(inputDir, intermDir1, noReducers);
 	  iterDriver(intermDir1, intermDir2, noReducers);
+	  iterDriver(intermDir2, intermDir1, noReducers);
 	  
 	  diffDriver(intermDir1, intermDir2, diffDir, 1);
 	  
-	  while (readDiffResult(diffDir) > 0.001) {
+	  while (readDiffResult(diffDir) > 0.002) {
 		  System.out.println(readDiffResult(diffDir));
-		  iterDriver(intermDir2, intermDir1, noReducers);
+		  
 		  iterDriver(intermDir1, intermDir2, noReducers);
 		  iterDriver(intermDir2, intermDir1, noReducers);
 		  iterDriver(intermDir1, intermDir2, noReducers);
+		  iterDriver(intermDir2, intermDir1, noReducers);
 		  
 		  diffDriver(intermDir1, intermDir2, diffDir, 1);
 	  }
