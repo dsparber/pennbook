@@ -2,9 +2,9 @@ require('dotenv').config()
 const db = require('./db/database');
 const fs = require('fs');
 
-const filename = 'export.txt';
+const filename = 'input.txt';
 
-db.getMapReduceData(function(err, result) {
+db.getMapReduceData(true, false, function(err, result) {
 
     if (err) throw err;
 

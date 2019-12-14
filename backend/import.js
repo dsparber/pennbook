@@ -20,17 +20,24 @@ fs.readFile(filename, {"encoding": "utf8"}, (err, data) => {
 
     let result = [];
     lines.forEach(l => {
-        let values = l.split(/\s+/);
-        let score = Number(values[2]);
-        if (Number.isNaN(score)) {
-            score = 0;
-        }
-        result.push({
-            username1: values[0],
-            username2: values[1],
-            score: score,
-        });
+        let split = l.split(/\s+/);
+        let user1 = split[0];
+        split.splice(1).forEach(v => {
+            let split = v.split(':');
+            let user2 = split[0];
+            let score = Number(split[1]);
+            if (Number.isNaN(score)) {
+                score = 0;
+            }
+            result.push({
+                username1: user1,
+                username2: user2,
+                score: score,
+            });
+        });  
     });
+
+    console.log(result);
 
     db.saveAdsorptionResult(result, (err, _) => {
         if (err) throw err;

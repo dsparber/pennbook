@@ -712,33 +712,51 @@ async function getGraph(user, selected, callback) {
     }
 }
 
-async function getMapReduceData(callback) {
+async function getMapReduceData(directed, preCompute, callback) {
     try {
         let relations = new Set();
 
-        let toString = (a, b) => a < b ? `${a}\t${b}` : `${b}\t${a}`;
+        let toString;
 
-        let addRelations = groups => Object.keys(groups).forEach(key => {
+        if (directed) {
+            toString = (a, b, t) => `${a}\t${b}\t${t}`;
+        } else {
+            toString = (a, b, t) => a < b ? `${a}\t${b}\t${t}` : `${b}\t${a}\t${t}`;
+        }
+
+        if (!preCompute) {
+            toString =  (a, b, isAttr) =>  isAttr ? `${a}\t(${b})` : `${a}\t${b}`;
+        }
+
+        let addRelations = (groups, type) => Object.keys(groups).forEach(key => {
             let items = groups[key];
             let users = items.map(i => i.username);
             users.forEach(a => users.forEach(b => {
                 if (a != b) {
-                    relations.add(toString(a, b));
+                    relations.add(toString(a, b, type));
                 }
             }));
         });
+
 
         let friends = await getItems(db.Friend.scan().loadAll().exec());
         let interests = await getItems(db.Interest.scan().loadAll().exec());
         let affiliations = await getItems(db.Affiliation.scan().loadAll().exec());
 
-        interests = groupBy(interests, 'name');
-        affiliations = groupBy(affiliations, 'name');
+        if (preCompute) {
+            friends.forEach(f => relations.add(toString(f.username, f.friend, 'f')));
+            
+            interests = groupBy(interests, 'name');
+            affiliations = groupBy(affiliations, 'name');
 
-        friends.forEach(f => relations.add(toString(f.username, f.friend)));
+            addRelations(interests, 'i');
+            addRelations(affiliations, 'a');
+        } else {
+            friends.forEach(f => relations.add(toString(f.username, f.friend, false)));
+            interests.forEach(x => relations.add(toString(x.username, x.name, true)));
+            affiliations.forEach(x => relations.add(toString(x.username, x.name, true)));
+        }
 
-        addRelations(interests);
-        addRelations(affiliations);
 
         callback(null, relations);
     } catch (err) {
