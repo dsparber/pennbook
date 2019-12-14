@@ -22,7 +22,8 @@ fs.readFile(filename, {"encoding": "utf8"}, (err, data) => {
     lines.forEach(l => {
         let split = l.split(/\s+/);
         let user1 = split[0];
-        split.splice(1).forEach(v => {
+        let second = split.splice(1).filter(v => v.length > 0);
+        second.forEach(v => {
             let split = v.split(':');
             let user2 = split[0];
             let score = Number(split[1]);
@@ -36,9 +37,7 @@ fs.readFile(filename, {"encoding": "utf8"}, (err, data) => {
             });
         });  
     });
-
-    console.log(result);
-
+    
     db.saveAdsorptionResult(result, (err, _) => {
         if (err) throw err;
         console.log("Imported data!");

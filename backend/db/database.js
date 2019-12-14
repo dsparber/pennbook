@@ -725,7 +725,7 @@ async function getMapReduceData(directed, preCompute, callback) {
         }
 
         if (!preCompute) {
-            toString =  (a, b, isAttr) =>  isAttr ? `${a}\t(${b})` : `${a}\t${b}`;
+            toString =  (a, b, isAttr) =>  isAttr ? `${a}\t(${b.replace(/\s/g, "_")})` : `${a}\t${b}`;
         }
 
         let addRelations = (groups, type) => Object.keys(groups).forEach(key => {
