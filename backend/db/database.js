@@ -270,8 +270,8 @@ function updateProfile(user, profile, callback) {
         }
         if (profile.about) {
             await post({
-                wall: friend,
-                creator: friend,
+                wall: user,
+                creator: user,
                 content: profile.about,
                 type: 'about-changed',
             });

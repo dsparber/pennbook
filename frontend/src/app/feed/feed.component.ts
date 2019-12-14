@@ -37,7 +37,7 @@ export class FeedComponent implements OnInit, OnChanges  {
 
   ngOnChanges() {
     this.maxPosts = 5;
-    this.postIds = [];
+    this.postIds = null;
     this.getFeed();
   }
 
