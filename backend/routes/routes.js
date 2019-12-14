@@ -231,6 +231,17 @@ const friendRecommendations = function(req, res) {
     db.friendRecommendations(user, jsonCallback(res));
 }
 
+const userAffiliation = function(req, res) {
+    let name = req.params.name;
+    db.userAffiliation(name, jsonCallback(res));
+}
+
+const userInterest = function(req, res) {
+    let name = req.params.name;
+    db.userInterest(name, jsonCallback(res));
+}
+
+
 const activeUsers = function(active) {
     return function(req, res) {
         let user = req.auth.username;
@@ -282,4 +293,6 @@ module.exports = {
     getPostReactions: getPostReactions,
     interestWall: interestWall,
     affiliationWall: affiliationWall,
+    userAffiliation: userAffiliation,
+    userInterest: userInterest,
 }

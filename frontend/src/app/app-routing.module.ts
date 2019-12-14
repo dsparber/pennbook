@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'friends', component: FriendsComponent},
   { path: 'chat', component: ChatComponent},
   { path: 'visualizer', component: VisualizerComponent},
-  //{ path: '**', redirectTo: '/feed' },
+  { path: '**', redirectTo: '/feed' },
 ];
 
 

@@ -26,6 +26,7 @@ import { ProfilePicture } from './profile-picture/profile-picture.component';
 import { StringEditor } from './string-editor/string-editor.component';
 import { InterestFeedComponent } from './interest-feed/interest-feed.component';
 import { AffiliationFeedComponent } from './affiliation-feed/affiliation-feed.component';
+import { LoadingComponent } from './loading/loading.component';
 
 
 
@@ -46,6 +47,7 @@ import { AffiliationFeedComponent } from './affiliation-feed/affiliation-feed.co
     StringEditor,
     InterestFeedComponent,
     AffiliationFeedComponent,
+    LoadingComponent,
   ],
   imports: [
     BrowserModule,

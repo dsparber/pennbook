@@ -8,9 +8,9 @@ import { ApiService } from '../api/api.service';
 })
 export class FriendsComponent implements OnInit {
 
-  friends:any = [];
-  online:any = [];
-  recommendations:any [];
+  friends:any = null;
+  online:any = null;
+  recommendations:any = null;
 
   constructor(private api: ApiService) { }
 

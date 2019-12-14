@@ -763,6 +763,26 @@ async function friendRecommendations(user, callback) {
     }
 }
 
+async function userAffiliation(name, callback) {
+    try {
+        let users = (await getItems(db.Affiliation.query(name).exec())).map(a => a.username);
+        let result = await Promise.all(users.map(async u => await profileAsync(u, false)));
+        callback(null, result);
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
+async function userInterest(name, callback) {
+    try {
+        let users = (await getItems(db.Interest.query(name).exec())).map(a => a.username);
+        let result = await Promise.all(users.map(async u => await profileAsync(u, false)));
+        callback(null, result);
+    } catch (err) {
+        callback(err, null);
+    }
+}
+
 module.exports = {
     login: login,
     signup: signup,
@@ -798,4 +818,6 @@ module.exports = {
     getPostReactions,
     interestWall: interestWall,
     affiliationWall: affiliationWall,
+    userAffiliation: userAffiliation,
+    userInterest: userInterest,
 }

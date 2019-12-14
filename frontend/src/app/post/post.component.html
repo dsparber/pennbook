@@ -37,13 +37,7 @@
         </div>
       </div>
       <div *ngIf="!post.ready" class="flex-row">
-        <div class="spinner-grow text-secondary" role="status">
-          <span class="sr-only">Loading...</span>
-        </div><div class="spinner-grow text-secondary" role="status">
-          <span class="sr-only">Loading...</span>
-        </div><div class="spinner-grow text-secondary" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
+        <app-loading></app-loading>
       </div>
     </div>
     <div *ngIf="post.picture">
