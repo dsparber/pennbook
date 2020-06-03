@@ -8,7 +8,8 @@ Daniel Sparber, Stefan Papazov, Zoe Er
 
 ## Screenshots
 
-
+![Profile](screenshots/Profile.png)
+![Chat](screenshots/Chat.png)
 
 ## List of features
 Profiles, Feeds, Chat, Comments, Reactions, Affiliations, Interests, HTTPS Encryption, DNS record, 
